@@ -1,0 +1,34 @@
+{
+    "name": "InputMap",
+    "maps": [
+        {
+            "name": "KeyboardAndMouse",
+            "id": "64ca7e7a-59c0-47cf-bffe-505a215bfff1",
+            "actions": [
+                {
+                    "name": "deltaMouse",
+                    "type": "PassThrough",
+                    "id": "98a5bc7f-c483-4c91-b142-0fdd6cdd442b",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "aa613330-d5e3-44d9-8c0d-6d72febdeca8",
+                    "path": "<Mouse>/delta",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "deltaMouse",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": []
+}
