@@ -6,7 +6,6 @@ using UnityEngine.UI;
 public class SettingsScript : MonoBehaviour
 {
     public Slider Slider;
-    public GameObject Player;
 
     void Start()
     {
@@ -16,7 +15,6 @@ public class SettingsScript : MonoBehaviour
     
     void Update()
     {
-        var playerScript = Player.GetComponent<FirstPersonController>();
-        playerScript.mouseSensitivity = Slider.value;
+        PlayerPrefs.SetFloat("Sensetivity", Slider.value);
     }
 }

@@ -47,7 +47,8 @@ public class PauseScript : MonoBehaviour
     {
         GameIsPaused = false;
         Time.timeScale = 1f;
-        SceneManager.LoadScene("Menu");
+        SceneManager.UnloadSceneAsync("SampleScene");
+        SceneManager.LoadSceneAsync("Menu");
     }
 
     public void QuitGame()
