@@ -53,6 +53,7 @@ public class PauseScript : MonoBehaviour
 
     public void QuitGame()
     {
+        Debug.Log("Exit");
         Application.Quit();
     }
 }
