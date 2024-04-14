@@ -229,7 +229,7 @@ GameObject:
   - component: {fileID: 169774524}
   - component: {fileID: 169774523}
   m_Layer: 0
-  m_Name: Cube
+  m_Name: MazeBuilder
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
