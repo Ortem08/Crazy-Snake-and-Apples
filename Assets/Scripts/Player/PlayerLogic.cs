@@ -4,16 +4,10 @@ using UnityEngine;
 public class PlayerLogic : MonoBehaviour
 {
     public int Health { get; set; }
-    public Inventory Inventory { get; private set; }
-    public IInventoriable SelectedItem { get; set; }
-
-    private void Start()
-    {
-        Inventory = GetComponent<Inventory>();
-    }
+    public Inventory Inventory { get; } = new Inventory();
 
     private void Update()
     {
-        SelectedItem?.Update();
+        Inventory.SelectedItem?.OnPlayerUpdate();
     }
 }
