@@ -35,6 +35,15 @@ public partial class @InputMap: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""LeftMouseClick"",
+                    ""type"": ""Button"",
+                    ""id"": ""d45c8214-a108-4d3d-be92-877f659a929e"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
                 }
             ],
             ""bindings"": [
@@ -48,6 +57,17 @@ public partial class @InputMap: IInputActionCollection2, IDisposable
                     ""action"": ""deltaMouse"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""012660be-f4c7-40bd-826b-8fa14cc0edac"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""LeftMouseClick"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -57,6 +77,7 @@ public partial class @InputMap: IInputActionCollection2, IDisposable
         // KeyboardAndMouse
         m_KeyboardAndMouse = asset.FindActionMap("KeyboardAndMouse", throwIfNotFound: true);
         m_KeyboardAndMouse_deltaMouse = m_KeyboardAndMouse.FindAction("deltaMouse", throwIfNotFound: true);
+        m_KeyboardAndMouse_LeftMouseClick = m_KeyboardAndMouse.FindAction("LeftMouseClick", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -119,11 +140,13 @@ public partial class @InputMap: IInputActionCollection2, IDisposable
     private readonly InputActionMap m_KeyboardAndMouse;
     private List<IKeyboardAndMouseActions> m_KeyboardAndMouseActionsCallbackInterfaces = new List<IKeyboardAndMouseActions>();
     private readonly InputAction m_KeyboardAndMouse_deltaMouse;
+    private readonly InputAction m_KeyboardAndMouse_LeftMouseClick;
     public struct KeyboardAndMouseActions
     {
         private @InputMap m_Wrapper;
         public KeyboardAndMouseActions(@InputMap wrapper) { m_Wrapper = wrapper; }
         public InputAction @deltaMouse => m_Wrapper.m_KeyboardAndMouse_deltaMouse;
+        public InputAction @LeftMouseClick => m_Wrapper.m_KeyboardAndMouse_LeftMouseClick;
         public InputActionMap Get() { return m_Wrapper.m_KeyboardAndMouse; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -136,6 +159,9 @@ public partial class @InputMap: IInputActionCollection2, IDisposable
             @deltaMouse.started += instance.OnDeltaMouse;
             @deltaMouse.performed += instance.OnDeltaMouse;
             @deltaMouse.canceled += instance.OnDeltaMouse;
+            @LeftMouseClick.started += instance.OnLeftMouseClick;
+            @LeftMouseClick.performed += instance.OnLeftMouseClick;
+            @LeftMouseClick.canceled += instance.OnLeftMouseClick;
         }
 
         private void UnregisterCallbacks(IKeyboardAndMouseActions instance)
@@ -143,6 +169,9 @@ public partial class @InputMap: IInputActionCollection2, IDisposable
             @deltaMouse.started -= instance.OnDeltaMouse;
             @deltaMouse.performed -= instance.OnDeltaMouse;
             @deltaMouse.canceled -= instance.OnDeltaMouse;
+            @LeftMouseClick.started -= instance.OnLeftMouseClick;
+            @LeftMouseClick.performed -= instance.OnLeftMouseClick;
+            @LeftMouseClick.canceled -= instance.OnLeftMouseClick;
         }
 
         public void RemoveCallbacks(IKeyboardAndMouseActions instance)
@@ -163,5 +192,6 @@ public partial class @InputMap: IInputActionCollection2, IDisposable
     public interface IKeyboardAndMouseActions
     {
         void OnDeltaMouse(InputAction.CallbackContext context);
+        void OnLeftMouseClick(InputAction.CallbackContext context);
     }
 }

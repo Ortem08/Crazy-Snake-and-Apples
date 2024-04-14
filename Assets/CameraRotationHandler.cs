@@ -33,6 +33,4 @@ public class CameraRotationHandler : MonoBehaviour
         vertical = Mathf.Clamp(vertical, minVerticalAngle, maxVerticalAngle);
         _rotationTarget.eulerAngles = new Vector3(vertical, horizontal, 0f);
     }
-
-
 }
