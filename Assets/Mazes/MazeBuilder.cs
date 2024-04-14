@@ -11,15 +11,24 @@ namespace Assets.Mazes
 {
     internal class MazeBuilder: MonoBehaviour
     {
+        public bool IgnoreSeed = true;
+
+        public int Seed = 42;
+
+        public float WallThickness = 1;
+
+        public float PassageThickness = 1;
+
+        public float TotalWallHeight = 1;
+
+        public int MazeSize_X = 10;
+
+        public int MazeSize_Z = 10;
 
         public void Start()
         {
             var generator = new MazePatternGenerator();
-            var maze = generator.RandomizedDFS(10, 10);
-            /*using (var sw = new StreamWriter(@"C:\Users\Alex\Desktop\mazeGen.txt"))
-            {
-                sw.Write(generator.StringifyPattern(maze));
-            }*/
+            var maze = generator.RandomizedDFS(MazeSize_X, MazeSize_Z, IgnoreSeed ? null : Seed);
 
             var mazeGameObject = new GameObject("The Maze");
             mazeGameObject.transform.position = transform.position;
@@ -31,7 +40,28 @@ namespace Assets.Mazes
                     if (maze[i, j] == 0)
                     {
                         var go = GameObject.CreatePrimitive(PrimitiveType.Cube);
-                        go.transform.position = mazeGameObject.transform.position + new Vector3(i, 0, j);
+
+                        var xThickness = WallThickness;
+                        if (i % 2 == 1)
+                        {
+                            xThickness = PassageThickness;
+                        }
+
+                        var zThickness = WallThickness;
+                        if (j % 2 == 1)
+                        {
+                            zThickness = PassageThickness;
+                        }
+
+                        go.transform.localScale = new Vector3(xThickness, TotalWallHeight, zThickness);
+
+                        var delta = new Vector3(
+                                ((WallThickness + PassageThickness) / 2.0f) * i,
+                                0,
+                                ((WallThickness + PassageThickness) / 2.0f) * j
+                            );
+
+                        go.transform.position = mazeGameObject.transform.position + delta;// + new Vector3(i, 0, j);
                         go.transform.parent = mazeGameObject.transform;
                     }
                 }

@@ -33,7 +33,7 @@ namespace Assets.Mazes
             return sb.ToString();
         }
 
-        public int[,] RandomizedDFS(int width, int height, int? seed = null)
+        public int[,] RandomizedDFS(int height, int width, int? seed = null)
         {
             var maze = new int[height * 2 + 1, width * 2 + 1];
             var stack = new Stack<(int, int)>();
@@ -68,7 +68,7 @@ namespace Assets.Mazes
             var deltaVariants = new List<(int, int)>() { (0, 2), (2, 0), (0, -2), (-2, 0) };
             return deltaVariants
                 .Select(d => (d.Item1 + x, d.Item2 + y))
-                .Where(p => CanBePlacedOn(p.Item1, p.Item2, maze))
+                .Where(p => predicate(p.Item1, p.Item2, maze))
                 .ToList();
         }
 
@@ -79,11 +79,6 @@ namespace Assets.Mazes
 
         private bool CanBePlacedOn(int x, int y, int[,] maze)
         {
-            /*if (x < 0 || x >= maze.GetLength(0) || y < 0 || y >= maze.GetLength(1))
-            {
-                return false;
-            }*/
-
             return IsOnField(x, y, maze) && maze[x, y] == 0;
         }
     }
