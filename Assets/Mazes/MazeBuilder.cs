@@ -19,7 +19,7 @@ namespace Assets.Mazes
 
         public float PassageThickness = 1;
 
-        public float TotalWallHeight = 1;
+        public float WallHeight = 1;
 
         public int MazeSize_X = 10;
 
@@ -27,45 +27,13 @@ namespace Assets.Mazes
 
         public void Start()
         {
-            var generator = new MazePatternGenerator();
-            var maze = generator.RandomizedDFS(MazeSize_X, MazeSize_Z, IgnoreSeed ? null : Seed);
+            var patternGenerator = new MazePatternGenerator();
+            var maze = patternGenerator.RandomizedDFS(MazeSize_X, MazeSize_Z, IgnoreSeed ? null : Seed);
 
-            var mazeGameObject = new GameObject("The Maze");
-            mazeGameObject.transform.position = transform.position;
+            var wallBuilder = new WallBuilderSimple(WallThickness, PassageThickness, WallHeight);
 
-            for (int i = 0; i < maze.GetLength(0); i++)
-            {
-                for (int j = 0; j < maze.GetLength(1); j++)
-                {
-                    if (maze[i, j] == 0)
-                    {
-                        var go = GameObject.CreatePrimitive(PrimitiveType.Cube);
-
-                        var xThickness = WallThickness;
-                        if (i % 2 == 1)
-                        {
-                            xThickness = PassageThickness;
-                        }
-
-                        var zThickness = WallThickness;
-                        if (j % 2 == 1)
-                        {
-                            zThickness = PassageThickness;
-                        }
-
-                        go.transform.localScale = new Vector3(xThickness, TotalWallHeight, zThickness);
-
-                        var delta = new Vector3(
-                                ((WallThickness + PassageThickness) / 2.0f) * i,
-                                0,
-                                ((WallThickness + PassageThickness) / 2.0f) * j
-                            );
-
-                        go.transform.position = mazeGameObject.transform.position + delta;// + new Vector3(i, 0, j);
-                        go.transform.parent = mazeGameObject.transform;
-                    }
-                }
-            }
+            var mazeWallsObject = wallBuilder.BuildWalls(maze, 0);
+            mazeWallsObject.transform.position = transform.position;
 
             Destroy(gameObject);    //remove mazeBuilder from scene
         }
