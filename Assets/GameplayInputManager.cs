@@ -1,4 +1,4 @@
-/*using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -20,12 +20,12 @@ public class GameplayInputManager : MonoBehaviour
 
     private void OnRotationInputReceived(Vector2 deltaVector)
     {
-        RotationInputReceived.Invoke(deltaVector);
+        RotationInputReceived?.Invoke(deltaVector);
     }
 
     private void OnLeftMouseClickReceived()
     {
-        LeftMouseClickReceived.Invoke();
+        LeftMouseClickReceived?.Invoke();
     }
 
     private void InitMouseInput(InputMap map)
@@ -36,4 +36,3 @@ public class GameplayInputManager : MonoBehaviour
         _mouseInput.InitInputs();
     }
 }
-*/
