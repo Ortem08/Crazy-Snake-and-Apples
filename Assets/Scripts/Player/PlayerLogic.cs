@@ -1,5 +1,5 @@
 ﻿
-using UnityEngine;
+/*using UnityEngine;
 
 public class PlayerLogic : MonoBehaviour
 {
@@ -10,4 +10,4 @@ public class PlayerLogic : MonoBehaviour
     {
         Inventory.SelectedItem?.OnPlayerUpdate();
     }
-}
+}*/
