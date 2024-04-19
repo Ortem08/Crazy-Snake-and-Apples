@@ -70,6 +70,138 @@ public partial class @InputMap: IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": false
                 }
             ]
+        },
+        {
+            ""name"": ""Gameplay"",
+            ""id"": ""b4570aa9-1b77-467d-a59c-a4b6bf059b5f"",
+            ""actions"": [
+                {
+                    ""name"": ""Movement"",
+                    ""type"": ""Value"",
+                    ""id"": ""277c9f8b-d070-4bad-9617-83c591e48f4b"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""ViewDirectionDelta"",
+                    ""type"": ""Value"",
+                    ""id"": ""45535738-630f-4b97-a17d-14846b8f88be"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""Jump"",
+                    ""type"": ""Button"",
+                    ""id"": ""5a83c39e-9648-470e-898d-2a9d3057397a"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""UseItemPrimaryAction"",
+                    ""type"": ""Button"",
+                    ""id"": ""9e9785a4-0eba-4a67-bf50-bce512fdd834"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": ""WASD"",
+                    ""id"": ""c89fdb4b-0300-4f67-994e-b943f3358c2f"",
+                    ""path"": ""2DVector"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Movement"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""up"",
+                    ""id"": ""207ac744-c7c6-45b1-8038-ce22e0fd9f50"",
+                    ""path"": ""<Keyboard>/w"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Movement"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""down"",
+                    ""id"": ""00ac1e15-f198-44a8-a7f1-1d8ca7e17458"",
+                    ""path"": ""<Keyboard>/s"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Movement"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""left"",
+                    ""id"": ""6ce4326f-4179-4154-bef6-df564f33a8a2"",
+                    ""path"": ""<Keyboard>/a"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Movement"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""right"",
+                    ""id"": ""32fbabad-926b-4b2a-86d0-2b7aed2a4942"",
+                    ""path"": ""<Keyboard>/d"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Movement"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""45d960ea-0530-4752-a42a-3c3709b0fbaf"",
+                    ""path"": ""<Mouse>/delta"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ViewDirectionDelta"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""0f9baed3-3975-4504-8b90-b46f0e472e0a"",
+                    ""path"": ""<Keyboard>/space"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Jump"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""66f61259-eede-40f7-aa28-f74d57143e30"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""UseItemPrimaryAction"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
         }
     ],
     ""controlSchemes"": []
@@ -78,6 +210,12 @@ public partial class @InputMap: IInputActionCollection2, IDisposable
         m_KeyboardAndMouse = asset.FindActionMap("KeyboardAndMouse", throwIfNotFound: true);
         m_KeyboardAndMouse_deltaMouse = m_KeyboardAndMouse.FindAction("deltaMouse", throwIfNotFound: true);
         m_KeyboardAndMouse_LeftMouseClick = m_KeyboardAndMouse.FindAction("LeftMouseClick", throwIfNotFound: true);
+        // Gameplay
+        m_Gameplay = asset.FindActionMap("Gameplay", throwIfNotFound: true);
+        m_Gameplay_Movement = m_Gameplay.FindAction("Movement", throwIfNotFound: true);
+        m_Gameplay_ViewDirectionDelta = m_Gameplay.FindAction("ViewDirectionDelta", throwIfNotFound: true);
+        m_Gameplay_Jump = m_Gameplay.FindAction("Jump", throwIfNotFound: true);
+        m_Gameplay_UseItemPrimaryAction = m_Gameplay.FindAction("UseItemPrimaryAction", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -189,9 +327,86 @@ public partial class @InputMap: IInputActionCollection2, IDisposable
         }
     }
     public KeyboardAndMouseActions @KeyboardAndMouse => new KeyboardAndMouseActions(this);
+
+    // Gameplay
+    private readonly InputActionMap m_Gameplay;
+    private List<IGameplayActions> m_GameplayActionsCallbackInterfaces = new List<IGameplayActions>();
+    private readonly InputAction m_Gameplay_Movement;
+    private readonly InputAction m_Gameplay_ViewDirectionDelta;
+    private readonly InputAction m_Gameplay_Jump;
+    private readonly InputAction m_Gameplay_UseItemPrimaryAction;
+    public struct GameplayActions
+    {
+        private @InputMap m_Wrapper;
+        public GameplayActions(@InputMap wrapper) { m_Wrapper = wrapper; }
+        public InputAction @Movement => m_Wrapper.m_Gameplay_Movement;
+        public InputAction @ViewDirectionDelta => m_Wrapper.m_Gameplay_ViewDirectionDelta;
+        public InputAction @Jump => m_Wrapper.m_Gameplay_Jump;
+        public InputAction @UseItemPrimaryAction => m_Wrapper.m_Gameplay_UseItemPrimaryAction;
+        public InputActionMap Get() { return m_Wrapper.m_Gameplay; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(GameplayActions set) { return set.Get(); }
+        public void AddCallbacks(IGameplayActions instance)
+        {
+            if (instance == null || m_Wrapper.m_GameplayActionsCallbackInterfaces.Contains(instance)) return;
+            m_Wrapper.m_GameplayActionsCallbackInterfaces.Add(instance);
+            @Movement.started += instance.OnMovement;
+            @Movement.performed += instance.OnMovement;
+            @Movement.canceled += instance.OnMovement;
+            @ViewDirectionDelta.started += instance.OnViewDirectionDelta;
+            @ViewDirectionDelta.performed += instance.OnViewDirectionDelta;
+            @ViewDirectionDelta.canceled += instance.OnViewDirectionDelta;
+            @Jump.started += instance.OnJump;
+            @Jump.performed += instance.OnJump;
+            @Jump.canceled += instance.OnJump;
+            @UseItemPrimaryAction.started += instance.OnUseItemPrimaryAction;
+            @UseItemPrimaryAction.performed += instance.OnUseItemPrimaryAction;
+            @UseItemPrimaryAction.canceled += instance.OnUseItemPrimaryAction;
+        }
+
+        private void UnregisterCallbacks(IGameplayActions instance)
+        {
+            @Movement.started -= instance.OnMovement;
+            @Movement.performed -= instance.OnMovement;
+            @Movement.canceled -= instance.OnMovement;
+            @ViewDirectionDelta.started -= instance.OnViewDirectionDelta;
+            @ViewDirectionDelta.performed -= instance.OnViewDirectionDelta;
+            @ViewDirectionDelta.canceled -= instance.OnViewDirectionDelta;
+            @Jump.started -= instance.OnJump;
+            @Jump.performed -= instance.OnJump;
+            @Jump.canceled -= instance.OnJump;
+            @UseItemPrimaryAction.started -= instance.OnUseItemPrimaryAction;
+            @UseItemPrimaryAction.performed -= instance.OnUseItemPrimaryAction;
+            @UseItemPrimaryAction.canceled -= instance.OnUseItemPrimaryAction;
+        }
+
+        public void RemoveCallbacks(IGameplayActions instance)
+        {
+            if (m_Wrapper.m_GameplayActionsCallbackInterfaces.Remove(instance))
+                UnregisterCallbacks(instance);
+        }
+
+        public void SetCallbacks(IGameplayActions instance)
+        {
+            foreach (var item in m_Wrapper.m_GameplayActionsCallbackInterfaces)
+                UnregisterCallbacks(item);
+            m_Wrapper.m_GameplayActionsCallbackInterfaces.Clear();
+            AddCallbacks(instance);
+        }
+    }
+    public GameplayActions @Gameplay => new GameplayActions(this);
     public interface IKeyboardAndMouseActions
     {
         void OnDeltaMouse(InputAction.CallbackContext context);
         void OnLeftMouseClick(InputAction.CallbackContext context);
+    }
+    public interface IGameplayActions
+    {
+        void OnMovement(InputAction.CallbackContext context);
+        void OnViewDirectionDelta(InputAction.CallbackContext context);
+        void OnJump(InputAction.CallbackContext context);
+        void OnUseItemPrimaryAction(InputAction.CallbackContext context);
     }
 }
