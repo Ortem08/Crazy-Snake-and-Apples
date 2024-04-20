@@ -79,10 +79,12 @@ public class Handgun : MonoBehaviour, IInventoryItem
         if (Physics.Raycast(startPosition, shootDirection, out hit, range))
         {
             Debug.Log(hit.rigidbody);
-            /*if (hit.collider.gameObject.CompareTag("Creature"))
+
+            if (hit.collider.gameObject.TryGetComponent<IHurtable>(out var hurtable))
             {
-                hit.collider.gameObject.GetComponent<Creature>().TakeDamage(damage);
-            }*/
+                hurtable.TakeDamage(new DamageInfo(damage));
+            }
+
             lineRenderer.SetPosition(0, startPosition);
             lineRenderer.SetPosition(1, hit.point);
         }
