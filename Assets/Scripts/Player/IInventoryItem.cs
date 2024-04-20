@@ -12,4 +12,8 @@ public interface IInventoryItem
     public bool TryUsePrimaryAction();
 
     public bool TryUseSecondaryAction();
+
+    public void SetUser(IUser user);
+
+    public void DropOut();  // means that item should drop
 }

@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using JetBrains.Annotations;
+using static UnityEditor.Progress;
 
 public class Inventory
 {
@@ -9,7 +10,10 @@ public class Inventory
 
     public int Capacity { get; }
 
-    [CanBeNull] public IInventoryItem SelectedItem => Items[SelectedIndex]; //null <=> nothing selected (or empty cell selected)
+    [CanBeNull] public IInventoryItem SelectedItem { 
+        get => Items[SelectedIndex]; 
+        set { Items[_selectedIndex] = value; } // might be better to check if no item already here
+    }
 
     private int _selectedIndex = 0;
 
@@ -21,7 +25,9 @@ public class Inventory
             {
                 throw new ArgumentOutOfRangeException(nameof(value));
             }
+            SelectedItem?.OnUnselect();
             _selectedIndex = value;
+            SelectedItem?.OnSelect();
         } 
     }
 
@@ -48,5 +54,19 @@ public class Inventory
     public void SelectPrevious()
     {
         SelectedIndex = (Capacity + SelectedIndex - 1) % Capacity;
+    }
+
+    public bool TryDropCurrent()
+    {
+        if (SelectedItem == null)
+        {
+            return false;
+        }
+
+        SelectedItem.OnUnselect();
+        SelectedItem.DropOut();
+        SelectedItem = null;
+
+        return true;
     }
 }

@@ -110,6 +110,42 @@ public partial class @InputMap: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""UseItemSecondaryAction"",
+                    ""type"": ""Button"",
+                    ""id"": ""71b97ace-af87-4209-b908-861dccaeb933"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""PickItem"",
+                    ""type"": ""Button"",
+                    ""id"": ""a5308507-bf90-4d04-9ecd-7863e7e9a4fe"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""DropItem"",
+                    ""type"": ""Button"",
+                    ""id"": ""d1a6f71c-e7bb-4bf6-93fb-fadeadd2165a"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""ItemSelect"",
+                    ""type"": ""Value"",
+                    ""id"": ""ef0c2d33-3adb-41f3-8856-0dcf229097be"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
                 }
             ],
             ""bindings"": [
@@ -200,6 +236,83 @@ public partial class @InputMap: IInputActionCollection2, IDisposable
                     ""action"": ""UseItemPrimaryAction"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""83e0a645-dd4f-4b93-aefb-255aac54f12a"",
+                    ""path"": ""<Keyboard>/e"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""PickItem"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""975a0f8f-b745-46ca-8be7-b1bd64b49364"",
+                    ""path"": ""<Keyboard>/q"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""DropItem"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""b3fdbdc4-b5dd-4307-b0d7-08c3e906d4a4"",
+                    ""path"": ""<Mouse>/rightButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""UseItemSecondaryAction"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""8831a06c-0f88-4a64-877c-2d6c77c499ef"",
+                    ""path"": ""<Keyboard>/1"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ItemSelect"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""be260512-2b06-4dc3-a56d-28c7e9782e24"",
+                    ""path"": ""<Keyboard>/2"",
+                    ""interactions"": """",
+                    ""processors"": ""Scale(factor=2)"",
+                    ""groups"": """",
+                    ""action"": ""ItemSelect"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""0a9f3bda-01ca-4383-87ce-14e7aa657df2"",
+                    ""path"": ""<Keyboard>/3"",
+                    ""interactions"": """",
+                    ""processors"": ""Scale(factor=3)"",
+                    ""groups"": """",
+                    ""action"": ""ItemSelect"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""3ca9b843-f3a2-4024-ab5e-b669f85f7466"",
+                    ""path"": ""<Keyboard>/4"",
+                    ""interactions"": """",
+                    ""processors"": ""Scale(factor=4)"",
+                    ""groups"": """",
+                    ""action"": ""ItemSelect"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -216,6 +329,10 @@ public partial class @InputMap: IInputActionCollection2, IDisposable
         m_Gameplay_ViewDirectionDelta = m_Gameplay.FindAction("ViewDirectionDelta", throwIfNotFound: true);
         m_Gameplay_Jump = m_Gameplay.FindAction("Jump", throwIfNotFound: true);
         m_Gameplay_UseItemPrimaryAction = m_Gameplay.FindAction("UseItemPrimaryAction", throwIfNotFound: true);
+        m_Gameplay_UseItemSecondaryAction = m_Gameplay.FindAction("UseItemSecondaryAction", throwIfNotFound: true);
+        m_Gameplay_PickItem = m_Gameplay.FindAction("PickItem", throwIfNotFound: true);
+        m_Gameplay_DropItem = m_Gameplay.FindAction("DropItem", throwIfNotFound: true);
+        m_Gameplay_ItemSelect = m_Gameplay.FindAction("ItemSelect", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -335,6 +452,10 @@ public partial class @InputMap: IInputActionCollection2, IDisposable
     private readonly InputAction m_Gameplay_ViewDirectionDelta;
     private readonly InputAction m_Gameplay_Jump;
     private readonly InputAction m_Gameplay_UseItemPrimaryAction;
+    private readonly InputAction m_Gameplay_UseItemSecondaryAction;
+    private readonly InputAction m_Gameplay_PickItem;
+    private readonly InputAction m_Gameplay_DropItem;
+    private readonly InputAction m_Gameplay_ItemSelect;
     public struct GameplayActions
     {
         private @InputMap m_Wrapper;
@@ -343,6 +464,10 @@ public partial class @InputMap: IInputActionCollection2, IDisposable
         public InputAction @ViewDirectionDelta => m_Wrapper.m_Gameplay_ViewDirectionDelta;
         public InputAction @Jump => m_Wrapper.m_Gameplay_Jump;
         public InputAction @UseItemPrimaryAction => m_Wrapper.m_Gameplay_UseItemPrimaryAction;
+        public InputAction @UseItemSecondaryAction => m_Wrapper.m_Gameplay_UseItemSecondaryAction;
+        public InputAction @PickItem => m_Wrapper.m_Gameplay_PickItem;
+        public InputAction @DropItem => m_Wrapper.m_Gameplay_DropItem;
+        public InputAction @ItemSelect => m_Wrapper.m_Gameplay_ItemSelect;
         public InputActionMap Get() { return m_Wrapper.m_Gameplay; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -364,6 +489,18 @@ public partial class @InputMap: IInputActionCollection2, IDisposable
             @UseItemPrimaryAction.started += instance.OnUseItemPrimaryAction;
             @UseItemPrimaryAction.performed += instance.OnUseItemPrimaryAction;
             @UseItemPrimaryAction.canceled += instance.OnUseItemPrimaryAction;
+            @UseItemSecondaryAction.started += instance.OnUseItemSecondaryAction;
+            @UseItemSecondaryAction.performed += instance.OnUseItemSecondaryAction;
+            @UseItemSecondaryAction.canceled += instance.OnUseItemSecondaryAction;
+            @PickItem.started += instance.OnPickItem;
+            @PickItem.performed += instance.OnPickItem;
+            @PickItem.canceled += instance.OnPickItem;
+            @DropItem.started += instance.OnDropItem;
+            @DropItem.performed += instance.OnDropItem;
+            @DropItem.canceled += instance.OnDropItem;
+            @ItemSelect.started += instance.OnItemSelect;
+            @ItemSelect.performed += instance.OnItemSelect;
+            @ItemSelect.canceled += instance.OnItemSelect;
         }
 
         private void UnregisterCallbacks(IGameplayActions instance)
@@ -380,6 +517,18 @@ public partial class @InputMap: IInputActionCollection2, IDisposable
             @UseItemPrimaryAction.started -= instance.OnUseItemPrimaryAction;
             @UseItemPrimaryAction.performed -= instance.OnUseItemPrimaryAction;
             @UseItemPrimaryAction.canceled -= instance.OnUseItemPrimaryAction;
+            @UseItemSecondaryAction.started -= instance.OnUseItemSecondaryAction;
+            @UseItemSecondaryAction.performed -= instance.OnUseItemSecondaryAction;
+            @UseItemSecondaryAction.canceled -= instance.OnUseItemSecondaryAction;
+            @PickItem.started -= instance.OnPickItem;
+            @PickItem.performed -= instance.OnPickItem;
+            @PickItem.canceled -= instance.OnPickItem;
+            @DropItem.started -= instance.OnDropItem;
+            @DropItem.performed -= instance.OnDropItem;
+            @DropItem.canceled -= instance.OnDropItem;
+            @ItemSelect.started -= instance.OnItemSelect;
+            @ItemSelect.performed -= instance.OnItemSelect;
+            @ItemSelect.canceled -= instance.OnItemSelect;
         }
 
         public void RemoveCallbacks(IGameplayActions instance)
@@ -408,5 +557,9 @@ public partial class @InputMap: IInputActionCollection2, IDisposable
         void OnViewDirectionDelta(InputAction.CallbackContext context);
         void OnJump(InputAction.CallbackContext context);
         void OnUseItemPrimaryAction(InputAction.CallbackContext context);
+        void OnUseItemSecondaryAction(InputAction.CallbackContext context);
+        void OnPickItem(InputAction.CallbackContext context);
+        void OnDropItem(InputAction.CallbackContext context);
+        void OnItemSelect(InputAction.CallbackContext context);
     }
 }

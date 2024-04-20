@@ -10,4 +10,4 @@ public interface IHurtable
     public float Health { get; }
 
     public void ConsumeDamage(float amount);    // to little info; might be better to recieve sth like DamageInfo
-}
+} 
