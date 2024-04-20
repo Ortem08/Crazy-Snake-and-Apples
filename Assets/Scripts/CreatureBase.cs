@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class CreatureBase : MonoBehaviour
+public abstract class CreatureBase : MonoBehaviour, IHurtable
 {
     public float Health { get; set; }
     public float Damage { get; set; }
@@ -11,6 +11,11 @@ public abstract class CreatureBase : MonoBehaviour
     {
         Health = health;
         Damage = damage;
+    }
+
+    public virtual void TakeDamage(DamageInfo damageInfo)
+    {
+        ConsumeDamage(damageInfo.Amount);
     }
 
     public virtual void ConsumeDamage(float amount)
