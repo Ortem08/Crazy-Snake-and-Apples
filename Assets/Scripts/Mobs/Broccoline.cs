@@ -15,10 +15,13 @@ public class Broccoline : CreatureBase
     private const float ViewDistance = 20f;
     private const float MaxSpeed = 10f;
     private const float Cooldown = 5f;
-    private const float LaunchAngle = 45f; // Угол запуска
-    private const float ProjectileSpeed = 5f; // Скорость снаряда
+    private const float ProjectileSpeed = 5f;
+    private const int ScatterWaves = 3;
+    private const float ScatterCooldown = 0.5f;
     
     private float lastAbilityUse;
+    private int currentWave;
+    private float lastScatterTime;
     private bool isGrounded;
     private bool isRunning;
     
@@ -37,7 +40,15 @@ public class Broccoline : CreatureBase
     {
         if (Time.time - lastAbilityUse > Cooldown && IsPlayerDetected())
         {
-            ScatterBroccoli();
+            if (Time.time - lastScatterTime > ScatterCooldown && currentWave < ScatterWaves)
+            {
+                ScatterBroccoli();
+                if (currentWave == ScatterWaves)
+                {
+                    lastAbilityUse = Time.time;
+                    currentWave = 0;
+                }
+            }
         }
         /*else if (Time.time - lastAbilityUse > Cooldown 
             && Vector3.Distance(transform.position, player.transform.position) < 3f)
@@ -118,19 +129,22 @@ public class Broccoline : CreatureBase
     // ReSharper disable Unity.PerformanceAnalysis
     private void ScatterBroccoli()
     {
-        lastAbilityUse = Time.time;
+        lastScatterTime = Time.time;
+        currentWave++;
         
         foreach (var angle in GetSequence(360, 8))
         {
-            var projectile = Instantiate(broccoliToThrow, transform.position, Quaternion.identity);
+            var sin = Mathf.Sin(angle * Mathf.Deg2Rad);
+            var cos = Mathf.Cos(angle * Mathf.Deg2Rad);
+            var newPosition = new Vector3(transform.position.x + sin, transform.position.y + 1f, transform.position.z + cos);
+            var projectile = Instantiate(broccoliToThrow, newPosition, Quaternion.identity);
+            
             var rb = projectile.GetComponent<Rigidbody>();
-
-            var x = transform.position.x + Mathf.Sin(angle * Mathf.Deg2Rad);
-            var z = transform.position.z + Mathf.Cos(angle * Mathf.Deg2Rad);
-
-            var velocity = new Vector3(x, transform.position.y, z).normalized * ProjectileSpeed
-                           + transform.up * ProjectileSpeed * 2f;
-            Debug.Log(velocity.x);
+            
+            var diff = newPosition - transform.position;
+            var velocity = new Vector3(diff.x, newPosition.y, diff.z).normalized * ProjectileSpeed;
+                           //+ transform.up * ProjectileSpeed;
+            
             rb.AddForce(velocity, ForceMode.Impulse);
         }
     }
