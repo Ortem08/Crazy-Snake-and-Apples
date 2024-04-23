@@ -29,12 +29,11 @@ public class MicroApples : CreatureBase
 
     public override void PerformAttack()
     {
-        Debug.Log("MicroAppleAttacin");
         //player.ConsumeDamage(Damage);
     }
 
     public override void Die()
     {
-        Debug.Log("Microapple DIED");
+        //Debug.Log("Microapple DIED");
     }
 }

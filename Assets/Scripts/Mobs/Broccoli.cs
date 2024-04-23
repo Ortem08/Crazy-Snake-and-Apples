@@ -64,6 +64,6 @@ public class Broccoli : CreatureBase
 
     public override void Die()
     {
-        Debug.Log("Broccoli DIED");
+        //Debug.Log("Broccoli DIED");
     }
 }

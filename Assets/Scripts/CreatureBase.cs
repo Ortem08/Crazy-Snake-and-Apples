@@ -26,7 +26,7 @@ public abstract class CreatureBase : MonoBehaviour
 
     public virtual void Die()
     {
-        Debug.Log("IM DEAD");
+        //Debug.Log("IM DEAD");
         return;
     }
 }
