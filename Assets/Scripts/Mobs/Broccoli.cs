@@ -2,13 +2,19 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using UnityEngine;
+using Random = System.Random;
 
 public class Broccoli : CreatureBase
 {
     private const float BoomRadius = 4;
     private const float InAirHeight = 0.05f;
     private bool wasInAir;
+
+    private float creationTime;
+    private float boomTimer;
+    private SoundController soundController;
     
     public Broccoli() : base(2, 100)
     {
@@ -16,7 +22,10 @@ public class Broccoli : CreatureBase
     
     void Start()
     {
-        
+        var random = new Random();
+        boomTimer = 1.5f + (float)(random.NextDouble() * 1.5);
+        creationTime = Time.time;
+        soundController = GameObject.FindGameObjectWithTag("SoundController").GetComponent<SoundController>();
     }
     
     void Update()
@@ -24,6 +33,12 @@ public class Broccoli : CreatureBase
         if (GetDistanceToGround(gameObject) > InAirHeight)
         {
             wasInAir = true;
+        }
+
+        if (Time.time - creationTime >= boomTimer)
+        {
+            Debug.Log(Time.time - creationTime);
+            PerformAttack();
         }
     }
 
@@ -38,10 +53,13 @@ public class Broccoli : CreatureBase
             .Where(x => x && x != thisCollider && x.CompareTag("Creature"))
             .Select(x => x.gameObject.GetComponent<IHurtable>());
         
+        soundController.PlaySound("BroccoliBoom", transform.position, 0.6f);
+        
         foreach (var creature in creatureEntities)
         {
             creature.ConsumeDamage(Damage);
         }
+        Die();
     }
     
     private float GetDistanceToGround(GameObject obj)
@@ -54,7 +72,7 @@ public class Broccoli : CreatureBase
 
     private void OnCollisionEnter(Collision other)
     {
-        if (wasInAir && !other.gameObject.name.StartsWith("Broccolin"))
+        if (wasInAir && other.gameObject.CompareTag("Player"))
         {
             Debug.Log("boom");
             PerformAttack();

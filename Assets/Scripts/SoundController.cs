@@ -15,7 +15,8 @@ public class SoundController : MonoBehaviour
         
         nameToPath = new Dictionary<string, string>()
         {
-            ["PistolShot"] = "Sounds/PistolShot"
+            ["PistolShot"] = "Sounds/PistolShot",
+            ["BroccoliBoom"] = "Sounds/BroccoliBoom"
         };
     }
 

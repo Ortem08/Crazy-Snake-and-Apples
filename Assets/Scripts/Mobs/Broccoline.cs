@@ -37,7 +37,7 @@ public class Broccoline : CreatureBase
     {
         if (Time.time - lastAbilityUse > Cooldown && IsPlayerDetected())
         {
-            SpeedUp();
+            ScatterBroccoli();
         }
         /*else if (Time.time - lastAbilityUse > Cooldown 
             && Vector3.Distance(transform.position, player.transform.position) < 3f)
@@ -129,7 +129,7 @@ public class Broccoline : CreatureBase
             var z = transform.position.z + Mathf.Cos(angle * Mathf.Deg2Rad);
 
             var velocity = new Vector3(x, transform.position.y, z).normalized * ProjectileSpeed
-                           + transform.up * ProjectileSpeed;
+                           + transform.up * ProjectileSpeed * 2f;
             Debug.Log(velocity.x);
             rb.AddForce(velocity, ForceMode.Impulse);
         }
