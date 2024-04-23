@@ -37,7 +37,7 @@ public class Broccoline : CreatureBase
     {
         if (Time.time - lastAbilityUse > Cooldown && IsPlayerDetected())
         {
-            ThrowBroccoli();
+            ScatterBroccoli();
         }
         /*else if (Time.time - lastAbilityUse > Cooldown 
             && Vector3.Distance(transform.position, player.transform.position) < 3f)
@@ -105,7 +105,7 @@ public class Broccoline : CreatureBase
     private void ThrowBroccoli()
     {
         var playerDirection = player.transform.position - transform.position;
-        playerDirection.y = 0; //неуверен что надо
+        playerDirection.y = 0; //не уверен что надо
         
         var projectile = Instantiate(broccoliToThrow, transform.position, Quaternion.identity);
         var rb = projectile.GetComponent<Rigidbody>();
@@ -113,5 +113,36 @@ public class Broccoline : CreatureBase
         var velocity = playerDirection.normalized * ProjectileSpeed * Mathf.Pow(playerDirection.magnitude, 0.5f) + transform.up * ProjectileSpeed;
         rb.AddForce(velocity, ForceMode.Impulse);
         lastAbilityUse = Time.time;
+    }
+
+    // ReSharper disable Unity.PerformanceAnalysis
+    private void ScatterBroccoli()
+    {
+        lastAbilityUse = Time.time;
+        
+        foreach (var angle in GetSequence(360, 8))
+        {
+            var projectile = Instantiate(broccoliToThrow, transform.position, Quaternion.identity);
+            var rb = projectile.GetComponent<Rigidbody>();
+
+            var x = transform.position.x + Mathf.Sin(angle * Mathf.Deg2Rad);
+            var z = transform.position.z + Mathf.Cos(angle * Mathf.Deg2Rad);
+
+            var velocity = new Vector3(x, transform.position.y, z).normalized * ProjectileSpeed
+                           + transform.up * ProjectileSpeed;
+            Debug.Log(velocity.x);
+            rb.AddForce(velocity, ForceMode.Impulse);
+        }
+    }
+
+    private IEnumerable<int> GetSequence(int total, int count)
+    {
+        var current = 0;
+        var step = total / count;
+        while (current <= total)
+        {
+            yield return current;
+            current += step;
+        }
     }
 }
