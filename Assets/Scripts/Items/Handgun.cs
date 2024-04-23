@@ -20,6 +20,8 @@ public class Handgun : MonoBehaviour, IInventoryItem
 
     private readonly float range = 100;
 
+    private SoundController soundController;
+
     private void Awake()
     {
         colliderForDetection = GetComponent<Collider>();
@@ -27,6 +29,7 @@ public class Handgun : MonoBehaviour, IInventoryItem
 
     private void Start()
     {
+        soundController = GameObject.FindGameObjectWithTag("SoundController").GetComponent<SoundController>();
         lineRenderer = gameObject.GetComponent<LineRenderer>();
 
         // Уменьшите ширину линии для большей реалистичности
@@ -94,6 +97,8 @@ public class Handgun : MonoBehaviour, IInventoryItem
             lineRenderer.SetPosition(1, startPosition + shootDirection * range);
         }
 
+        soundController.PlaySound("PistolShot", startPosition, 0.8f);
+        
         StartCoroutine(ShowLaser());
         return true;
     }

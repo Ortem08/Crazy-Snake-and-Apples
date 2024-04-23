@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Creature
   - Ground
+  - SoundController
   layers:
   - Default
   - TransparentFX
