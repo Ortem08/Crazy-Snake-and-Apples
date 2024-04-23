@@ -7,6 +7,7 @@ using Random = UnityEngine.Random;
 public class AINavigation : MonoBehaviour
 {
     [SerializeField] private float randomPointRadius = 50;
+    [SerializeField] private float stoppingDistance = 1.5f;
     [SerializeField] private Transform player;
     [SerializeField] private float fieldOfViewAngle;
     [SerializeField] private LayerMask obstructionMask;
@@ -16,6 +17,7 @@ public class AINavigation : MonoBehaviour
     private void Start()
     {
         agent = GetComponent<NavMeshAgent>();
+        agent.stoppingDistance = stoppingDistance;
         path = new NavMeshPath();
     }
 
