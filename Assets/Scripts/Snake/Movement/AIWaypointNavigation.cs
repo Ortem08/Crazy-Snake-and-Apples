@@ -4,11 +4,11 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class AINavigation : MonoBehaviour
+public class AIWaypointNavigation : MonoBehaviour
 {
     private NavMeshAgent agent;
     [SerializeField]
-    private List<Transform> wayPoints;
+    private List<Transform> waypoints;
     private int currentWayPointNum;
 
     // Start is called before the first frame update
@@ -27,8 +27,8 @@ public class AINavigation : MonoBehaviour
     void SetNextDestination()
     {
         currentWayPointNum++;
-        if (currentWayPointNum >= wayPoints.Count)
+        if (currentWayPointNum >= waypoints.Count)
             currentWayPointNum = 0;
-        agent.SetDestination(wayPoints[currentWayPointNum].position);
+        agent.SetDestination(waypoints[currentWayPointNum].position);
     }
 }
