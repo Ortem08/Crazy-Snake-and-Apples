@@ -22,7 +22,7 @@ public class Broccoline : CreatureBase
     private bool isGrounded;
     private bool isRunning;
     
-    public Broccoline(float health, float damage) : base(100, 20)
+    public Broccoline() : base(100, 20)
     {
     }
     
@@ -37,7 +37,7 @@ public class Broccoline : CreatureBase
     {
         if (Time.time - lastAbilityUse > Cooldown && IsPlayerDetected())
         {
-            ScatterBroccoli();
+            SpeedUp();
         }
         /*else if (Time.time - lastAbilityUse > Cooldown 
             && Vector3.Distance(transform.position, player.transform.position) < 3f)

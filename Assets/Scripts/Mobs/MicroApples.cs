@@ -6,7 +6,7 @@ using UnityEngine;
 public class MicroApples : CreatureBase
 {
     private GameObject player { get; set; }
-    private const float AttackDistance = 1.1f;
+    private const float AttackDistance = 2f;
 
     public MicroApples() : base(20, 1)
     {
@@ -29,11 +29,7 @@ public class MicroApples : CreatureBase
 
     public override void PerformAttack()
     {
+        Debug.Log("MicroApple Atakin");
         //player.ConsumeDamage(Damage);
-    }
-
-    public override void Die()
-    {
-        //Debug.Log("Microapple DIED");
     }
 }

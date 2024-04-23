@@ -36,7 +36,7 @@ public class Broccoli : CreatureBase
         
         var creatureEntities = collidersArray
             .Where(x => x && x != thisCollider && x.CompareTag("Creature"))
-            .Select(x => x.gameObject.GetComponent<CreatureBase>());
+            .Select(x => x.gameObject.GetComponent<IHurtable>());
         
         foreach (var creature in creatureEntities)
         {
@@ -54,17 +54,11 @@ public class Broccoli : CreatureBase
 
     private void OnCollisionEnter(Collision other)
     {
-        if (wasInAir)
+        if (wasInAir && !other.gameObject.name.StartsWith("Broccolin"))
         {
             Debug.Log("boom");
             PerformAttack();
             Die();
         }
-    }
-
-    public override void Die()
-    {
-        //Destroy(gameObject);
-        //Debug.Log("Broccoli DIED");
     }
 }

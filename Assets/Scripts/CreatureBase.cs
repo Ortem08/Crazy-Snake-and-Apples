@@ -31,7 +31,7 @@ public abstract class CreatureBase : MonoBehaviour, IHurtable
 
     public virtual void Die()
     {
-        //Debug.Log("IM DEAD");
-        return;
+        Debug.Log("IM DEAD");
+        Destroy(gameObject);
     }
 }
