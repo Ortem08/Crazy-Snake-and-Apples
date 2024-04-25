@@ -97,7 +97,7 @@ public class Handgun : MonoBehaviour, IInventoryItem
             lineRenderer.SetPosition(1, startPosition + shootDirection * range);
         }
 
-        soundController.PlaySound("PistolShot", startPosition, 0.8f);
+        soundController.PlaySound("PistolShot", 0.8f, startPosition, inHandAvatar);
         
         StartCoroutine(ShowLaser());
         return true;
