@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,6 +15,8 @@ public class ProjectileTreeNode : IProjectileTreeNode
     private readonly Instantiator instantiator;
 
     private readonly GameObject projectilePrefab;
+
+    public event Action<IProjectileInfo> OnProjectileEvent;
 
     public ProjectileTreeNode(GameObject projectilePrefab, Instantiator instantiator,
         IProjectileTreeNode parent = null)
@@ -41,8 +44,9 @@ public class ProjectileTreeNode : IProjectileTreeNode
             {
                 modifier.TryModify(resultModifiable);
             }
+            resultModifiable.TryGetModificationInterface<ISubscriptable>(out var subscriptable);
+            subscriptable.OnProjectileEvent += OnProjectileEvent;
         }
-        
         return resultGameobject;
     }
 

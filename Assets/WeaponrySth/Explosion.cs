@@ -38,7 +38,7 @@ public class Explosion : MonoBehaviour, IProjectile, IDamaging
     public void Fire(Vector3 origin, Vector3 direction)
     {
         transform.position = origin;
-        Explode(DamageInfo.Amount, lifetimeSeconds:0.05f);
+        Explode(DamageInfo.Amount, lifetimeSeconds:0.14f, postExplosionRadiusRatio:1.5f);
     }
 
     public bool TryGetModificationInterface<T>(out T modifiable) where T : class

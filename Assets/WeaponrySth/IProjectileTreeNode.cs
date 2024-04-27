@@ -2,7 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public interface IProjectileTreeNode
+// why it inherits ISubscriptable? -> to use same interface !
+public interface IProjectileTreeNode : ISubscriptable
 {
     public IProjectileTreeNode Parent { get; }
 

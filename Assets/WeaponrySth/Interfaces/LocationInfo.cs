@@ -6,11 +6,11 @@ public class LocationInfo : ILocationInfo
 {
     public LocationInfo(Vector3 posion, Vector3 direction)
     {
-        Posion = posion;
+        Position = posion;
         Direction = direction;
     }
 
-    public Vector3 Posion { get; set; }
+    public Vector3 Position { get; set; }
 
     public Vector3 Direction { get; set; }
 }
