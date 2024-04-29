@@ -10,7 +10,9 @@ public class ProjectileTreeNode : IProjectileTreeNode
 
     public IEnumerable<IProjectileTreeNode> Children { get; } = new List<IProjectileTreeNode>();
 
-    public IEnumerable<IModifier> Modifiers { get; } = new List<IModifier>();
+    public IEnumerable<IModifier> Modifiers => _modifiers;
+
+    private List<IModifier> _modifiers = new List<IModifier>();
 
     private readonly Instantiator instantiator;
 
@@ -28,9 +30,10 @@ public class ProjectileTreeNode : IProjectileTreeNode
 
     public void AddModifiers(IEnumerable<IModifier> modifiers)
     {
+        
         foreach (var mod in modifiers)
         {
-            Modifiers.Append(mod);
+            _modifiers.Add(mod);
         }
     }
 
@@ -40,7 +43,7 @@ public class ProjectileTreeNode : IProjectileTreeNode
         if (resultGameobject.TryGetComponent<IModifiable>(out var resultModifiable))
         {
             // this part might be changed if we want modifiers to "modify" modifiers
-            foreach (var modifier in Modifiers)
+            foreach (var modifier in _modifiers)
             {
                 modifier.TryModify(resultModifiable);
             }

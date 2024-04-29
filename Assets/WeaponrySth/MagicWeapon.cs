@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEditor.Build;
 using UnityEngine;
 
@@ -80,45 +81,76 @@ public class MagicWeapon : MonoBehaviour, IInventoryItem
 
     private IProjectileTreeNode AssembleSpellTree()
     {
-        ProjectileTreeNode currentNode = null;
+        ProjectileTreeNode parentNode = null;
         ProjectileTreeNode root = null;
         foreach (var spell in Spells)
         {
-            ProjectileTreeNode nextNode = null;
-            if (spell.ToLower() == "gunshot")
-            {
-                nextNode = new ProjectileTreeNode(GunShotPrefab, Instantiator, currentNode);
-            }
-            else if (spell.ToLower() == "explosion")
-            {
-                nextNode = new ProjectileTreeNode(ExplosionPrefab, Instantiator, currentNode);
-            }
-            
-            if (nextNode == null)
-            {
-                throw new System.Exception($"Could not find {spell}");
-            }
+            var projectilePrefab = GetProjectilePrefab(spell);
 
-            if (currentNode != null)
+            if (projectilePrefab != null)
             {
-                currentNode.OnProjectileEvent += (info) =>
+                var nextNode = new ProjectileTreeNode(projectilePrefab, Instantiator, parentNode);
+                if (parentNode != null)
                 {
-                    if (info.TryGetProjectileInfo<ILocationInfo>(out var locationInfo))
+                    parentNode.OnProjectileEvent += (info) =>
                     {
-                        var instance = nextNode.InstantiateProjectile();
-                        var projectile = instance.GetComponent<IProjectile>();
-                        projectile.Fire(locationInfo.Position, locationInfo.Direction);
-                    }
-                };
-            }
-            currentNode = nextNode;
+                        if (info.TryGetProjectileInfo<ILocationInfo>(out var locationInfo))
+                        {
+                            var instance = nextNode.InstantiateProjectile();
+                            var projectile = instance.GetComponent<IProjectile>();
+                            projectile.Fire(locationInfo.Position, locationInfo.Direction);
+                        }
+                    };
+                }
 
-            if (root == null)
-            {
-                root = currentNode;
+                parentNode = nextNode;
+
+                if (root == null)
+                {
+                    root = parentNode;
+                }
+
+                continue;
             }
+
+            var modifier = GetModifier(spell);
+            if (modifier != null)
+            {
+                parentNode.AddModifiers(new[] {modifier});      //kinda bad
+                continue;
+            }
+
+            throw new System.Exception($"spell {spell} not found");
         }
         return root;
+    }
+
+    public GameObject GetProjectilePrefab(string spell)
+    {
+        if (spell.ToLower() == "gunshot")
+        {
+            return GunShotPrefab;
+        }
+        else if (spell.ToLower() == "explosion")
+        {
+            return ExplosionPrefab;
+        }
+
+        return null;
+    }
+
+    public IModifier GetModifier(string spell)
+    {
+        if (spell.ToLower() == "piercing")
+        {
+            return new PiercingModifier();
+        }
+        if (spell.ToLower() == "damageincrease")
+        {
+            return new ConstantDamageIncreaseModifier();
+        }
+
+        return null;
     }
 
     public bool TryUseSecondaryAction()
