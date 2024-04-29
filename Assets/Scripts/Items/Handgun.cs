@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Handgun : MonoBehaviour, IInventoryItem
@@ -22,6 +23,16 @@ public class Handgun : MonoBehaviour, IInventoryItem
 
     private SoundController soundController;
 
+    private Animator animator;
+
+    private ParticleSystem particleSystem;
+
+    private Vector3 effectPosition;
+
+
+    private float cooldown = 1f / 3f;
+    private float lastShotTime;
+
     private void Awake()
     {
         colliderForDetection = GetComponent<Collider>();
@@ -29,6 +40,11 @@ public class Handgun : MonoBehaviour, IInventoryItem
 
     private void Start()
     {
+        particleSystem = GetComponentInChildren<ParticleSystem>();
+        particleSystem.playbackSpeed = 3f;
+
+        Debug.Log(particleSystem);
+        animator = GetComponent<Animator>();
         soundController = GameObject.FindGameObjectWithTag("SoundController").GetComponent<SoundController>();
         lineRenderer = gameObject.GetComponent<LineRenderer>();
 
@@ -62,22 +78,29 @@ public class Handgun : MonoBehaviour, IInventoryItem
         colliderForDetection.enabled = false;
         this.user = user;
         onSceneAvatar.SetActive(false);
-        transform.parent = user.HandTransform;
-        transform.localPosition = Vector3.zero;
-        transform.localEulerAngles = new Vector3(0, 90, 0);
+        transform.parent = user.CameraTransform;
+        transform.localPosition = Vector3.zero + new Vector3(0.2f, -0.2f, 1f);
+        transform.localEulerAngles = new Vector3(270, 270, 90);
     }
 
     public bool TryUsePrimaryAction()
     {
-        Debug.Log("nieeeeaaayy!!!");
+        if (Time.time - lastShotTime < cooldown)
+            return false;
+
+        if (!animator.GetBool("canShoot"))
+            return false;
+
+        effectPosition = particleSystem.transform.position;
+        particleSystem.Play();
+        FixPosition();
+
+        lastShotTime = Time.time;
+        animator.SetTrigger("IsShooting");
+
         RaycastHit hit;
-        Vector3 shootDirection = user.CameraTransform.forward;
-        // ƒобавьте небольшое смещение к startPosition, чтобы избежать перекрыти€ с камерой
-        Vector3 startPosition = user.CameraTransform.position + shootDirection * 0.1f;
-
-        //Debug.DrawLine(startPosition, startPosition + shootDirection * range, Color.red, 2.0f);
-
-        Debug.Log(Physics.Raycast(startPosition, shootDirection, out hit, range));
+        var shootDirection = user.CameraTransform.forward;
+        var startPosition = user.CameraTransform.position + shootDirection * 0.1f;
 
         if (Physics.Raycast(startPosition, shootDirection, out hit, range))
         {
@@ -97,10 +120,38 @@ public class Handgun : MonoBehaviour, IInventoryItem
             lineRenderer.SetPosition(1, startPosition + shootDirection * range);
         }
 
-        soundController.PlaySound("PistolShot", startPosition, 0.8f);
-        
+        soundController.PlaySound("PistolShot", startPosition + user.CameraTransform.forward, 0.8f);
+
+        //animator.SetBool("IsShooting", true);
+        //animator.SetBool("IsShooting", false);
+        //animator.SetTrigger("IsShooting");
+
+        //StartShooting();
+
         StartCoroutine(ShowLaser());
         return true;
+    }
+
+
+    private IEnumerator FixPosition()
+    {
+        while (particleSystem.isPlaying)
+        {
+            transform.position = effectPosition; // ”держиваем позицию во врем€ проигрывани€ частиц
+            yield return null;
+        }
+    }
+
+    private void StartShooting()
+    {
+        animator.SetBool("IsShooting", true);
+        //StopShooting()
+        Invoke("StopShooting", 0.02f);
+    }
+
+    private void StopShooting()
+    {
+        animator.SetBool("IsShooting", false);
     }
 
     private IEnumerator ShowLaser()

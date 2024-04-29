@@ -35,11 +35,9 @@ public class Pistol : Weapon
 
         //Debug.DrawLine(startPosition, startPosition + shootDirection * range, Color.red, 2.0f);
 
-        Debug.Log(Physics.Raycast(startPosition, shootDirection, out hit, range));
 
         if (Physics.Raycast(startPosition, shootDirection, out hit, range))
         {
-            Debug.Log(hit.rigidbody);
             if (hit.collider.gameObject.CompareTag("Creature"))
             {
                 hit.collider.gameObject.GetComponent<Creature>().TakeDamage(damage);
@@ -52,6 +50,10 @@ public class Pistol : Weapon
             lineRenderer.SetPosition(0, startPosition);
             lineRenderer.SetPosition(1, startPosition + shootDirection * range);
         }
+
+        //effects.CameraShake();
+        effects = new PistolEffects();
+        effects.ApplyRecoil();
 
         StartCoroutine(ShowLaser());
     }
