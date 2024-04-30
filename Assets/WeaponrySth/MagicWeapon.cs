@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEditor.Build;
+using UnityEditor.ShaderKeywordFilter;
 using UnityEngine;
 
 public class MagicWeapon : MonoBehaviour, IInventoryItem
@@ -94,11 +95,22 @@ public class MagicWeapon : MonoBehaviour, IInventoryItem
                 {
                     parentNode.OnProjectileEvent += (info) =>
                     {
-                        if (info.TryGetProjectileInfo<ILocationInfo>(out var locationInfo))
+                        if (info.TryGetProjectileInfo<IHitSomethingInfo>(out var hitSomethingInfo))
                         {
                             var instance = nextNode.InstantiateProjectile();
                             var projectile = instance.GetComponent<IProjectile>();
-                            projectile.Fire(locationInfo.Position, locationInfo.Direction);
+
+                            var d = hitSomethingInfo.ProjectileDirection.normalized;
+                            var n = hitSomethingInfo.SurfaceNormal.normalized;
+
+                            var reflectionDirection = d - 2 * Vector3.Dot(d, n) * n;    // applied algebra
+                            projectile.Fire(hitSomethingInfo.Position, reflectionDirection.normalized);
+                        }
+                        else if (info.TryGetProjectileInfo<IExpirationInfo>(out var expirationInfo))
+                        {
+                            var instance = nextNode.InstantiateProjectile();
+                            var projectile = instance.GetComponent<IProjectile>();
+                            projectile.Fire(expirationInfo.Position, expirationInfo.ProjectileDirection);
                         }
                     };
                 }

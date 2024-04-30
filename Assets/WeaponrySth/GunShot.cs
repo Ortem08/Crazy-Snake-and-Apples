@@ -37,10 +37,6 @@ public class GunShot : MonoBehaviour, IProjectile, IDamaging, IPierceable
 
     public void Fire(Vector3 origin, Vector3 direction)
     {
-        //FireNotPiercing(origin, direction);
-
-        //FirePiercing(origin, direction);
-
         if (used)
         {
             throw new Exception("wtf maaan! its disposable");
@@ -49,6 +45,7 @@ public class GunShot : MonoBehaviour, IProjectile, IDamaging, IPierceable
 
         var rangeLimit = range;
         var expirationPos = origin + direction.normalized * range;
+        var expirationInfos = new List<object>();
 
         if (CanPierce)
         {
@@ -57,27 +54,53 @@ public class GunShot : MonoBehaviour, IProjectile, IDamaging, IPierceable
                 rangeLimit = hitOnHardSurface.distance;
                 expirationPos = hitOnHardSurface.point;
                 AttemptHurting(hitOnHardSurface.collider.gameObject);
+                expirationInfos.Add(
+                        new HitSomethingInfo(hitOnHardSurface.collider.gameObject,
+                            hitOnHardSurface.point,
+                            direction.normalized,
+                            hitOnHardSurface.normal)
+                        );
             }
 
             Physics.RaycastAll(
                     origin, direction.normalized, rangeLimit, LayersStorage.Pierceable
                 ).Select(hit => AttemptHurting(hit.collider.gameObject))
                 .ToList();
+
+            foreach (var hitSoft in Physics.RaycastAll(
+                    origin, direction.normalized, rangeLimit, LayersStorage.Pierceable))
+            {
+                AttemptHurting(hitSoft.collider.gameObject);
+                OnProjectileEvent?.Invoke(new CompositionBasedProjectileInfo(new[]
+                {
+                    new HitSomethingInfo(hitSoft.collider.gameObject,
+                        hitSoft.point, direction.normalized, hitSoft.normal)
+                }));
+            }
         }
         else
         {
             if (Physics.Raycast(origin, direction.normalized, out var firstHit, rangeLimit))
             {
                 AttemptHurting(firstHit.collider.gameObject);
+                expirationInfos.Add(
+                        new HitSomethingInfo(firstHit.collider.gameObject,
+                            firstHit.point,
+                            direction.normalized,
+                            firstHit.normal)
+                        );
                 expirationPos = firstHit.point;
             }
-
         }
 
         lineRenderer.SetPosition(0, origin);
         lineRenderer.SetPosition(1, expirationPos);
 
-        StartCoroutine(ShowLaserAndExpire(expirationPos, direction));
+        expirationInfos.Add(new ExpirationInfo(expirationPos, direction.normalized));
+
+        StartCoroutine(ShowLaserAndExpire(
+                new CompositionBasedProjectileInfo(expirationInfos)
+            ));
     }
 
     private bool AttemptHurting(GameObject gameObject)
@@ -90,79 +113,14 @@ public class GunShot : MonoBehaviour, IProjectile, IDamaging, IPierceable
         return false;
     }
 
-    private void FirePiercing(Vector3 origin, Vector3 direction)
-    {
-
-        var rangeLimit = range;
-        var expirationPos = origin + direction.normalized * range;
-        if (Physics.Raycast(origin, direction.normalized, out var hit, rangeLimit, LayersStorage.NotPierceableObstacles))
-        {
-            rangeLimit = hit.distance;
-            expirationPos = hit.point;
-        }
-
-        foreach (var hitInfo in Physics.RaycastAll(
-            origin, direction.normalized, rangeLimit, LayersStorage.Pierceable))
-        {
-            if (hitInfo.collider.gameObject.TryGetComponent<IHurtable>(out var hurtable))
-            {
-                hurtable.TakeDamage(DamageInfo);
-            }
-        }
-
-        lineRenderer.SetPosition(0, origin);
-        lineRenderer.SetPosition(1, expirationPos);
-
-        StartCoroutine(ShowLaserAndExpire(expirationPos, direction));
-    }
-
-    private void FireNotPiercing(Vector3 origin, Vector3 direction)
-    {
-        RaycastHit hit;
-        Vector3 shootDirection = direction.normalized;
-        Vector3 startPosition = origin;
-
-        var expirationPos = startPosition + shootDirection * range;
-
-        if (Physics.Raycast(startPosition, shootDirection, out hit, range))
-        {
-            //Debug.Log(hit.rigidbody);
-
-            if (hit.collider.gameObject.TryGetComponent<IHurtable>(out var hurtable))
-            {
-                hurtable.TakeDamage(DamageInfo);
-
-            }
-
-            expirationPos = hit.point;
-
-            lineRenderer.SetPosition(0, startPosition);     // why ???
-            lineRenderer.SetPosition(1, hit.point);
-        }
-        else
-        {
-            // why different?
-            lineRenderer.SetPosition(0, startPosition);
-            lineRenderer.SetPosition(1, startPosition + shootDirection * range);
-        }
-
-        StartCoroutine(ShowLaserAndExpire(expirationPos, direction));
-    }
-
-    private IEnumerator ShowLaserAndExpire(Vector3 expirationPos, Vector3 direction)
+    private IEnumerator ShowLaserAndExpire(IProjectileInfo projectileInfo)
     {
         lineRenderer.enabled = true;
         yield return new WaitForSeconds(0.1f); // ”меньшенное врем€ видимости дл€ имитации вспышки
+        OnProjectileEvent?.Invoke(projectileInfo);
+        yield return new WaitForSeconds(0.1f);
         lineRenderer.enabled = false;
-
-        OnProjectileEvent?.Invoke(
-                new CompositionBasedProjectileInfo(new object[] { 
-                    new LocationInfo(
-                            expirationPos,
-                            direction
-                        ),
-                })
-            );
+        
         Destroy(gameObject);
     }
 

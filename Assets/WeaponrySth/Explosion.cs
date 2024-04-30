@@ -83,7 +83,7 @@ public class Explosion : MonoBehaviour, IProjectile, IDamaging
         OnProjectileEvent?.Invoke(
                 new CompositionBasedProjectileInfo(new object[]
                 {
-                    new LocationInfo(transform.position, UnityEngine.Random.onUnitSphere)
+                    new ExpirationInfo(transform.position, UnityEngine.Random.onUnitSphere)
                 })
             );
         Destroy(gameObject);
