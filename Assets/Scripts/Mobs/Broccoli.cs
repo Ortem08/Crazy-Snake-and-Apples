@@ -10,8 +10,9 @@ public class Broccoli : CreatureBase
 {
     private const float BoomRadius = 4;
     private const float InAirHeight = 0.05f;
+    
     private bool wasInAir;
-
+    private bool startBooming;
     private float creationTime;
     private float boomTimer;
     private SoundController soundController;
@@ -35,9 +36,9 @@ public class Broccoli : CreatureBase
             wasInAir = true;
         }
 
-        if (Time.time - creationTime >= boomTimer)
+        if (Time.time - creationTime >= boomTimer && !startBooming)
         {
-            Debug.Log(Time.time - creationTime);
+            startBooming = true;
             PerformAttack();
         }
     }
@@ -53,7 +54,7 @@ public class Broccoli : CreatureBase
             .Where(x => x && x != thisCollider && x.CompareTag("Creature"))
             .Select(x => x.gameObject.GetComponent<IHurtable>());
         
-        soundController.PlaySound("BroccoliBoom", transform.position, 0.6f);
+        soundController.PlaySound("BroccoliBoom", 0.6f, transform.position);
         
         foreach (var creature in creatureEntities)
         {

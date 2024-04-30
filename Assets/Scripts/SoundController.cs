@@ -7,6 +7,8 @@ using Random = System.Random;
 
 public class SoundController : MonoBehaviour
 {
+    public GameObject SoundObject;
+    
     private AudioMixer mixer;
     
     private static Dictionary<string, string> nameToPath;
@@ -20,13 +22,23 @@ public class SoundController : MonoBehaviour
         };
     }
 
-    public void PlaySound(string soundType, Vector3 position, float volume)
+    public void PlaySound(string soundType, float volume, Vector3 position, GameObject parent=null)
     {
         var filesCount = Directory.GetFiles($"Assets/Resources/{nameToPath[soundType]}").Length / 2;
         var random = new Random();
-        
-        var soundObject = new GameObject(soundType);
-        soundObject.transform.position = position;
+
+        GameObject soundObject;
+        if (parent != null)
+        {
+            soundObject = Instantiate(SoundObject, parent!.transform, true);
+            soundObject.transform.position = parent!.transform.position;
+            soundObject.transform.rotation = parent.transform.rotation;
+        }
+        else
+        {
+            soundObject = Instantiate(SoundObject, position, Quaternion.identity);
+        }
+        soundObject.name = soundType;
 
         var audioSource = soundObject.AddComponent<AudioSource>();
         var path = $"{nameToPath[soundType]}/{soundType}_{random.Next(1, filesCount)}";
