@@ -9,4 +9,6 @@ public interface IUser
     public Transform CameraTransform { get; }
 
     public Transform SelfTransform { get; }
+
+    public Vector3 Velocity { get; }
 }

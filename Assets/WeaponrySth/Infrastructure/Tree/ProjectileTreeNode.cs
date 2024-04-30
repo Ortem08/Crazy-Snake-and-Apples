@@ -48,6 +48,7 @@ public class ProjectileTreeNode : IProjectileTreeNode
                 modifier.TryModify(resultModifiable);
             }
             resultModifiable.TryGetModificationInterface<ISubscriptable>(out var subscriptable);
+            //Debug.Log(subscriptable);
             subscriptable.OnProjectileEvent += OnProjectileEvent;
         }
         return resultGameobject;

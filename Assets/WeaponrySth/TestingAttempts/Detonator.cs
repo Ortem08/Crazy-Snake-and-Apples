@@ -9,9 +9,7 @@ public class Detonator : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        var exp = Instantiate(explosionPrefab);
-        exp.transform.position = transform.position;
-        exp.GetComponent<Explosion>().Explode(1, 2, 0.2f, 3);
-        Destroy(gameObject);
+        //var exp = Instantiate(explosionPrefab);
+        
     }
 }

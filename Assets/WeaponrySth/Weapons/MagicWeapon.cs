@@ -19,6 +19,8 @@ public class MagicWeapon : MonoBehaviour, IInventoryItem
 
     public GameObject ExplosionPrefab;
 
+    public GameObject GrenadePrefab;
+
     public Instantiator Instantiator;     // this one needed to create instances of spells
 
     public void Awake()
@@ -71,7 +73,7 @@ public class MagicWeapon : MonoBehaviour, IInventoryItem
         {
             Vector3 shootDirection = user.CameraTransform.forward;
             Vector3 startPosition = user.CameraTransform.position + shootDirection * 0.1f;
-            projectile.Fire(startPosition, shootDirection);
+            projectile.Fire(startPosition, shootDirection, user.Velocity);
         }
         else
         {
@@ -146,6 +148,10 @@ public class MagicWeapon : MonoBehaviour, IInventoryItem
         else if (spell.ToLower() == "explosion")
         {
             return ExplosionPrefab;
+        }
+        else if (spell.ToLower() == "grenade")
+        {
+            return GrenadePrefab;
         }
 
         return null;

@@ -35,7 +35,7 @@ public class GunShot : MonoBehaviour, IProjectile, IDamaging, IPierceable
         lineRenderer.material.color = Color.yellow;
     }
 
-    public void Fire(Vector3 origin, Vector3 direction)
+    public void Fire(Vector3 origin, Vector3 direction, Vector3 baseVelocity = default)
     {
         if (used)
         {
