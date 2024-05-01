@@ -1,18 +1,25 @@
 ﻿
 using System;
 using System.Collections.Generic;
+using System.Net.Mime;
 using JetBrains.Annotations;
 using static UnityEditor.Progress;
+using UnityEditor.UI;
 
 public class Inventory
 {
     public List<IInventoryItem> Items { get; }
+    // public List<Image> Items { get; }
 
     public int Capacity { get; }
 
     [CanBeNull] public IInventoryItem SelectedItem { 
-        get => Items[SelectedIndex]; 
-        set { Items[_selectedIndex] = value; } // might be better to check if no item already here
+        get => Items[SelectedIndex];
+        set
+        {
+            Items[_selectedIndex] = value;
+            SetItemUI(); 
+        } // might be better to check if no item already here
     }
 
     private int _selectedIndex = 0;
@@ -68,5 +75,14 @@ public class Inventory
         SelectedItem = null;
 
         return true;
+    }
+
+    private void SetItemUI()
+    {
+    }
+    
+    private void UnsetItemUI()
+    {
+        
     }
 }

@@ -5,12 +5,13 @@ using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Events;
 
 public class PlayerComponent : MonoBehaviour, IHurtable, IUser
 {
-    private Image healthBarImage;
-    private TextMeshProUGUI healthProgress;
-    private string healthProgressFormat = "{0} / {1}";
+    public UnityEvent<float, float> OnHealthDecrease { get; } = new();
+    public UnityEvent<float, float> OnHealthIncrease { get; } = new();
+
     
     [SerializeField]
     private float ItemPickUpRadius = 3;
@@ -31,10 +32,12 @@ public class PlayerComponent : MonoBehaviour, IHurtable, IUser
 
     [SerializeField]
     private float health = 100;
+    
+    [SerializeField]
+    private float maxHealth = 100f;
 
-    public GameObject HealthBarObject;
     public float Health => health;
-    public float MaxHealth = 100f;
+    public float MaxHealth => maxHealth;
 
     public void ConsumeDamage(float amount)
     {
@@ -51,7 +54,7 @@ public class PlayerComponent : MonoBehaviour, IHurtable, IUser
         }
         else
         {
-            ChangeHealthUI();
+            OnHealthDecrease.Invoke(health, MaxHealth);
         }
     }
 
@@ -66,10 +69,6 @@ public class PlayerComponent : MonoBehaviour, IHurtable, IUser
         SingletonInputManager.instance.InputMap.Gameplay.UseItemSecondaryAction.performed += UseItemSecondaryAction_performed;
 
         SingletonInputManager.instance.InputMap.Gameplay.ItemSelect.performed += ItemSelect_performed;
-        
-        healthBarImage = HealthBarObject.GetComponent<Image>();
-        healthProgress = HealthBarObject.GetComponentInChildren<TextMeshProUGUI>();
-        ChangeHealthUI();
     }
 
     private void ItemSelect_performed(UnityEngine.InputSystem.InputAction.CallbackContext obj)
@@ -121,12 +120,6 @@ public class PlayerComponent : MonoBehaviour, IHurtable, IUser
             }
         }
         return false;
-    }
-
-    private void ChangeHealthUI()
-    {
-        healthBarImage.fillAmount = Health / MaxHealth;
-        healthProgress.text = string.Format(healthProgressFormat, Health, MaxHealth);
     }
 
     private bool TryDropItem()

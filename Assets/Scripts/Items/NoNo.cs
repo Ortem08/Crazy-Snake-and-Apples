@@ -20,6 +20,8 @@ public class NoNo : MonoBehaviour, IInventoryItem
         colliderForDetection = GetComponent<Collider>();
     }
 
+    public GameObject GetItemAvatarSkin() => itemAvatarSkin;
+    
     public void DropOut()
     {
         transform.parent = null;

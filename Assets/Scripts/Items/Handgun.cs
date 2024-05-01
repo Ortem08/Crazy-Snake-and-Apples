@@ -40,6 +40,8 @@ public class Handgun : MonoBehaviour, IInventoryItem
         lineRenderer.material.color = Color.red;
     }
 
+    public GameObject GetItemAvatarSkin() => onSceneAvatar;
+    
     public void DropOut()
     {
         transform.parent = null;
