@@ -94,7 +94,7 @@ public class Explosion : MonoBehaviour, IProjectile, IDamaging
             if (collision.gameObject.TryGetComponent<IHurtable>(out var hurtable))
             {
                 hurtable.TakeDamage(DamageInfo);
-                Debug.Log(hurtable.ToString());
+                //Debug.Log(hurtable.ToString());
             }
 
             var deltaDirection = (collision.gameObject.transform.position - transform.position).normalized;

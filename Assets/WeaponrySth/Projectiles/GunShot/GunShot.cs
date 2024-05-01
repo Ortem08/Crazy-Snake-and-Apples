@@ -80,7 +80,7 @@ public class GunShot : MonoBehaviour, IProjectile, IDamaging, IPierceable
         }
         else
         {
-            if (Physics.Raycast(origin, direction.normalized, out var firstHit, rangeLimit))
+            if (Physics.Raycast(origin, direction.normalized, out var firstHit, rangeLimit, LayersStorage.Pierceable | LayersStorage.NotPierceableObstacles))
             {
                 AttemptHurting(firstHit.collider.gameObject);
                 expirationInfos.Add(

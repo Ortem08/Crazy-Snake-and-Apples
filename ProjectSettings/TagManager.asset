@@ -17,16 +17,16 @@ TagManager:
   - 
   - 
   - 
-  - PierceableHurtables
-  - PhysicalProjectiles
   - 
   - 
   - 
+  - MobSoft
+  - MobHard
   - 
   - 
-  - 
-  - 
-  - 
+  - ProjectileSoft
+  - ProjectileHard
+  - ProjectileDetector
   - 
   - 
   - 

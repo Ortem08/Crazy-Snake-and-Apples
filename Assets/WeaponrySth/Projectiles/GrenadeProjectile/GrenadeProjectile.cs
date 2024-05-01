@@ -3,28 +3,36 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GrenadeProjectile : MonoBehaviour, IProjectile, IHurtable
+public class GrenadeProjectile : MonoBehaviour, IProjectile, IHurtable, IBouncing
 {
     public event Action<IProjectileInfo> OnProjectileEvent;
 
     private Rigidbody rb;
 
-    private Collider collider;
+    private Collider myCollider;
 
-    private bool activated = false;
+    private bool exploded = false;
 
     public float Speed { get; set; } = 20f;
 
     private float explosionDamage = 40;
 
     public float Health { get; set; } = 1;
+    
 
-    public GameObject ExplosionPrefab;
+    public GameObject ExplosionPrefab;      // set in inspector
+
+    public Detector Detector;       // set in inspector
 
     private void Awake()
     {
         rb = GetComponent<Rigidbody>();
-        collider = rb.GetComponent<Collider>();
+        myCollider = rb.GetComponent<Collider>();
+    }
+
+    private void Start()
+    {
+        Detector.TriggerEnterEvent += OnDetectorTriggerEnterEvent;
     }
 
     public void Fire(Vector3 origin, Vector3 direction, Vector3 baseVelocity = default)
@@ -32,9 +40,10 @@ public class GrenadeProjectile : MonoBehaviour, IProjectile, IHurtable
         transform.position = origin;
         transform.forward = direction.normalized;
 
+        EnsureBouncy();
+
         rb.velocity = direction.normalized * Speed + baseVelocity;
         rb.AddTorque(UnityEngine.Random.insideUnitSphere * 10);
-        activated = true;
     }
 
     public bool TryGetModificationInterface<T>(out T modifiable) where T : class
@@ -47,20 +56,41 @@ public class GrenadeProjectile : MonoBehaviour, IProjectile, IHurtable
         return false;
     }
 
-    private void OnCollisionEnter(Collision collision)
-    {
-        if (!activated) return;
+    private int bounceLevel = 0;
 
-        if (collision.gameObject.TryGetComponent<PlayerComponent>(out _))
+    public int BounceLevel { 
+        get => bounceLevel;
+        set
         {
-            return;
+            bounceLevel = Math.Max(0, Math.Min(1, value));
+            if (bounceLevel == 0)
+            {
+                myCollider.material.bounciness = 0.2f;
+                myCollider.material.dynamicFriction = 0.5f;
+                myCollider.material.staticFriction = 0.5f;
+            }
+            else if (bounceLevel == 1)
+            {
+                myCollider.material.bounciness = 1;
+                myCollider.material.dynamicFriction = 0;
+                myCollider.material.staticFriction = 0;
+            }
         }
+    }
 
-        Explode();
+    private void EnsureBouncy()
+    {
+        // this thing has side effects
+        BounceLevel = BounceLevel;
     }
 
     private void Explode()
     {
+        if (exploded)
+        {
+            return;
+        }
+        exploded = true;
         //Debug.Log("explode");
         if (!Instantiate(ExplosionPrefab).TryGetComponent<Explosion>(out var explosion))
         {
@@ -88,19 +118,25 @@ public class GrenadeProjectile : MonoBehaviour, IProjectile, IHurtable
 
         //Health -= damageInfo.Amount;
 
-        collider.enabled = false;
+        myCollider.enabled = false;
         Explode();
     }
-
-    private void Update()
+    
+    // used in detector
+    private void OnDetectorTriggerEnterEvent(Collider other)
     {
-        if (!activated) return;
-        if (Physics.Raycast(transform.position, rb.velocity.normalized, 
-            out var hitInfo, rb.velocity.magnitude * Time.deltaTime * 2, LayersStorage.Pierceable)
-            )//&& !hitInfo.collider.gameObject.TryGetComponent<PlayerComponent>(out _))
+        if (other.gameObject == gameObject
+            || other.gameObject.TryGetComponent<PlayerComponent>(out _)) { return; }
+        //Debug.Log(other.gameObject);
+
+        //Debug.Log(other.gameObject.layer);
+        if (BounceLevel > 0 && (LayersStorage.NotHurtableHard & (1 << other.gameObject.layer)) != 0)
         {
-            Explode();
+            return;
         }
+        
+        Detector.enabled = false;
+        Explode();
     }
 
     public void ConsumeDamage(float amount)

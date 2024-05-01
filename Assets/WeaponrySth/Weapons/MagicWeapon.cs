@@ -167,6 +167,10 @@ public class MagicWeapon : MonoBehaviour, IInventoryItem
         {
             return new ConstantDamageIncreaseModifier();
         }
+        if (spell.ToLower() == "bouncyincrease")
+        {
+            return new BouncyModifier();
+        }
 
         return null;
     }

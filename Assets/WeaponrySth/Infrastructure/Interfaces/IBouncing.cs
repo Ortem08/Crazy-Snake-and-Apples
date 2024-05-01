@@ -4,5 +4,8 @@ using UnityEngine;
 
 public interface IBouncing
 {
-    public int MaxBounceCount { get; set; }
+    /// <summary>
+    /// increase or decrease this
+    /// </summary>
+    public int BounceLevel { get; set; }    
 }
