@@ -36,7 +36,7 @@ public class Dummy : MonoBehaviour, IHurtable
             child.transform.parent = null;
             child.GetComponent<Collider>().enabled = true;
             child.AddComponent<Rigidbody>()
-                .AddExplosionForce(15, transform.position + UnityEngine.Random.insideUnitSphere, 3);
+                .AddExplosionForce(45, transform.position, 3, -1);
         }
         //StartCoroutine(StopTime());
         Destroy(gameObject);

@@ -24,6 +24,8 @@ public class GunShot : MonoBehaviour, IProjectile, IDamaging, IPierceable
 
     private bool used = false;
 
+    private Vector3? overridenVisibleRayBegin;
+
     private void Awake()
     {
         lineRenderer = gameObject.GetComponent<LineRenderer>();
@@ -93,7 +95,15 @@ public class GunShot : MonoBehaviour, IProjectile, IDamaging, IPierceable
             }
         }
 
-        lineRenderer.SetPosition(0, origin);
+        if (overridenVisibleRayBegin == null)
+        {
+            lineRenderer.SetPosition(0, origin);
+        }
+        else
+        {
+            lineRenderer.SetPosition(0, (Vector3)overridenVisibleRayBegin);
+        }
+        
         lineRenderer.SetPosition(1, expirationPos);
 
         expirationInfos.Add(new ExpirationInfo(expirationPos, direction.normalized));
@@ -101,6 +111,15 @@ public class GunShot : MonoBehaviour, IProjectile, IDamaging, IPierceable
         StartCoroutine(ShowLaserAndExpire(
                 new CompositionBasedProjectileInfo(expirationInfos)
             ));
+    }
+
+    /// <summary>
+    /// does not change actual ray tracing, only visible trace
+    /// </summary>
+    /// <param name="point"></param>
+    public void SetVisibleRayBeginning(Vector3 point)
+    {
+        overridenVisibleRayBegin = point;
     }
 
     private bool AttemptHurting(GameObject gameObject)
@@ -116,9 +135,9 @@ public class GunShot : MonoBehaviour, IProjectile, IDamaging, IPierceable
     private IEnumerator ShowLaserAndExpire(IProjectileInfo projectileInfo)
     {
         lineRenderer.enabled = true;
-        yield return new WaitForSeconds(0.1f); // ”меньшенное врем€ видимости дл€ имитации вспышки
+        yield return new WaitForSeconds(0.05f); // ”меньшенное врем€ видимости дл€ имитации вспышки
         OnProjectileEvent?.Invoke(projectileInfo);
-        yield return new WaitForSeconds(0.1f);
+        yield return new WaitForSeconds(0.05f);
         lineRenderer.enabled = false;
         
         Destroy(gameObject);
