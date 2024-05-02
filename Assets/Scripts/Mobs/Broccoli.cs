@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
 using UnityEngine;
-using Random = System.Random;
+using Random = UnityEngine.Random;
 
 public class Broccoli : CreatureBase
 {
@@ -22,8 +22,7 @@ public class Broccoli : CreatureBase
     
     void Start()
     {
-        var random = new Random();
-        boomTimer = 1.5f + (float)(random.NextDouble() * 1.5);
+        boomTimer = Random.Range(1.5f, 3f);
         creationTime = Time.time;
         soundController = GameObject.FindGameObjectWithTag("SoundController").GetComponent<SoundController>();
     }

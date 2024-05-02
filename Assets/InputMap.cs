@@ -146,6 +146,15 @@ public partial class @InputMap: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""Reload"",
+                    ""type"": ""Button"",
+                    ""id"": ""a05cf61c-63d7-4d2c-a15d-66b776e07eb7"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -313,6 +322,17 @@ public partial class @InputMap: IInputActionCollection2, IDisposable
                     ""action"": ""ItemSelect"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""75fa4cbe-70bd-49a8-816f-dcab867166ab"",
+                    ""path"": ""<Keyboard>/r"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Reload"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -333,6 +353,7 @@ public partial class @InputMap: IInputActionCollection2, IDisposable
         m_Gameplay_PickItem = m_Gameplay.FindAction("PickItem", throwIfNotFound: true);
         m_Gameplay_DropItem = m_Gameplay.FindAction("DropItem", throwIfNotFound: true);
         m_Gameplay_ItemSelect = m_Gameplay.FindAction("ItemSelect", throwIfNotFound: true);
+        m_Gameplay_Reload = m_Gameplay.FindAction("Reload", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -456,6 +477,7 @@ public partial class @InputMap: IInputActionCollection2, IDisposable
     private readonly InputAction m_Gameplay_PickItem;
     private readonly InputAction m_Gameplay_DropItem;
     private readonly InputAction m_Gameplay_ItemSelect;
+    private readonly InputAction m_Gameplay_Reload;
     public struct GameplayActions
     {
         private @InputMap m_Wrapper;
@@ -468,6 +490,7 @@ public partial class @InputMap: IInputActionCollection2, IDisposable
         public InputAction @PickItem => m_Wrapper.m_Gameplay_PickItem;
         public InputAction @DropItem => m_Wrapper.m_Gameplay_DropItem;
         public InputAction @ItemSelect => m_Wrapper.m_Gameplay_ItemSelect;
+        public InputAction @Reload => m_Wrapper.m_Gameplay_Reload;
         public InputActionMap Get() { return m_Wrapper.m_Gameplay; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -501,6 +524,9 @@ public partial class @InputMap: IInputActionCollection2, IDisposable
             @ItemSelect.started += instance.OnItemSelect;
             @ItemSelect.performed += instance.OnItemSelect;
             @ItemSelect.canceled += instance.OnItemSelect;
+            @Reload.started += instance.OnReload;
+            @Reload.performed += instance.OnReload;
+            @Reload.canceled += instance.OnReload;
         }
 
         private void UnregisterCallbacks(IGameplayActions instance)
@@ -529,6 +555,9 @@ public partial class @InputMap: IInputActionCollection2, IDisposable
             @ItemSelect.started -= instance.OnItemSelect;
             @ItemSelect.performed -= instance.OnItemSelect;
             @ItemSelect.canceled -= instance.OnItemSelect;
+            @Reload.started -= instance.OnReload;
+            @Reload.performed -= instance.OnReload;
+            @Reload.canceled -= instance.OnReload;
         }
 
         public void RemoveCallbacks(IGameplayActions instance)
@@ -561,5 +590,6 @@ public partial class @InputMap: IInputActionCollection2, IDisposable
         void OnPickItem(InputAction.CallbackContext context);
         void OnDropItem(InputAction.CallbackContext context);
         void OnItemSelect(InputAction.CallbackContext context);
+        void OnReload(InputAction.CallbackContext context);
     }
 }
