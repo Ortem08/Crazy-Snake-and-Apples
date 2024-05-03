@@ -62,12 +62,8 @@ public class GunShot : MonoBehaviour, IProjectile, IDamaging, IPierceable
                             direction.normalized,
                             hitOnHardSurface.normal)
                         );
+                Debug.Log(hitOnHardSurface.collider.gameObject);
             }
-
-            Physics.RaycastAll(
-                    origin, direction.normalized, rangeLimit, LayersStorage.Pierceable
-                ).Select(hit => AttemptHurting(hit.collider.gameObject))
-                .ToList();
 
             foreach (var hitSoft in Physics.RaycastAll(
                     origin, direction.normalized, rangeLimit, LayersStorage.Pierceable))
