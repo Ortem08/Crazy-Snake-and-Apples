@@ -413,6 +413,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   onSceneAvatar: {fileID: 1673335427962373390}
+  itemAvatarSprite: {fileID: 21300000, guid: dce1cd5d899487f4a99feab1197b98fa, type: 3}
   inHandAvatar: {fileID: 7968227197490691043}
 --- !u!120 &2847428434398373531
 LineRenderer:

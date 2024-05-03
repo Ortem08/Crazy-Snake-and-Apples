@@ -1,11 +1,16 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Handgun : MonoBehaviour, IInventoryItem
 {
     [SerializeField]
     private GameObject onSceneAvatar;
+    [SerializeField]
+    private Sprite itemAvatarSprite;
+    
+    public Sprite GetItemAvatarSprite() => itemAvatarSprite;
 
     [SerializeField]
     private GameObject inHandAvatar;
@@ -40,7 +45,6 @@ public class Handgun : MonoBehaviour, IInventoryItem
         lineRenderer.material.color = Color.red;
     }
 
-    public GameObject GetItemAvatarSkin() => onSceneAvatar;
     
     public void DropOut()
     {

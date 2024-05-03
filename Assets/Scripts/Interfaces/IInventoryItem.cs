@@ -4,9 +4,9 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
-public interface IInventoryItem
+public interface IInventoryItem 
 {
-    public GameObject GetItemAvatarSkin() => null;
+    public Sprite GetItemAvatarSprite();
     
     public void OnSelect();
 

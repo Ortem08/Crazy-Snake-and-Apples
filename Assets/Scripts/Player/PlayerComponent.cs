@@ -27,7 +27,8 @@ public class PlayerComponent : MonoBehaviour, IHurtable, IUser
     public Transform CameraTransform => cameraTransform;
 
     public Transform SelfTransform => transform;
-
+    
+    public Inventory Inventory => inventory;
     private Inventory inventory;
 
     [SerializeField]
@@ -60,7 +61,7 @@ public class PlayerComponent : MonoBehaviour, IHurtable, IUser
 
     private void Awake()
     {
-        inventory = new Inventory();
+        inventory = new Inventory(24);
 
         SingletonInputManager.instance.InputMap.Gameplay.PickItem.performed += PickItem_performed;
         SingletonInputManager.instance.InputMap.Gameplay.DropItem.performed += DropItem_performed;
