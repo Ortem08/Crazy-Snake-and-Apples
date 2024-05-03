@@ -1,4 +1,4 @@
-﻿using Environment;
+﻿using Unity.AI.Navigation;
 using UnityEngine;
 
 namespace Assets.Mazes
@@ -17,6 +17,8 @@ namespace Assets.Mazes
 
         public float WallHeight = 1;
 
+        public Material WallMaterial;
+
         public int MazeSize_X = 10;
 
         public int MazeSize_Z = 10;
@@ -25,9 +27,23 @@ namespace Assets.Mazes
 
         public int CentralRoomSize_Z = 4;
 
-        public Door Door;
+        public GameObject Door;
+
+        public GameObject Environment;
 
         public void Start()
+        {
+            var maze = GenerateMaze();
+
+            var mazeWallsObject = Build(maze);
+
+            if (Environment != null)
+                BuildNavMeshForSnake(mazeWallsObject);
+
+            Destroy(gameObject);    //remove mazeBuilder from scene
+        }
+
+        private int[,] GenerateMaze()
         {
             var patternGenerator = new MazePatternGenerator();
             // var maze = patternGenerator.RandomizedDFS(MazeSize_X, MazeSize_Z, IgnoreSeed ? null : Seed);
@@ -37,51 +53,24 @@ namespace Assets.Mazes
             patternGenerator.MakeCentralRoom(CentralRoomSize_X, CentralRoomSize_Z, maze);
             patternGenerator.MakeExit(maze, IgnoreSeed ? null : Seed);
 
-            var wallBuilder = new WallBuilderSimple(WallThickness, PassageThickness, WallHeight);
-
-            var mazeWallsObject = wallBuilder.BuildWalls(maze, 0);
-            SetCentralRoomDoor(maze, mazeWallsObject);
-            mazeWallsObject.transform.position = transform.position;
-
-            Destroy(gameObject);    //remove mazeBuilder from scene
+            return maze;
         }
 
-        private void SetCentralRoomDoor(int[,] maze, GameObject mazeWallsObject)
+        private GameObject Build(int[,] maze)
         {
-            var height = CentralRoomSize_X;
-            var width = CentralRoomSize_Z;
-            if (height == 0 || width == 0)
-                return;
-            var startRow = maze.GetLength(0) / 2 - height;
-            var startCol = maze.GetLength(1) / 2 - width;
-            if (startRow % 2 == 1)
-                startRow--;
-            if (startCol % 2 == 1)
-                startCol--;
-            var endRow = startRow + 2 * height;
-            var endCol = startCol + 2 * width;
-            for (int i = 0; i < maze.GetLength(0); i++)
-            {
-                for (int j = 0; j < maze.GetLength(1); j++)
-                {
-                    if (maze[i, j] == 2)
-                    {
-                        Door.transform.parent = mazeWallsObject.transform;
-                        Door.transform.localPosition = new Vector3(
-                            ((WallThickness + PassageThickness) / 2.0f) * i,
-                            WallHeight / 2.0f,
-                            ((WallThickness + PassageThickness) / 2.0f) * j
-                        );
-                        
-                        if (j == startCol)
-                            Door.transform.Rotate(Vector3.up, -90);
-                        else if (j == endCol)
-                            Door.transform.Rotate(Vector3.up, 90);
-                        else if (i == endRow)
-                            Door.transform.Rotate(Vector3.up, 180);
-                    }
-                }
-            }
+            var wallBuilder = new WallBuilderSimple(WallMaterial, WallThickness, PassageThickness, WallHeight);
+
+            var mazeWallsObject = wallBuilder.BuildWalls(maze, 0);
+            wallBuilder.BuildOuterDoors(maze, Door, mazeWallsObject);
+            mazeWallsObject.transform.position = transform.position;
+
+            return mazeWallsObject;
+        }
+
+        private void BuildNavMeshForSnake(GameObject mazeWallsObject)
+        {
+            mazeWallsObject.transform.parent = Environment.transform;
+            Environment.GetComponent<NavMeshSurface>().BuildNavMesh();
         }
     }
 }

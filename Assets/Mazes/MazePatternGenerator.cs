@@ -95,10 +95,7 @@ namespace Assets.Mazes
             var width = maze.GetLength(1) / 2;
             
             var exit = GetRandomPointOnBorder(height, width, seed);
-            if (exit.x == 0 || exit.x == height)
-                maze[2 * exit.x, 2 * exit.y + 1] = 1;
-            else
-                maze[2 * exit.x + 1, 2 * exit.y] = 1;
+            maze[exit.x, exit.y] = 2;
         }
         
         private (int x, int y) GetRandomPointOnBorder(int height, int width, int? seed)
@@ -107,13 +104,13 @@ namespace Assets.Mazes
             int x, y;
             if (random.NextDouble() < 0.5)
             {
-                x = random.Next(height);
-                y = random.NextDouble() < 0.5 ? 0 : width;
+                x = 2 * random.Next(height) + 1;
+                y = random.NextDouble() < 0.5 ? 0 : 2 * width;
             }
             else
             {
-                x = random.NextDouble() < 0.5 ? 0 : height;
-                y = random.Next(width);
+                x = random.NextDouble() < 0.5 ? 0 : 2 * height;
+                y = 2 * random.Next(width) + 1;
             }
 
             return (x, y);
@@ -169,7 +166,7 @@ namespace Assets.Mazes
         
         private bool CanBeReached(int x, int y, int[,] maze)
         {
-            return IsOnField(x, y, maze) && maze[x, y] == 1;
+            return IsOnField(x, y, maze) && maze[x, y] > 0;
         }
     }
     
@@ -246,10 +243,7 @@ namespace Assets.Mazes
             }
 
             var door = GetRandomPointOnBorder(height, width, seed);
-            if (door.x == 0 || door.x == height)
-                maze[startRow + 2 * door.x, startCol + 2 * door.y + 1] = 2;
-            else
-                maze[startRow + 2 * door.x + 1, startCol + 2 * door.y] = 2;
+            maze[startRow + door.x, startCol + door.y] = 1;
             
             OpenUnreachableZones(maze);
         }
