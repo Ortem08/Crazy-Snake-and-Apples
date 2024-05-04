@@ -26948,6 +26948,18 @@ PrefabInstance:
       propertyPath: m_Mesh
       value: 
       objectReference: {fileID: 1780823365}
+    - target: {fileID: 8586229676345363436, guid: b8c34e80c408763459d5a18deeddba47, type: 3}
+      propertyPath: spells.Array.size
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 8586229676345363436, guid: b8c34e80c408763459d5a18deeddba47, type: 3}
+      propertyPath: spells.Array.data[3]
+      value: GrenadeProjectile
+      objectReference: {fileID: 0}
+    - target: {fileID: 8586229676345363436, guid: b8c34e80c408763459d5a18deeddba47, type: 3}
+      propertyPath: spells.Array.data[4]
+      value: BouncyModifier
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

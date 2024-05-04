@@ -3,9 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GrenadeProjectile : MonoBehaviour, IProjectile, IHurtable, IBouncing
+public class GrenadeProjectile : ProjectileBase, IHurtable, IBouncing
 {
-    public event Action<IProjectileInfo> OnProjectileEvent;
+    public override event Action<IProjectileInfo> OnProjectileEvent;
 
     private Rigidbody rb;
 
@@ -35,7 +35,7 @@ public class GrenadeProjectile : MonoBehaviour, IProjectile, IHurtable, IBouncin
         Detector.TriggerEnterEvent += OnDetectorTriggerEnterEvent;
     }
 
-    public void Fire(Vector3 origin, Vector3 direction, Vector3 baseVelocity = default)
+    public override void Fire(Vector3 origin, Vector3 direction, Vector3 baseVelocity = default)
     {
         transform.position = origin;
         transform.forward = direction.normalized;
@@ -44,16 +44,6 @@ public class GrenadeProjectile : MonoBehaviour, IProjectile, IHurtable, IBouncin
 
         rb.velocity = direction.normalized * Speed + baseVelocity;
         rb.AddTorque(UnityEngine.Random.insideUnitSphere * 10);
-    }
-
-    public bool TryGetModificationInterface<T>(out T modifiable) where T : class
-    {
-        modifiable = this as T;
-        if (modifiable != null)
-        {
-            return true;
-        }
-        return false;
     }
 
     private int bounceLevel = 0;

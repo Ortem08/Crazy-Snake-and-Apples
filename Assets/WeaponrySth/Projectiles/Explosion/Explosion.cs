@@ -3,8 +3,10 @@ using System.Collections;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class Explosion : MonoBehaviour, IProjectile, IDamaging
+public class Explosion : ProjectileBase, IDamaging
 {
+    public override event Action<IProjectileInfo> OnProjectileEvent;
+
     [SerializeField]
     private GameObject externalSurface;
 
@@ -22,9 +24,7 @@ public class Explosion : MonoBehaviour, IProjectile, IDamaging
 
     public DamageInfo DamageInfo { get; set; } = new DamageInfo(20);
 
-    public event Action<IProjectileInfo> OnProjectileEvent;
-
-    public void Fire(Vector3 origin, Vector3 direction, Vector3 baseVelocity = default)
+    public override void Fire(Vector3 origin, Vector3 direction, Vector3 baseVelocity = default)
     {
         transform.position = origin;
         StartCoroutine(Explode());
@@ -107,16 +107,5 @@ public class Explosion : MonoBehaviour, IProjectile, IDamaging
                 rigidbody.AddForce(deltaDirection * impulseModule, ForceMode.Impulse);
             }
         }
-    }
-
-    public bool TryGetModificationInterface<T>(out T modifiable) where T : class
-    {
-        if (this is T t)
-        {
-            modifiable = t;
-            return true;
-        }
-        modifiable = default;
-        return false;
     }
 }

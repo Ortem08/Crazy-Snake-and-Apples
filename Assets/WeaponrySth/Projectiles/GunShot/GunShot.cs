@@ -9,9 +9,9 @@ using UnityEngine.InputSystem.HID;
 using UnityEngine.UIElements;
 using static UnityEngine.UI.Image;
 
-public class GunShot : MonoBehaviour, IProjectile, IDamaging, IPierceable
+public class GunShot : ProjectileBase, IDamaging, IPierceable
 {
-    public event Action<IProjectileInfo> OnProjectileEvent;
+    public override event Action<IProjectileInfo> OnProjectileEvent;
 
     public DamageInfo DamageInfo { get; set; } = new DamageInfo(10);
 
@@ -37,7 +37,7 @@ public class GunShot : MonoBehaviour, IProjectile, IDamaging, IPierceable
         lineRenderer.material.color = Color.yellow;
     }
 
-    public void Fire(Vector3 origin, Vector3 direction, Vector3 baseVelocity = default)
+    public override void Fire(Vector3 origin, Vector3 direction, Vector3 baseVelocity = default)
     {
         if (used)
         {
@@ -137,16 +137,5 @@ public class GunShot : MonoBehaviour, IProjectile, IDamaging, IPierceable
         lineRenderer.enabled = false;
         
         Destroy(gameObject);
-    }
-
-    public bool TryGetModificationInterface<T>(out T modifiable)
-        where T : class
-    {
-        modifiable = this as T;
-        if (modifiable != null)
-        {
-            return true;
-        }
-        return false;
     }
 }

@@ -247,7 +247,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 1458
+  m_VersionIndex: 1461
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -577,7 +577,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 1995
+  m_VersionIndex: 1998
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -907,7 +907,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 1747
+  m_VersionIndex: 1750
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -1000,7 +1000,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8233760924337893536}
   m_Layer: 0
-  m_Name: LaggyPistonOnSceneAvatar
+  m_Name: LaggyPistolOnSceneAvatar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1112,11 +1112,9 @@ MonoBehaviour:
   tipOfTheGun: {fileID: 4706056165329530097}
   spells:
   - gunshot
-  - gunshot
-  - gunshot
-  - gunshot
-  - gunshot
-  - gunshot
+  - ConstantDamageIncreaseModifier
+  - Explosion
+  - Explosion
 --- !u!1 &6947052647466794201
 GameObject:
   m_ObjectHideFlags: 0
@@ -1364,7 +1362,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 1458
+  m_VersionIndex: 1461
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -1694,7 +1692,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 1316
+  m_VersionIndex: 1319
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
