@@ -144,4 +144,9 @@ public class LaggyPistol : MonoBehaviour, IInventoryItem
         Debug.Log("Shoot yourself if the leg. Now.");
         return true;
     }
+
+    public Sprite GetItemAvatarSprite()
+    {
+        throw new System.NotImplementedException();
+    }
 }

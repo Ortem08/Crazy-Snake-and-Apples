@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class Turret : MonoBehaviour, IUser, IHurtable
 {
@@ -18,6 +19,12 @@ public class Turret : MonoBehaviour, IUser, IHurtable
     public float Health { get; private set; } = 50;
 
     public UserType UserType => UserType.Turret;
+
+    public float MaxHealth => throw new System.NotImplementedException();
+
+    public UnityEvent<float, float> OnHealthDecrease => throw new System.NotImplementedException();
+
+    public UnityEvent<float, float> OnHealthIncrease => throw new System.NotImplementedException();
 
     private Rigidbody rb;
 

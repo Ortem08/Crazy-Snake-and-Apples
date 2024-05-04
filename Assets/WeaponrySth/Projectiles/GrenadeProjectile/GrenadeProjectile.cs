@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class GrenadeProjectile : ProjectileBase, IHurtable, IBouncing
 {
@@ -67,6 +68,12 @@ public class GrenadeProjectile : ProjectileBase, IHurtable, IBouncing
             }
         }
     }
+
+    public float MaxHealth => throw new NotImplementedException();
+
+    public UnityEvent<float, float> OnHealthDecrease => throw new NotImplementedException();
+
+    public UnityEvent<float, float> OnHealthIncrease => throw new NotImplementedException();
 
     private void EnsureBouncy()
     {

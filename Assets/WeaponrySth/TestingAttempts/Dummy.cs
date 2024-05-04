@@ -2,10 +2,17 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class Dummy : MonoBehaviour, IHurtable
 {
     public float Health { get; private set; } = 100;
+
+    public float MaxHealth => throw new NotImplementedException();
+
+    public UnityEvent<float, float> OnHealthDecrease => throw new NotImplementedException();
+
+    public UnityEvent<float, float> OnHealthIncrease => throw new NotImplementedException();
 
     public string Name = "MagicMan";
 

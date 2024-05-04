@@ -180,4 +180,9 @@ public class MagicWeapon : MonoBehaviour, IInventoryItem
         Debug.Log("action never took place. Or did it?");
         return true;
     }
+
+    public Sprite GetItemAvatarSprite()
+    {
+        throw new System.NotImplementedException();
+    }
 }
