@@ -6,10 +6,12 @@ public class PlayerParamsUpdater : MonoBehaviour
 {
     public GameObject Player;
 
-    private FirstPersonController controller;
+    private const int MouseSensetivityCoef = 28;
+    
+    private QuakeCPMPlayerMovement controller;
     void Start()
     {
-        controller = Player.GetComponent<FirstPersonController>();
+        controller = Player.GetComponent<QuakeCPMPlayerMovement>();
 
         SetSensetivity();
     }
@@ -22,6 +24,9 @@ public class PlayerParamsUpdater : MonoBehaviour
     void SetSensetivity()
     {
         if (PlayerPrefs.HasKey("Sensetivity"))
-            controller.mouseSensitivity = PlayerPrefs.GetFloat("Sensetivity");
+        {
+            controller.xMouseSensitivity = PlayerPrefs.GetFloat("Sensetivity") * MouseSensetivityCoef;
+            controller.yMouseSensitivity = controller.xMouseSensitivity;
+        }
     }
 }

@@ -28,17 +28,19 @@ public class PauseScript : MonoBehaviour
         PauseMenuUI.SetActive(false);
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
-        player.GetComponent<FirstPersonController>().enabled = true;
+        //player.GetComponent<CameraMove>().enabled = true;
+        player.SetActive(true);
         Time.timeScale = 1f;
         GameIsPaused = false;
     }
 
-    void Pause()
+    public void Pause()
     {
         PauseMenuUI.SetActive(true);
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
-        player.GetComponent<FirstPersonController>().enabled = false;
+        //player.GetComponent<CameraMove>().enabled = false;
+        player.SetActive(false);
         Time.timeScale = 0f;
         GameIsPaused = true;
     }
