@@ -4367,6 +4367,8 @@ MonoBehaviour:
   handTransform: {fileID: 1539718247}
   cameraTransform: {fileID: 1467891783}
   health: 100
+  HealthBarObject: {fileID: 0}
+  MaxHealth: 100
 --- !u!43 &867971841
 Mesh:
   m_ObjectHideFlags: 0

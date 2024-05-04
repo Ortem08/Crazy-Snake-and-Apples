@@ -2,10 +2,17 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.Events;
 
 public class PlayerComponent : MonoBehaviour, IHurtable, IUser, IPushable
 {
+    public UnityEvent<float, float> OnHealthDecrease { get; } = new();
+    public UnityEvent<float, float> OnHealthIncrease { get; } = new();
+
+    
     [SerializeField]
     private float ItemPickUpRadius = 3;
 
@@ -20,15 +27,20 @@ public class PlayerComponent : MonoBehaviour, IHurtable, IUser, IPushable
     public Transform CameraTransform => cameraTransform;
 
     public Transform SelfTransform => transform;
-
+    
+    public Inventory Inventory => inventory;
     private Inventory inventory;
 
     private QuakeCPMPlayerMovement QuakeMovenentController;
 
     [SerializeField]
     private float health = 100;
+    
+    [SerializeField]
+    private float maxHealth = 100f;
 
     public float Health => health;
+    public float MaxHealth => maxHealth;
 
     public Vector3 Velocity => QuakeMovenentController.GetVelocity();
 
@@ -47,11 +59,15 @@ public class PlayerComponent : MonoBehaviour, IHurtable, IUser, IPushable
         {
             Debug.Log("stop shooting! I`m already dead");
         }
+        else
+        {
+            OnHealthDecrease.Invoke(health, MaxHealth);
+        }
     }
 
     private void Awake()
     {
-        inventory = new Inventory();
+        inventory = new Inventory(24);
 
         QuakeMovenentController = GetComponent<QuakeCPMPlayerMovement>();
 

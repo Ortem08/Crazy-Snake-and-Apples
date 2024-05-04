@@ -50,14 +50,15 @@ public class Broccoli : CreatureBase
         Physics.OverlapSphereNonAlloc(transform.position, BoomRadius, collidersArray);
         
         var creatureEntities = collidersArray
-            .Where(x => x && x != thisCollider && x.CompareTag("Creature"))
+            .Where(x => x && x != thisCollider 
+                          && (x.CompareTag("Creature") || x.CompareTag("Player")))
             .Select(x => x.gameObject.GetComponent<IHurtable>());
         
         soundController.PlaySound("BroccoliBoom", 0.6f, transform.position);
         
         foreach (var creature in creatureEntities)
         {
-            creature.ConsumeDamage(Damage);
+            creature.TakeDamage(new DamageInfo(Damage));
         }
         Die();
     }

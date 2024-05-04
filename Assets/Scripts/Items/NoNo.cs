@@ -11,6 +11,8 @@ public class NoNo : MonoBehaviour, IInventoryItem
     [SerializeField]
     private GameObject inHandAvatar;
 
+    public Sprite GetItemAvatarSprite() => null;
+
     private IUser user;
 
     private Collider colliderForDetection;
@@ -19,7 +21,7 @@ public class NoNo : MonoBehaviour, IInventoryItem
     {
         colliderForDetection = GetComponent<Collider>();
     }
-
+    
     public void DropOut()
     {
         transform.parent = null;

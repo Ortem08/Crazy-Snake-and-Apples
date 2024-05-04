@@ -2,9 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UI;
 
-public interface IInventoryItem
+public interface IInventoryItem 
 {
+    public Sprite GetItemAvatarSprite();
+    
     public void OnSelect();
 
     public void OnUnselect();
