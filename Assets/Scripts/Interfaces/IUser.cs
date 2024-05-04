@@ -11,4 +11,6 @@ public interface IUser
     public Transform SelfTransform { get; }
 
     public Vector3 Velocity { get; }
+
+    public UserType UserType { get; }
 }

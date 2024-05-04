@@ -32,6 +32,8 @@ public class PlayerComponent : MonoBehaviour, IHurtable, IUser, IPushable
 
     public Vector3 Velocity => QuakeMovenentController.GetVelocity();
 
+    public UserType UserType => UserType.Player;
+
     public void ConsumeDamage(float amount)
     {
         TakeDamage(new DamageInfo(amount));
