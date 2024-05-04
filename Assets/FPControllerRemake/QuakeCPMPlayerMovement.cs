@@ -93,6 +93,17 @@ public class QuakeCPMPlayerMovement : MonoBehaviour
     // Player commands, stores wish commands that the player asks for (Forward, back, jump, etc)
     private Cmd _cmd;
 
+    public void AddVelocity(Vector3 velocity)
+    {
+        // not very good
+        playerVelocity += velocity;
+    }
+
+    public Vector3 GetVelocity()
+    {
+        return playerVelocity;
+    }
+
     private void Start()
     {
         // Hide the cursor

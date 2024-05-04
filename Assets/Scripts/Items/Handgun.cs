@@ -40,20 +40,20 @@ public class Handgun : MonoBehaviour, IInventoryItem
 
     private void Start()
     {
-        particleSystem = GetComponentInChildren<ParticleSystem>();
-        particleSystem.playbackSpeed = 3f;
+        //particleSystem = GetComponentInChildren<ParticleSystem>();      //genius
+        // particleSystem.playbackSpeed = 3f;
 
-        Debug.Log(particleSystem);
-        animator = GetComponent<Animator>();
-        soundController = GameObject.FindGameObjectWithTag("SoundController").GetComponent<SoundController>();
-        lineRenderer = gameObject.GetComponent<LineRenderer>();
+        // Debug.Log(particleSystem);
+        animator = inHandAvatar.GetComponent<Animator>();
+        //soundController = GameObject.FindGameObjectWithTag("SoundController").GetComponent<SoundController>();
+        // lineRenderer = gameObject.GetComponent<LineRenderer>();
 
         // Уменьшите ширину линии для большей реалистичности
-        lineRenderer.positionCount = 2;
-        lineRenderer.startWidth = 0.05f;
-        lineRenderer.endWidth = 0.05f;
-        lineRenderer.material = new Material(Shader.Find("Unlit/Color"));   // may be use composition? whatever
-        lineRenderer.material.color = Color.red;
+        //lineRenderer.positionCount = 2;
+        //lineRenderer.startWidth = 0.05f;
+        //lineRenderer.endWidth = 0.05f;
+        //lineRenderer.material = new Material(Shader.Find("Unlit/Color"));   // may be use composition? whatever
+        //lineRenderer.material.color = Color.red;
     }
 
     public void DropOut()
@@ -91,8 +91,8 @@ public class Handgun : MonoBehaviour, IInventoryItem
         if (!animator.GetBool("canShoot"))
             return false;
 
-        effectPosition = particleSystem.transform.position;
-        particleSystem.Play();
+        //effectPosition = particleSystem.transform.position;
+        //particleSystem.Play();
         FixPosition();
 
         lastShotTime = Time.time;
@@ -120,7 +120,7 @@ public class Handgun : MonoBehaviour, IInventoryItem
             lineRenderer.SetPosition(1, startPosition + shootDirection * range);
         }
 
-        soundController.PlaySound("PistolShot", startPosition + user.CameraTransform.forward, 0.8f);
+        //soundController.PlaySound("PistolShot", startPosition + user.CameraTransform.forward, 0.8f);
 
         //animator.SetBool("IsShooting", true);
         //animator.SetBool("IsShooting", false);
@@ -135,11 +135,12 @@ public class Handgun : MonoBehaviour, IInventoryItem
 
     private IEnumerator FixPosition()
     {
-        while (particleSystem.isPlaying)
+        /*while (particleSystem.isPlaying)
         {
             transform.position = effectPosition; // Удерживаем позицию во время проигрывания частиц
             yield return null;
-        }
+        }*/
+        yield return null;
     }
 
     private void StartShooting()

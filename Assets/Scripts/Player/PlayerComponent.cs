@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class PlayerComponent : MonoBehaviour, IHurtable, IUser
+public class PlayerComponent : MonoBehaviour, IHurtable, IUser, IPushable
 {
     [SerializeField]
     private float ItemPickUpRadius = 3;
@@ -23,10 +23,16 @@ public class PlayerComponent : MonoBehaviour, IHurtable, IUser
 
     private Inventory inventory;
 
+    private QuakeCPMPlayerMovement QuakeMovenentController;
+
     [SerializeField]
     private float health = 100;
 
     public float Health => health;
+
+    public Vector3 Velocity => QuakeMovenentController.GetVelocity();
+
+    public UserType UserType => UserType.Player;
 
     public void ConsumeDamage(float amount)
     {
@@ -46,6 +52,8 @@ public class PlayerComponent : MonoBehaviour, IHurtable, IUser
     private void Awake()
     {
         inventory = new Inventory();
+
+        QuakeMovenentController = GetComponent<QuakeCPMPlayerMovement>();
 
         SingletonInputManager.instance.InputMap.Gameplay.PickItem.performed += PickItem_performed;
         SingletonInputManager.instance.InputMap.Gameplay.DropItem.performed += DropItem_performed;
@@ -110,5 +118,10 @@ public class PlayerComponent : MonoBehaviour, IHurtable, IUser
     private bool TryDropItem()
     {
         return inventory.TryDropCurrent(); ;
+    }
+
+    public void Push(Vector3 impulse)
+    {
+        QuakeMovenentController.AddVelocity(impulse);   // believe that player mass is 1
     }
 }
