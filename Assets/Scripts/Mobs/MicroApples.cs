@@ -138,7 +138,7 @@ public class MicroApples : CreatureBase, IMob
     public bool CanSeePlayer()
     {
         var directionToTarget = (player.transform.position - transform.position).normalized;
-        Debug.Log(Vector3.Angle(transform.forward, directionToTarget));
+        //Debug.Log(Vector3.Angle(transform.forward, directionToTarget));
         if (Vector3.Angle(transform.forward, directionToTarget) >= fieldOfViewAngle)
         {
             var distanceToTarget = Vector3.Distance(transform.position, player.transform.position);

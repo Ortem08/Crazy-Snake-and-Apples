@@ -123,10 +123,10 @@ public class LaggyPistol : MonoBehaviour, IInventoryItem
 
             projectile.Fire(startPosition, shootDirection, user.Velocity);
 
-            if (soundController != null)
-            {
-                soundController.PlaySound("PistolShot", startPosition + user.CameraTransform.forward, 0.8f);
-            }
+            //if (soundController != null)
+            //{
+            //    soundController.PlaySound("PistolShot", startPosition + user.CameraTransform.forward, 0.8f);
+            //}
         }
         else
         {
