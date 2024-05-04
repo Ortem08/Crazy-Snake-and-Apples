@@ -30,8 +30,8 @@ public class SoundController : MonoBehaviour
         GameObject soundObject;
         if (parent != null)
         {
-            soundObject = Instantiate(SoundObject, parent!.transform, true);
-            soundObject.transform.position = parent!.transform.position;
+            soundObject = Instantiate(SoundObject, parent.transform, true);
+            soundObject.transform.position = parent.transform.position;
             soundObject.transform.rotation = parent.transform.rotation;
         }
         else
