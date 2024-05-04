@@ -6,6 +6,7 @@ public abstract class CreatureBase : MonoBehaviour, IHurtable
 {
     public float Health { get; set; }
     public float Damage { get; set; }
+    public float ViewAngle { get; set; }
 
     public CreatureBase(float health, float damage)
     {

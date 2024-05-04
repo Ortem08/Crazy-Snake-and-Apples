@@ -7,10 +7,11 @@ using Random = UnityEngine.Random;
 public class AINavigation : MonoBehaviour
 {
     [SerializeField] private float randomPointRadius = 50;
-    [SerializeField] private float stoppingDistance = 1.5f;
+    [SerializeField] private float stoppingDistance = 0f;
     [SerializeField] private Transform player;
     [SerializeField] private float fieldOfViewAngle;
     [SerializeField] private LayerMask obstructionMask;
+
     private NavMeshAgent agent;
     private NavMeshPath path;
 
@@ -23,16 +24,22 @@ public class AINavigation : MonoBehaviour
 
     private void Update()
     {
-        UpdateDestination();
+        //UpdateDestination();
     }
 
     private void UpdateDestination()
     {
-        if (CheckCanSeePlayer())
+        var check = CheckCanSeePlayer();
+        Debug.Log(check);
+        if (check)
         {
+            agent.stoppingDistance = 2;
             agent.SetDestination(player.position);
         }
-        if (!agent.hasPath)
+        else
+            agent.stoppingDistance = 0;
+
+        if (!agent.hasPath || (agent.hasPath && !check))
             TrySetNewDestination();
     }
 
