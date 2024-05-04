@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using Environment;
+using Object = System.Object;
 
 public class WallBuilderSimple
 {
@@ -9,8 +11,10 @@ public class WallBuilderSimple
     private float PassageThickness { get; }
     private float WallHeight { get; }
 
+    private Material material;
 
-    public WallBuilderSimple(float wallThickness = 1, float passageThickness = 1, float wallHeight = 1)
+
+    public WallBuilderSimple(Material material, float wallThickness = 1, float passageThickness = 1, float wallHeight = 1)
     {
         CheckParameter(wallThickness, nameof(wallThickness));
         CheckParameter(passageThickness, nameof(passageThickness));
@@ -19,6 +23,7 @@ public class WallBuilderSimple
         WallThickness = wallThickness;
         PassageThickness = passageThickness;
         WallHeight = wallHeight;
+        this.material = material;
     }
 
     private void CheckParameter(float parameter, string name)
@@ -50,6 +55,7 @@ public class WallBuilderSimple
     private GameObject BuildWallPart(int x, int z, GameObject mazeWallsGameObject)
     {
         var wallPart = GameObject.CreatePrimitive(PrimitiveType.Cube);
+        wallPart.GetComponent<Renderer>().material = material;
 
         wallPart.transform.parent = mazeWallsGameObject.transform;
 
@@ -73,5 +79,36 @@ public class WallBuilderSimple
                         ((WallThickness + PassageThickness) / 2.0f) * z
                     );
         return wallPart;
+    }
+
+    public void BuildOuterDoors(int[,] maze, GameObject doorPrefab, GameObject mazeWallsObject)
+    {
+        var rowsCount = maze.GetLength(0);
+        var colsCount = maze.GetLength(1);
+        for (int i = 0; i < colsCount; i++)
+        {
+            for (int j = 0; j < rowsCount; j++)
+            {
+                if (maze[i, j] == 2)
+                {
+                    // var door = UnityEngine.Object.Instantiate(doorPrefab, mazeWallsObject.transform);
+                    var door = doorPrefab;
+                    door.transform.parent = mazeWallsObject.transform;
+                    
+                    door.transform.localPosition = new Vector3(
+                        ((WallThickness + PassageThickness) / 2.0f) * i,
+                        WallHeight / 2.0f,
+                        ((WallThickness + PassageThickness) / 2.0f) * j
+                    );
+                        
+                    if (j == 0)
+                        door.transform.Rotate(Vector3.up, -90);
+                    else if (j == colsCount - 1)
+                        door.transform.Rotate(Vector3.up, 90);
+                    else if (i == rowsCount - 1)
+                        door.transform.Rotate(Vector3.up, 180);
+                }
+            }
+        }
     }
 }
