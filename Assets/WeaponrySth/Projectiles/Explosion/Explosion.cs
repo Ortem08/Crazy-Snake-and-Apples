@@ -5,6 +5,8 @@ using UnityEngine;
 
 public class Explosion : ProjectileBase, IDamaging
 {
+    public static Spell Spell => Spell.Explosion;
+
     public override event Action<IProjectileInfo> OnProjectileEvent;
 
     [SerializeField]

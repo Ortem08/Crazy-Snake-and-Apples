@@ -6,6 +6,8 @@ using UnityEngine.Events;
 
 public class GrenadeProjectile : ProjectileBase, IHurtable, IBouncing
 {
+    public static Spell Spell => Spell.Grenade;
+
     public override event Action<IProjectileInfo> OnProjectileEvent;
 
     private Rigidbody rb;

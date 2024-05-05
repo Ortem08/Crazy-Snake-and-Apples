@@ -31,6 +31,8 @@ public class PlayerComponent : MonoBehaviour, IHurtable, IUser, IPushable
     public Inventory Inventory => inventory;
     private Inventory inventory;
 
+    public CardInventory CardInventory;
+
     private QuakeCPMPlayerMovement QuakeMovenentController;
 
     [SerializeField]
@@ -67,7 +69,9 @@ public class PlayerComponent : MonoBehaviour, IHurtable, IUser, IPushable
 
     private void Awake()
     {
-        inventory = new Inventory(24);
+        inventory = new Inventory(24);  // why 24? too much
+
+        CardInventory = new CardInventory(24);
 
         QuakeMovenentController = GetComponent<QuakeCPMPlayerMovement>();
 
@@ -107,23 +111,32 @@ public class PlayerComponent : MonoBehaviour, IHurtable, IUser, IPushable
 
     private void PickItem_performed(UnityEngine.InputSystem.InputAction.CallbackContext obj)
     {
-        //Debug.Log("attempt to pick up sth");
-        TryPickUpItem();
+        TryPickUpItemOrCard();
     }
 
-    private bool TryPickUpItem()
+    private bool TryPickUpItemOrCard()
     {
         //use layers or tags to optimize
+        // should be remade to check chosest item first
         foreach( var item in Physics.OverlapSphere(transform.position, ItemPickUpRadius))
         {
-            //Debug.Log(item);
-            if (item.TryGetComponent<ItemAvatar>(out var avatar))
+            Debug.Log(item);
+            if (item.TryGetComponent<ItemAvatar>(out var itemAvatar))
             {
                 if (inventory.SelectedItem == null)
                 {
-                    inventory.SelectedItem = avatar.PickUp();
+                    inventory.SelectedItem = itemAvatar.PickUp();
                     inventory.SelectedItem.SetUser(this);
                     inventory.SelectedItem.OnSelect();
+                    return true;
+                }
+            }
+            if (item.TryGetComponent<CardAvatar>(out var cardAvatar))
+            {
+                if (CardInventory.TryAddCard(cardAvatar.Card))
+                {
+                    Debug.Log(cardAvatar.Card);
+                    cardAvatar.PickUp();
                     return true;
                 }
             }

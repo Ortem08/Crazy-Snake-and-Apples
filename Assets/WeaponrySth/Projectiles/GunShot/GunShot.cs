@@ -11,6 +11,8 @@ using static UnityEngine.UI.Image;
 
 public class GunShot : ProjectileBase, IDamaging, IPierceable
 {
+    public static Spell Spell => Spell.GunShot;
+
     public override event Action<IProjectileInfo> OnProjectileEvent;
 
     public DamageInfo DamageInfo { get; set; } = new DamageInfo(10);

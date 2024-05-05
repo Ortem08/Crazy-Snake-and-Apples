@@ -7,10 +7,19 @@ public class ProjectileFactory : MonoBehaviour
 {
     private Instantiator instantiator;
 
-    [SerializeField]
-    private List<GameObject> projectilePrefabs;    // no new() here bc unity will replace it
+    /*[SerializeField]
+    private List<GameObject> projectilePrefabs;    // no new() here bc unity will replace it*/
 
-    private readonly Dictionary<string, GameObject> spellToPrefabMap = new();
+    [SerializeField]
+    private GameObject explosionPrefab;
+
+    [SerializeField]
+    private GameObject gunShotPrefab;
+
+    [SerializeField]
+    private GameObject grenadePrefab;
+
+    private readonly Dictionary<Spell, GameObject> spellToPrefabMap = new();
 
     private void Awake()
     {
@@ -22,7 +31,11 @@ public class ProjectileFactory : MonoBehaviour
 
     private void Start()
     {
-        foreach (var prefab in projectilePrefabs)
+        spellToPrefabMap.Add(Spell.Explosion, explosionPrefab);
+        spellToPrefabMap.Add(Spell.GunShot, gunShotPrefab);
+        spellToPrefabMap.Add(Spell.Grenade, grenadePrefab);
+
+        /*foreach (var prefab in projectilePrefabs)
         {
             if (prefab.TryGetComponent<IProjectile>(out var proj))
             {
@@ -33,10 +46,10 @@ public class ProjectileFactory : MonoBehaviour
             {
                 throw new System.Exception($"prefab {prefab} is not a projectile");
             }
-        }
+        }*/
     }
 
-    public IProjectileTreeNode AssembleProjectileTree(List<string> spells)
+    public IProjectileTreeNode AssembleProjectileTree(List<Spell> spells)
     {
         ProjectileTreeNode parentNode = null;
         ProjectileTreeNode root = null;
@@ -93,28 +106,26 @@ public class ProjectileFactory : MonoBehaviour
         return root;
     }
 
-    private GameObject ResolveProjectileSpellToPrefab(string spell)
+    private GameObject ResolveProjectileSpellToPrefab(Spell spell)
     {
-        if (spellToPrefabMap.TryGetValue(spell.ToLower(), out var prefab))
+        if (spellToPrefabMap.TryGetValue(spell, out var prefab))
         {
             return prefab;
         }
         return null;
     }
 
-    private IModifier ResolveModifierSpellToModifier(string spell)
+    private IModifier ResolveModifierSpellToModifier(Spell spell)
     {
-        //nothing changes
-        spell = spell.ToLower();
-        if (spell == typeof(PiercingModifier).Name.ToLower())
+        if (spell == PiercingModifier.Spell)
         {
             return new PiercingModifier();
         }
-        if (spell == typeof(ConstantDamageIncreaseModifier).Name.ToLower())
+        if (spell == ConstantDamageIncreaseModifier.Spell)
         {
             return new ConstantDamageIncreaseModifier();
         }
-        if (spell == typeof(BouncyModifier).Name.ToLower())
+        if (spell == BouncyModifier.Spell)
         {
             return new BouncyModifier();
         }

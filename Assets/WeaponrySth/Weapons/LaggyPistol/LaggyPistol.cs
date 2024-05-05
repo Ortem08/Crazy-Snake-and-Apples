@@ -1,10 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-public class LaggyPistol : MonoBehaviour, IInventoryItem
+public class LaggyPistol : MonoBehaviour, ICardBasedItem
 {
     [SerializeField]
     private GameObject onSceneAvatar;
@@ -17,7 +18,9 @@ public class LaggyPistol : MonoBehaviour, IInventoryItem
 
     // temporary (before GUI is in use)
     [SerializeField]
-    private List<string> spells;
+    private List<Spell> spells;
+
+    public CardInventory CardInventory { get; private set; }
 
     private ProjectileFactory projectileFactory;
 
@@ -35,6 +38,8 @@ public class LaggyPistol : MonoBehaviour, IInventoryItem
     private void Awake()
     {
         colliderForDetection = GetComponent<Collider>();
+
+        CardInventory = new CardInventory();    //yep. empty and with full capasity
     }
 
     private void Start()
@@ -93,9 +98,23 @@ public class LaggyPistol : MonoBehaviour, IInventoryItem
         if (!animator.GetBool("canShoot"))
             return false;
 
-        
+        IProjectileTreeNode tree;
 
-        var tree = projectileFactory.AssembleProjectileTree(spells);
+        if (CardInventory.Count > 0)
+        {
+            tree = projectileFactory.AssembleProjectileTree(
+                    CardInventory
+                        .Cards
+                        .Where(c => c != null)
+                        .Select(c => c.Spell)
+                        .ToList()
+                );
+        }
+        else
+        {
+            tree = projectileFactory.AssembleProjectileTree(spells);
+        }
+
         if (tree == null)
         {
             Debug.Log("insert spell please");

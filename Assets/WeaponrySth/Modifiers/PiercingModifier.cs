@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class PiercingModifier : IModifier
 {
+    public static Spell Spell => Spell.Piercing;
+
     public bool TryModify(IModifiable modifiable)
     {
         if (modifiable.TryGetModificationInterface<IPierceable>(out var pierceable))

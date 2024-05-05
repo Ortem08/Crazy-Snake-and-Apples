@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class BouncyModifier : IModifier
 {
+    public static Spell Spell => Spell.BouncinessIncrease;
+
     public bool TryModify(IModifiable modifiable)
     {
         if (modifiable.TryGetModificationInterface<IBouncing>(out var bouncing))
