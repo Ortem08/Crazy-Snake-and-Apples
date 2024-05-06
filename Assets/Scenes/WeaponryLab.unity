@@ -15324,6 +15324,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2255271465123170303, guid: d67360ffb21a93241bc23c59d3a6ea02, type: 3}
+      propertyPath: spell
+      value: 201
+      objectReference: {fileID: 0}
     - target: {fileID: 7469505665754947773, guid: d67360ffb21a93241bc23c59d3a6ea02, type: 3}
       propertyPath: m_Name
       value: CardPromise (3)
@@ -18691,7 +18695,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2255271465123170303, guid: d67360ffb21a93241bc23c59d3a6ea02, type: 3}
       propertyPath: spell
-      value: 2
+      value: 202
       objectReference: {fileID: 0}
     - target: {fileID: 7469505665754947773, guid: d67360ffb21a93241bc23c59d3a6ea02, type: 3}
       propertyPath: m_Name
@@ -28135,6 +28139,18 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3966405413450636533, guid: efcd9528bff28e54cb2c3dda58de6560, type: 3}
+      propertyPath: TrackerTexture
+      value: 
+      objectReference: {fileID: 2800000, guid: cba07bd5b78b3914eb683e74e313124f, type: 3}
+    - target: {fileID: 3966405413450636533, guid: efcd9528bff28e54cb2c3dda58de6560, type: 3}
+      propertyPath: AscendTreeTexture
+      value: 
+      objectReference: {fileID: 2800000, guid: c8eb7d544ebd85c49b7e4425ddac66f7, type: 3}
+    - target: {fileID: 3966405413450636533, guid: efcd9528bff28e54cb2c3dda58de6560, type: 3}
+      propertyPath: AscendTreeTwiceTexture
+      value: 
+      objectReference: {fileID: 2800000, guid: 972a176f8e4990640860e084c7a7f1a8, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -28166,19 +28182,19 @@ PrefabInstance:
       objectReference: {fileID: 1034558755}
     - target: {fileID: 5977410033857609267, guid: 373172774e107de458bd8bc806e95edc, type: 3}
       propertyPath: spells.Array.size
-      value: 3
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 5977410033857609267, guid: 373172774e107de458bd8bc806e95edc, type: 3}
       propertyPath: spells.Array.data[1]
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 5977410033857609267, guid: 373172774e107de458bd8bc806e95edc, type: 3}
-      propertyPath: spells.Array.data[2]
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5977410033857609267, guid: 373172774e107de458bd8bc806e95edc, type: 3}
+      propertyPath: spells.Array.data[2]
+      value: 202
+      objectReference: {fileID: 0}
+    - target: {fileID: 5977410033857609267, guid: 373172774e107de458bd8bc806e95edc, type: 3}
       propertyPath: spells.Array.data[3]
-      value: 3
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5977410033857609267, guid: 373172774e107de458bd8bc806e95edc, type: 3}
       propertyPath: spells.Array.data[4]

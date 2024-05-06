@@ -68,6 +68,18 @@ public class ProjectileFactory : MonoBehaviour
                 }
                 continue;
             }
+            else if (spell == Spell.AscendTreeTwice)
+            {
+                if (curNode != fakeRoot)
+                {
+                    curNode = curNode.Parent;
+                }
+                if (curNode != fakeRoot)
+                {
+                    curNode = curNode.Parent;
+                }
+                continue;
+            }
             
             if (TryResolveProjectileSpellToPrefab(spell, out var projectilePrefab))
             {

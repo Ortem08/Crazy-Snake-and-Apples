@@ -20,6 +20,8 @@ public class Tracker : ProjectileBase, IHurtable
 
     public override event Action<IProjectileInfo> OnProjectileEvent;
 
+    private float surfaceOffset = 0.1f;
+
     private float detectionRadius = 20;
 
     private float lifetime = 0.5f;
@@ -40,7 +42,7 @@ public class Tracker : ProjectileBase, IHurtable
 
     public override void Fire(Vector3 origin, Vector3 direction, Vector3 baseVelocity = default)
     {
-        transform.position = origin;
+        transform.position = origin + direction.normalized * surfaceOffset;
         transform.forward = direction;
 
         mainCoroutine = StartCoroutine(StartTracking());
@@ -84,6 +86,7 @@ public class Tracker : ProjectileBase, IHurtable
             if (priority < nextPriority 
                 || (priority == nextPriority && delta.magnitude < recordDistance))
             {
+                //Physics.Raycast(transform.position, transform.forward, )
                 recordDistance = delta.magnitude;
                 closestObject = foundObject;
                 priority = nextPriority;
@@ -132,7 +135,7 @@ public class Tracker : ProjectileBase, IHurtable
         dead = true;
 
         var projectileInfo = new CompositionBasedProjectileInfo(new[] {
-            new ExpirationInfo(tip.transform.position, transform.forward)
+            new ExpirationInfo(transform.position, transform.forward)
         });
 
         OnProjectileEvent?.Invoke(projectileInfo);

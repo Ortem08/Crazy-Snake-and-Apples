@@ -17,4 +17,5 @@ public enum Spell
 
     // Branching
     AscendTree = 201,
+    AscendTreeTwice = 202,
 }
