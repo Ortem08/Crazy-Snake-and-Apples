@@ -167,6 +167,7 @@ public class CheapPistol : MonoBehaviour, ICardBasedItem, IChargeable
 
     public bool TryUseSecondaryAction()
     {
-        throw new System.NotImplementedException();
+        Debug.Log("Nope");
+        return true;
     }
 }

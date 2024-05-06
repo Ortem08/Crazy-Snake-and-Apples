@@ -13,4 +13,6 @@ public static class LayersStorage
     public static LayerMask NotPierceableObstacles = LayerMask.GetMask("Default", "MazeWalls", "MobHard", "ProjectileHard");
 
     public static LayerMask NotHurtableHard = LayerMask.GetMask("Default", "MazeWalls");
+
+    public static LayerMask PossiblyHurtables = LayerMask.GetMask("MobSoft", "ProjectileSoft", "MobHard", "ProjectileHard");
 }

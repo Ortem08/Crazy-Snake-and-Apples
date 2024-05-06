@@ -20,6 +20,9 @@ public class ProjectileFactory : MonoBehaviour
     [SerializeField]
     private GameObject grenadePrefab;
 
+    [SerializeField]
+    private GameObject trackerPrefab;
+
     private readonly Dictionary<Spell, GameObject> spellToPrefabMap = new();
 
     private void Awake()
@@ -35,6 +38,7 @@ public class ProjectileFactory : MonoBehaviour
         spellToPrefabMap.Add(Spell.Explosion, explosionPrefab);
         spellToPrefabMap.Add(Spell.GunShot, gunShotPrefab);
         spellToPrefabMap.Add(Spell.Grenade, grenadePrefab);
+        spellToPrefabMap.Add(Spell.Tracker, trackerPrefab);
 
         /*foreach (var prefab in projectilePrefabs)
         {
@@ -71,6 +75,7 @@ public class ProjectileFactory : MonoBehaviour
                 {
                     throw new System.Exception($"spell not resolved {spell}");
                 }
+                //Debug.Log(projectilePrefab);
                 var nextNode = new ProjectileTreeNode(projectilePrefab, instantiator, curNode);
                 curNode.AddChild(nextNode);
 

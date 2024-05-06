@@ -9,7 +9,7 @@ using UnityEngine.InputSystem.HID;
 using UnityEngine.UIElements;
 using static UnityEngine.UI.Image;
 
-public class GunShot : ProjectileBase, IDamaging, IPierceable
+public class GunShot : ProjectileBase, IDamaging, IPierceable, IBouncing
 {
     public static Spell Spell => Spell.GunShot;
 
@@ -17,8 +17,25 @@ public class GunShot : ProjectileBase, IDamaging, IPierceable
 
     public DamageInfo DamageInfo { get; set; } = new DamageInfo(10);
 
+    [SerializeField]
+    private GameObject lineDetectorPrefab;
+
     [DoNotSerialize]
     public bool CanPierce { get; set; } = false;
+
+    private int bounceLevel = 0;
+    public int BounceLevel { 
+        get => bounceLevel;
+        set
+        {
+            if (value >= 0)
+            {
+                bounceLevel = value;
+            }
+        }
+    }
+
+    private int bounceCountLeft = 0;
 
     private readonly float range = 100;
 
@@ -39,13 +56,115 @@ public class GunShot : ProjectileBase, IDamaging, IPierceable
         lineRenderer.material.color = Color.yellow;
     }
 
+    private void Start()
+    {
+        if (lineDetectorPrefab == null)
+        {
+            throw new Exception("line detector not found");
+        }
+    }
+
     public override void Fire(Vector3 origin, Vector3 direction, Vector3 baseVelocity = default)
+    {
+        StartCoroutine(StartFire(origin, direction, baseVelocity));
+
+        /*if (used)
+        {
+            throw new Exception("wtf maaan! its disposable");
+        }
+        used = true;
+
+        BeforeFire();
+
+        var expirationInfos = new List<object>();
+
+        var detector = Instantiate(lineDetectorPrefab).GetComponent<LineDetector>();
+
+        foreach (var hitInfo in detector.PerformAction(origin, direction, range, LayersStorage.NotPierceableObstacles, 
+            LayersStorage.Pierceable, CanPierce, overridenVisibleRayBegin))
+        {
+            AttemptHurting(hitInfo.collider.gameObject);
+            expirationInfos.Add(
+                    new HitSomethingInfo(hitInfo.collider.gameObject,
+                        hitInfo.point,
+                        direction.normalized,
+                        hitInfo.normal)
+                    );
+        }
+
+        expirationInfos.Add(new ExpirationInfo(detector.ExpirationPos, direction.normalized));
+
+        StartCoroutine(ActivateNextAndExpire(
+                new CompositionBasedProjectileInfo(expirationInfos)
+            ));*/
+    }
+
+    private IEnumerator StartFire(Vector3 origin, Vector3 direction, Vector3 baseVelocity = default)
     {
         if (used)
         {
             throw new Exception("wtf maaan! its disposable");
         }
         used = true;
+
+        BeforeFire();
+
+        var curDirection = direction.normalized;
+
+        var isFirstIteration = true;
+
+        var curOrigin = origin;
+
+        while (bounceCountLeft-- >= 0)
+        {
+            var detector = MakePartFire(curOrigin, curDirection, out var expInfos, isFirstIteration ? overridenVisibleRayBegin : null);
+            isFirstIteration = false;
+            if (detector.HardHit != null)
+            {
+                var d = curDirection;
+                var n = ((RaycastHit)detector.HardHit).normal.normalized;
+
+                var reflectionDirection = d - 2 * Vector3.Dot(d, n) * n;
+                curDirection = reflectionDirection;
+            }
+            curOrigin = detector.ExpirationPos;
+            yield return new WaitForSeconds(0.03f);
+            OnProjectileEvent?.Invoke(new CompositionBasedProjectileInfo(expInfos));
+        }
+    }
+
+    private LineDetector MakePartFire(Vector3 origin, Vector3 direction, out List<object> expirationInfos, Vector3? visibleStartPos = null)
+    {
+        expirationInfos = new List<object>();
+
+        var detector = Instantiate(lineDetectorPrefab).GetComponent<LineDetector>();
+
+        foreach (var hitInfo in detector.PerformAction(origin, direction, range, LayersStorage.NotPierceableObstacles,
+            LayersStorage.Pierceable, CanPierce, visibleStartPos))
+        {
+            AttemptHurting(hitInfo.collider.gameObject);
+            expirationInfos.Add(
+                    new HitSomethingInfo(hitInfo.collider.gameObject,
+                        hitInfo.point,
+                        direction.normalized,
+                        hitInfo.normal)
+                    );
+        }
+
+        expirationInfos.Add(new ExpirationInfo(detector.ExpirationPos, direction.normalized));
+
+        return detector;
+    }
+
+    /*private void OldFire(Vector3 origin, Vector3 direction, Vector3 baseVelocity = default)
+    {
+        if (used)
+        {
+            throw new Exception("wtf maaan! its disposable");
+        }
+        used = true;
+
+        BeforeFire();
 
         var rangeLimit = range;
         var expirationPos = origin + direction.normalized * range;
@@ -101,7 +220,7 @@ public class GunShot : ProjectileBase, IDamaging, IPierceable
         {
             lineRenderer.SetPosition(0, (Vector3)overridenVisibleRayBegin);
         }
-        
+
         lineRenderer.SetPosition(1, expirationPos);
 
         expirationInfos.Add(new ExpirationInfo(expirationPos, direction.normalized));
@@ -109,6 +228,11 @@ public class GunShot : ProjectileBase, IDamaging, IPierceable
         StartCoroutine(ShowLaserAndExpire(
                 new CompositionBasedProjectileInfo(expirationInfos)
             ));
+    }*/
+
+    private void BeforeFire()
+    {
+        bounceCountLeft = BounceLevel * 2;
     }
 
     /// <summary>
@@ -130,7 +254,7 @@ public class GunShot : ProjectileBase, IDamaging, IPierceable
         return false;
     }
 
-    private IEnumerator ShowLaserAndExpire(IProjectileInfo projectileInfo)
+/*    private IEnumerator ShowLaserAndExpire(IProjectileInfo projectileInfo)
     {
         lineRenderer.enabled = true;
         yield return new WaitForSeconds(0.05f); // ”меньшенное врем€ видимости дл€ имитации вспышки
@@ -138,6 +262,13 @@ public class GunShot : ProjectileBase, IDamaging, IPierceable
         yield return new WaitForSeconds(0.05f);
         lineRenderer.enabled = false;
         
+        Destroy(gameObject);
+    }*/
+
+    private IEnumerator ActivateNextAndExpire(IProjectileInfo projectileInfo)
+    {
+        yield return new WaitForSeconds(0.05f);
+        OnProjectileEvent?.Invoke(projectileInfo);
         Destroy(gameObject);
     }
 }
