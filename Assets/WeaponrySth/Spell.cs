@@ -13,4 +13,7 @@ public enum Spell
     BouncinessIncrease,
     DamageIncreaseConstant,
     Piercing,
+
+    // Branching
+    AscendTree,
 }

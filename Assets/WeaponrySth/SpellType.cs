@@ -5,5 +5,6 @@ using UnityEngine;
 public enum SpellType
 {
     Projectile = 0,
-    Modifier = 1
+    Modifier = 1,
+    Branching = 2,
 }
