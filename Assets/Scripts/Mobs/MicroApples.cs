@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using TMPro;
 using UnityEngine;
 using UnityEngine.AI;
 using Random = UnityEngine.Random;
@@ -9,6 +10,7 @@ using Random = UnityEngine.Random;
 public class MicroApples : CreatureBase, IMob
 {
     private GameObject player { get; set; }
+    private PlayerComponent playerComponent { get; set; }
     private const float AttackDistance = 2f;
     public StateMachine StateMachine { get; set; }
     public float MaxHealth;
@@ -42,9 +44,9 @@ public class MicroApples : CreatureBase, IMob
     private void Start()
     {
         animator = gameObject.GetComponentInParent<Animator>();
-
         agent = GetComponentInParent<NavMeshAgent>();
         player = GameObject.FindGameObjectWithTag("Player");
+        playerComponent = player.GetComponent<PlayerComponent>();
         StateMachine = new StateMachine();
         StateMachine.ChangeState(new IdleState(this));
         path = new NavMeshPath();
@@ -63,6 +65,7 @@ public class MicroApples : CreatureBase, IMob
             animator.SetBool("IsWalking", false);
             animator.SetBool("IsRunning", false);
             animator.SetBool("Idle", true);
+            agent.stoppingDistance = 0;
             TryPatrolInPlace();
         }
         else if (StateMachine.currentState is WanderState)
@@ -70,6 +73,7 @@ public class MicroApples : CreatureBase, IMob
             animator.SetBool("Idle", false);
             animator.SetBool("IsRunning", false);
             animator.SetBool("IsWalking", true);
+            agent.stoppingDistance = 0;
             TryPickRandomDestination();
         }
         else if (StateMachine.currentState is ChaseState)
@@ -77,6 +81,7 @@ public class MicroApples : CreatureBase, IMob
             animator.SetBool("IsWalking", false);
             animator.SetBool("Idle", false);
             animator.SetBool("IsRunning", true);
+            agent.stoppingDistance = 2;
             ChasePlayer();
         }
         else if (StateMachine.currentState is AttackState)
@@ -131,20 +136,32 @@ public class MicroApples : CreatureBase, IMob
 
     public override void PerformAttack()
     {
-        //Debug.Log("MicroApple Atakin");
-        //player.ConsumeDamage(Damage);
+        playerComponent.ConsumeDamage(Damage);
     }
 
     public bool CanSeePlayer()
     {
-        var directionToTarget = (player.transform.position - transform.position).normalized;
-        //Debug.Log(Vector3.Angle(transform.forward, directionToTarget));
-        if (Vector3.Angle(transform.forward, directionToTarget) >= fieldOfViewAngle)
+        // Получаем направление к цели, игнорируя компоненту y
+        Vector3 directionToTargetFlat = player.transform.position - transform.position;
+        directionToTargetFlat.y = 0;
+        directionToTargetFlat.Normalize();
+
+        // Используем плоский вектор направления вперёд, игнорируя компоненту y
+        Vector3 forwardFlat = transform.forward;
+        forwardFlat.y = 0;
+        forwardFlat.Normalize();
+
+        // Вычисляем угол между плоскими векторами
+        var angle = Vector3.Angle(forwardFlat, directionToTargetFlat);
+        Debug.Log(angle);
+
+        if (angle <= fieldOfViewAngle / 2) // Проверяем, находится ли игрок в поле зрения
         {
             var distanceToTarget = Vector3.Distance(transform.position, player.transform.position);
-            var let1 = Physics.Raycast(transform.position, directionToTarget, distanceToTarget, obstructionMask);
-            //Debug.Log(let1);
-            if (!let1)
+            // Пускаем луч, начиная немного выше пола, чтобы избежать коллизии с землёй
+            var rayStart = transform.position + Vector3.up * 0.5f;
+            var let1 = Physics.Raycast(rayStart, directionToTargetFlat, distanceToTarget, obstructionMask);
+            if (!let1) // Если луч не встретил препятствий, значит игрок виден
             {
                 return true;
             }
@@ -152,6 +169,8 @@ public class MicroApples : CreatureBase, IMob
 
         return false;
     }
+
+
 
     public bool CanAttackPlayer()
     {
@@ -192,30 +211,18 @@ public class MicroApples : CreatureBase, IMob
     public void TryPickRandomDestination()
     {
         var randomPoint = transform.position + Random.insideUnitSphere * randomPointRadius;
-        NavMesh.SamplePosition(randomPoint, out var hit, randomPointRadius, 1);
-        var destination = hit.position;
-        agent.CalculatePath(destination, path);
+        var IsCorrectPath = NavMesh.SamplePosition(randomPoint, out var hit, randomPointRadius, 1);
+        while (!IsCorrectPath)
+        {
+            randomPoint = transform.position + Random.insideUnitSphere * randomPointRadius;
+            IsCorrectPath = NavMesh.SamplePosition(randomPoint, out hit, randomPointRadius, 1);
+        }
 
+        var destination = hit.position;
+
+        agent.CalculatePath(destination, path);
+        
         if (path.status == NavMeshPathStatus.PathComplete)
             agent.SetPath(path);
-
-        //agent.SetPath(path);
-    }
-
-
-    private void UpdateDestination()
-    {
-        var check = CanSeePlayer();
-        Debug.Log(check);
-        if (check)
-        {
-            agent.stoppingDistance = 2;
-            agent.SetDestination(player.transform.position);
-        }
-        else
-            agent.stoppingDistance = 0;
-
-        if (!agent.hasPath || (agent.hasPath && !check))
-            TryPickRandomDestination();
     }
 }

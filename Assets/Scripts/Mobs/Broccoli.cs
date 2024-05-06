@@ -53,7 +53,7 @@ public class Broccoli : CreatureBase
             .Where(x => x && x != thisCollider 
                           && (x.CompareTag("Creature") || x.CompareTag("Player")))
             .Select(x => x.gameObject.GetComponent<IHurtable>());
-        
+
         soundController.PlaySound("BroccoliBoom", 0.6f, transform.position);
         
         foreach (var creature in creatureEntities)
