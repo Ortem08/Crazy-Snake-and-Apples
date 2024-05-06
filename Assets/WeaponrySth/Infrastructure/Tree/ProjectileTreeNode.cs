@@ -8,7 +8,8 @@ public class ProjectileTreeNode : IProjectileTreeNode
 {
     public IProjectileTreeNode Parent { get; }
 
-    public IEnumerable<IProjectileTreeNode> Children { get; } = new List<IProjectileTreeNode>();
+    private List<IProjectileTreeNode> children = new List<IProjectileTreeNode>();
+    public IEnumerable<IProjectileTreeNode> Children => children;
 
     public IEnumerable<IModifier> Modifiers => _modifiers;
 
@@ -35,6 +36,11 @@ public class ProjectileTreeNode : IProjectileTreeNode
         {
             _modifiers.Add(mod);
         }
+    }
+
+    public void AddModifier(IModifier modifier)
+    {
+        _modifiers.Add(modifier);
     }
 
     public GameObject InstantiateProjectile()
@@ -66,5 +72,10 @@ public class ProjectileTreeNode : IProjectileTreeNode
         var result = InstantiateProjectile();
         result.transform.position = position;
         return result;
+    }
+
+    public void AddChild(IProjectileTreeNode child)
+    {
+        children.Add(child);
     }
 }

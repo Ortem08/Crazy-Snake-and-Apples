@@ -139,61 +139,59 @@ public class LaggyPistol : MonoBehaviour, ICardBasedItem, IChargeable
 
         EnsureInHandAvatarPosision();
 
-        IProjectileTreeNode tree;
-
+        var spellList = spells;
         if (CardInventory.Count > 0)
         {
-            tree = projectileFactory.AssembleProjectileTree(
-                    CardInventory
+            spellList = CardInventory
                         .Cards
                         .Where(c => c != null)
                         .Select(c => c.Spell)
-                        .ToList()
-                );
-        }
-        else
-        {
-            tree = projectileFactory.AssembleProjectileTree(spells);
+                        .ToList();
         }
 
-        if (tree == null)
+        var projectileForest = projectileFactory.AssembleProjectileForest(spellList);
+
+        if (projectileForest.Count == 0)
         {
             Debug.Log("insert spell please");
             return false;
         }
 
-        var instance = tree.InstantiateProjectile();
-
-        if (instance == null)
+        foreach (var tree in projectileForest)
         {
-            Debug.Log("insert spell please");
-            return false;
-        }
-
-        if (instance.TryGetComponent<IProjectile>(out var projectile))
-        {
-            Vector3 shootDirection = user.CameraTransform.forward;
-            var delta = (user.CameraTransform.right - user.CameraTransform.up) * 0.02f;
-            Vector3 startPosition = user.CameraTransform.position + shootDirection * 0.1f;
-
-            if (projectile is GunShot)
+            if (tree == null)
             {
-                (projectile as GunShot).SetVisibleRayBeginning(tipOfTheGun.position);
+                Debug.Log("insert spell please");
+                return false;
             }
 
-            projectile.Fire(startPosition, shootDirection, user.Velocity);
+            var instance = tree.InstantiateProjectile();
+            if (instance.TryGetComponent<IProjectile>(out var projectile))
+            {
+                Vector3 shootDirection = user.CameraTransform.forward;
+                var delta = (user.CameraTransform.right - user.CameraTransform.up) * 0.02f;
+                Vector3 startPosition = user.CameraTransform.position + shootDirection * 0.1f;
 
-            //if (soundController != null)
-            //{
-            //    soundController.PlaySound("PistolShot", startPosition + user.CameraTransform.forward, 0.8f);
-            //}
-        }
-        else
-        {
-            throw new System.Exception("WTF?! Instance is not a projectile. Thats forbidden by law!");
+                if (projectile is GunShot)
+                {
+                    (projectile as GunShot).SetVisibleRayBeginning(tipOfTheGun.position);
+                }
+
+                projectile.Fire(startPosition, shootDirection, user.Velocity);
+
+                //if (soundController != null)
+                //{
+                //    soundController.PlaySound("PistolShot", startPosition + user.CameraTransform.forward, 0.8f);
+                //}
+            }
+            else
+            {
+                throw new System.Exception("WTF?! Instance is not a projectile. Thats forbidden by law!");
+            }
         }
 
-        shootCoroutine = StartCoroutine(ShootDelayPerform());
+        // this is "feature"
+        shootCoroutine = StartCoroutine(ShootDelayPerform(projectileForest.Count));
         
         return true;
     }
@@ -220,7 +218,7 @@ public class LaggyPistol : MonoBehaviour, ICardBasedItem, IChargeable
         rechargeCoroutine = null;
     }
 
-    private IEnumerator ShootDelayPerform()
+    private IEnumerator ShootDelayPerform(int projectileCount)
     {
         shooting = true;
         animator.SetTrigger("IsShooting");
