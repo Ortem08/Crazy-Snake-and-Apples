@@ -1,11 +1,14 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UIElements;
+using static UnityEditor.Experimental.GraphView.GraphView;
 
-public class LaggyPistol : MonoBehaviour, ICardBasedItem
+public class LaggyPistol : MonoBehaviour, ICardBasedItem, IChargeable
 {
     [SerializeField]
     private GameObject onSceneAvatar;
@@ -22,6 +25,10 @@ public class LaggyPistol : MonoBehaviour, ICardBasedItem
 
     public CardInventory CardInventory { get; private set; }
 
+    public ChargeInfo ChargeInfo { get; private set; } 
+
+    public event Action<ChargeInfo> OnChargeChanged;
+
     private ProjectileFactory projectileFactory;
 
     private IUser user;
@@ -35,16 +42,30 @@ public class LaggyPistol : MonoBehaviour, ICardBasedItem
     private float cooldown = 1f / 3f;
     private float lastShotTime;
 
+    private Vector3 inHandAvatarInitialEulerAngles;
+
+    // animation ruling logic
+    private bool recharging = false;
+    private bool shooting = false;
+    private Coroutine rechargeCoroutine;
+    private Coroutine shootCoroutine;
+    private float rechargeTime = 5;
+    // end
+
     private void Awake()
     {
         colliderForDetection = GetComponent<Collider>();
 
         CardInventory = new CardInventory();    //yep. empty and with full capasity
+
+        this.ChargeInfo = new ChargeInfo(10);
     }
 
     private void Start()
     {
         animator = inHandAvatar.GetComponent<Animator>();
+
+        inHandAvatarInitialEulerAngles = inHandAvatar.transform.localEulerAngles;
 
         var soundControllerObject = GameObject.FindGameObjectWithTag("SoundController");
         if (soundControllerObject == null || !soundControllerObject.TryGetComponent<SoundController>(out soundController))
@@ -65,16 +86,31 @@ public class LaggyPistol : MonoBehaviour, ICardBasedItem
         transform.eulerAngles = Vector3.zero;
         onSceneAvatar.SetActive(true);
         colliderForDetection.enabled = true;
+        OnChargeChanged = null; // to prevent "memory leaks" (probably not needed)
     }
 
     public void OnSelect()
     {
+        EnsureInHandAvatarPosision();
         inHandAvatar.SetActive(true);
+    }
+
+    private void EnsureInHandAvatarPosision()
+    {
+        //animator.StopPlayback();
+        transform.localPosition = Vector3.zero + new Vector3(0.2f, -0.2f, 1f);
+
+        transform.forward = user.CameraTransform.forward;
+
+        inHandAvatar.transform.localPosition = Vector3.zero;     // to remove movement caused by animation
+        inHandAvatar.transform.localEulerAngles = inHandAvatarInitialEulerAngles;
+
     }
 
     public void OnUnselect()
     {
         inHandAvatar.SetActive(false);
+        AbortRecharge();
     }
 
     public void SetUser(IUser user)
@@ -84,19 +120,24 @@ public class LaggyPistol : MonoBehaviour, ICardBasedItem
         onSceneAvatar.SetActive(false);
 
         transform.parent = user.CameraTransform;
-        transform.localPosition = Vector3.zero + new Vector3(0.2f, -0.2f, 1f);
-
-        inHandAvatar.transform.forward = user.CameraTransform.forward;
-        inHandAvatar.transform.Rotate(new Vector3(270, 0, 0));
+        EnsureInHandAvatarPosision();
     }
 
     public bool TryUsePrimaryAction()
     {
-        if (Time.time - lastShotTime < cooldown)
+/*        if (Time.time - lastShotTime < cooldown)
+            return false;*/
+
+        if (recharging || shooting)
             return false;
 
-        if (!animator.GetBool("canShoot"))
+        if (ChargeInfo.CurrentCharge <= 0)
+        {
+            Debug.Log("no more charges");
             return false;
+        }
+
+        EnsureInHandAvatarPosision();
 
         IProjectileTreeNode tree;
 
@@ -152,16 +193,53 @@ public class LaggyPistol : MonoBehaviour, ICardBasedItem
             throw new System.Exception("WTF?! Instance is not a projectile. Thats forbidden by law!");
         }
 
-        lastShotTime = Time.time;
-        animator.SetTrigger("IsShooting");
+        shootCoroutine = StartCoroutine(ShootDelayPerform());
         
         return true;
     }
 
     public bool TryUseSecondaryAction()
     {
-        Debug.Log("Shoot yourself if the leg. Now.");
+        Debug.Log("Shoot yourself if the leg. Now. And Recharge :D. Slowly");
+        if (shooting || recharging)
+        {
+            return false;
+        }
+        rechargeCoroutine = StartCoroutine(RefillCharge());
         return true;
+    }
+
+    private IEnumerator RefillCharge()
+    {
+        recharging = true;
+        animator.SetTrigger("TrReload");
+        yield return new WaitForSeconds(rechargeTime);
+        recharging = false;
+        ChargeInfo.CurrentCharge = ChargeInfo.MaxCharge;
+        OnChargeChanged?.Invoke(ChargeInfo);
+        rechargeCoroutine = null;
+    }
+
+    private IEnumerator ShootDelayPerform()
+    {
+        shooting = true;
+        animator.SetTrigger("IsShooting");
+        ChargeInfo.CurrentCharge -= 1;
+        Debug.Log($"shot performed; cur charge = {ChargeInfo.CurrentCharge}");
+        OnChargeChanged?.Invoke(ChargeInfo);
+        yield return new WaitForSeconds(cooldown);
+        shooting = false;
+        shootCoroutine = null;
+    }
+
+    private void AbortRecharge()
+    {
+        if (recharging)
+        {
+            StopCoroutine(rechargeCoroutine);
+            rechargeCoroutine = null;
+            recharging = false;
+        }
     }
 
     public Sprite GetItemAvatarSprite()
