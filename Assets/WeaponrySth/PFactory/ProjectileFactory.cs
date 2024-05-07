@@ -23,6 +23,9 @@ public class ProjectileFactory : MonoBehaviour
     [SerializeField]
     private GameObject trackerPrefab;
 
+    [SerializeField]
+    private GameObject canonBallPrefab;
+
     private readonly Dictionary<Spell, GameObject> spellToPrefabMap = new();
 
     private void Awake()
@@ -39,6 +42,7 @@ public class ProjectileFactory : MonoBehaviour
         spellToPrefabMap.Add(Spell.GunShot, gunShotPrefab);
         spellToPrefabMap.Add(Spell.Grenade, grenadePrefab);
         spellToPrefabMap.Add(Spell.Tracker, trackerPrefab);
+        spellToPrefabMap.Add(Spell.CanonBall, canonBallPrefab);
 
         /*foreach (var prefab in projectilePrefabs)
         {

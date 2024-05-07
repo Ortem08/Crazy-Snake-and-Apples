@@ -48,7 +48,8 @@ MonoBehaviour:
   explosionPrefab: {fileID: 8934848126969446009, guid: bbc19249fd579d74ca9016f99bfc9549, type: 3}
   gunShotPrefab: {fileID: 8441881146346697974, guid: 87594b67418151d4fa13fbdab19fefa1, type: 3}
   grenadePrefab: {fileID: 3145324235525944911, guid: d6387e376882b1145ba3e85f40d54af0, type: 3}
-  trackerPrefab: {fileID: 1278642090685620072}
+  trackerPrefab: {fileID: 514666631979915890, guid: d1f5006042efcaf4a9519c37a4b858b7, type: 3}
+  canonBallPrefab: {fileID: 8287088002333541917, guid: 81b1e79ffac7db44aba10d42e933afe1, type: 3}
 --- !u!114 &8638411917308348714
 MonoBehaviour:
   m_ObjectHideFlags: 0

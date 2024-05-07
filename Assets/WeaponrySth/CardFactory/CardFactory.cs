@@ -34,6 +34,9 @@ public class CardFactory : MonoBehaviour
     [SerializeField]
     private Texture2D TrackerTexture;
 
+    [SerializeField]
+    private Texture2D CanonBallTexture;
+
     public CardAvatar CreateCardAvatar(ICard card, Vector3 position)
     {
         var avatar = Instantiate(cardAvatarPrefab, position, Quaternion.identity)
@@ -74,6 +77,10 @@ public class CardFactory : MonoBehaviour
         else if (spell == Spell.Tracker)
         {
             return new TrackerCard(TrackerTexture);
+        }
+        else if (spell == Spell.CanonBall)
+        {
+            return new GenericCard(CanonBallTexture, Spell.CanonBall, "CanonBall", SpellType.Projectile, "shoots a canonball");
         }
 
         // branching

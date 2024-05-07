@@ -26,6 +26,8 @@ public class Turret : MonoBehaviour, IUser, IHurtable
 
     public UnityEvent<float, float> OnHealthIncrease => throw new System.NotImplementedException();
 
+    public GameObject UserGameObject => gameObject;
+
     private Rigidbody rb;
 
     private IInventoryItem currentItem = null;

@@ -13,4 +13,6 @@ public interface IUser
     public Vector3 Velocity { get; }
 
     public UserType UserType { get; }
+
+    public GameObject UserGameObject { get; }
 }

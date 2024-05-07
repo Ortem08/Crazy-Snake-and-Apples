@@ -9,6 +9,7 @@ public enum Spell
     GunShot = 1,
     Grenade = 2,
     Tracker = 3,
+    CanonBall = 4,
 
     // Modifiers
     BouncinessIncrease = 101,

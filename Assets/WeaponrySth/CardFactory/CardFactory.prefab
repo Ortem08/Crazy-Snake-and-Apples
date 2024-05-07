@@ -51,3 +51,7 @@ MonoBehaviour:
   gunShotTexture: {fileID: 2800000, guid: 811c9ca9f08fc6943a07e7bf34a8610a, type: 3}
   explosionTexture: {fileID: 2800000, guid: c0f91c7d290f39244975f4e8e282b243, type: 3}
   grenadeTexture: {fileID: 2800000, guid: c86e7d2e5b1e33d49842e4e6a1c117c5, type: 3}
+  AscendTreeTexture: {fileID: 2800000, guid: c8eb7d544ebd85c49b7e4425ddac66f7, type: 3}
+  AscendTreeTwiceTexture: {fileID: 2800000, guid: 972a176f8e4990640860e084c7a7f1a8, type: 3}
+  TrackerTexture: {fileID: 2800000, guid: cba07bd5b78b3914eb683e74e313124f, type: 3}
+  CanonBallTexture: {fileID: 2800000, guid: 68035c25d7ba3fe4f8a3b9833826ef04, type: 3}

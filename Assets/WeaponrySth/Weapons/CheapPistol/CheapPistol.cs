@@ -154,6 +154,11 @@ public class CheapPistol : MonoBehaviour, ICardBasedItem, IChargeable
                     (projectile as GunShot).SetVisibleRayBeginning(tipOfTheGun.position);
                 }
 
+                if (projectile.TryGetModificationInterface<IUserSecure>(out var userSecure))
+                {
+                    userSecure.EnsureProtectionOfObjectWith(user.UserGameObject.GetInstanceID());
+                }
+
                 projectile.Fire(startPosition, shootDirection, user.Velocity);
             }
             else

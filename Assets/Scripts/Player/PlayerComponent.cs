@@ -48,6 +48,8 @@ public class PlayerComponent : MonoBehaviour, IHurtable, IUser, IPushable
 
     public UserType UserType => UserType.Player;
 
+    public GameObject UserGameObject => gameObject;
+
     public void ConsumeDamage(float amount)
     {
         TakeDamage(new DamageInfo(amount));
