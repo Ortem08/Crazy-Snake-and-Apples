@@ -12,6 +12,9 @@ public class LaggyPistol : MonoBehaviour, ICardBasedItem
 
     [SerializeField]
     private GameObject inHandAvatar;
+    
+    [SerializeField]
+    private Sprite sprite;
 
     [SerializeField]
     private Transform tipOfTheGun;
@@ -164,8 +167,5 @@ public class LaggyPistol : MonoBehaviour, ICardBasedItem
         return true;
     }
 
-    public Sprite GetItemAvatarSprite()
-    {
-        throw new System.NotImplementedException();
-    }
+    public Sprite GetItemAvatarSprite() => sprite;
 }
