@@ -6,10 +6,12 @@ using UnityEngine;
 using UnityEngine.AI;
 using Random = UnityEngine.Random;
 
-public class MicroApples : CreatureBase, IMob
+public class Bower : CreatureBase, IMob
 {
     private GameObject player { get; set; }
-    private const float AttackDistance = 2f;
+    private const float AttackDistance = 15f;
+    private const float ViewDistance = 30f;
+    
     public StateMachine StateMachine { get; set; }
     public float MaxHealth;
     public float CriticalHealthPercentage = 30f;
@@ -17,26 +19,33 @@ public class MicroApples : CreatureBase, IMob
     [SerializeField] private LayerMask obstructionMask;
     private float fieldOfViewAngle = 90f;
 
-    private float criticalDistance = 0f;
+    private float criticalDistance = 8f;
 
     private NavMeshAgent agent;
     private NavMeshPath path;
 
     [SerializeField] private float randomPointRadius = 5f;
 
+    public IState PreviousState { get; set; }
+    public bool IsBower { get; set; } = true;
 
+    public GameObject projectilePrefab;
     public float rotationSpeed = 1.0f;
     public float rotationAngle = 90.0f;
     public float rotationInterval = 2.0f;
-    private float currentAngle = 0.0f;
-    private bool isRotating = false;
-    private float timer = 0.0f;
+    
+    private float currentAngle;
+    private bool isRotating;
+    private float timer;
+    private const float attackCooldown = 2.5f;
+    private float lastAttackTime = 0;
 
     private Animator animator;
 
 
-    public MicroApples() : base(20, 1)
+    public Bower() : base(20, 1)
     {
+        ViewAngle = 110;
     }
     
     private void Start()
@@ -49,14 +58,24 @@ public class MicroApples : CreatureBase, IMob
         StateMachine.ChangeState(new IdleState(this));
         path = new NavMeshPath();
     }
-
+    
     private void Update()
     {
         timer += Time.deltaTime;
 
         StateMachine.Update();
 
-        //Debug.Log(CanSeePlayer());
+        Debug.Log((PreviousState, StateMachine.currentState, StateMachine.StateBrandNew));
+        if (StateMachine.currentState is IdleState && PreviousState is RunBackState && StateMachine.StateBrandNew)
+        {
+            Debug.Log(agent.remainingDistance);
+            
+            Debug.Log("ROTAAAAAAAAAAATION");
+            transform.parent.transform.Rotate(0, 180, 0);
+            agent.ResetPath();
+            StateMachine.StateBrandNew = false;
+            
+        }
 
         if (StateMachine.currentState is IdleState)
         {
@@ -84,15 +103,15 @@ public class MicroApples : CreatureBase, IMob
             animator.SetBool("IsWalking", false);
             animator.SetBool("Idle", false);
             animator.SetBool("IsRunning", false);
-            animator.SetTrigger("Attack");
-            PerformAttack();
+            //animator.SetTrigger("Attack");
+            if (Time.time - lastAttackTime > attackCooldown)
+                PerformAttack();
         }
-        else if (StateMachine.currentState is PanicState)
+        else if (StateMachine.currentState is RunBackState)
         {
             animator.SetBool("IsWalking", false);
-            animator.SetBool("IsRunning", false);
-            animator.SetBool("Idle", true);
-            RunAway();
+            animator.SetBool("IsRunning", true);
+            animator.SetBool("Idle", false);
         }
     }
     
@@ -110,18 +129,18 @@ public class MicroApples : CreatureBase, IMob
         }
     }
 
-    void RotateMob()
+    private void RotateMob()
     {
-        float maxRadians = rotationAngle * Mathf.Deg2Rad;
+        var maxRadians = rotationAngle * Mathf.Deg2Rad;
         currentAngle += rotationSpeed * Time.deltaTime;
-        float radians = currentAngle * Mathf.Deg2Rad;
+        var radians = currentAngle * Mathf.Deg2Rad;
 
         // »спользуем синус дл€ модул€ции скорости
-        float sinusoidalSpeed = Mathf.Sin(Mathf.PI * radians / maxRadians);
+        var sinusoidalSpeed = Mathf.Sin(Mathf.PI * radians / maxRadians);
 
         // ѕримен€ем скорость поворота
         transform.Rotate(Vector3.up, sinusoidalSpeed * Time.deltaTime * rotationSpeed);
-
+        
         // ѕровер€ем, достигли ли мы конечного угла
         if (radians >= maxRadians)
         {
@@ -131,42 +150,58 @@ public class MicroApples : CreatureBase, IMob
 
     public override void PerformAttack()
     {
-        //Debug.Log("MicroApple Atakin");
-        //player.ConsumeDamage(Damage);
+        var projectile = Instantiate(projectilePrefab, transform.position + new Vector3(0, 1, 0), Quaternion.identity);
+        var rb = projectile.GetComponent<Rigidbody>();
+
+        var targetDir = player.transform.position - transform.position;
+        var h = targetDir.y; // высота
+        targetDir.y = 0; // рассто€ние на плоскости xz
+        var distance = targetDir.magnitude;
+        var a = 22 * Mathf.Deg2Rad;
+        targetDir.y = distance * Mathf.Tan(a);
+        distance += h / Mathf.Tan(a);
+
+        // –ассчитываем начальную скорость
+        var velocity = Mathf.Sqrt(distance * Physics.gravity.magnitude / Mathf.Sin(2 * a));
+        rb.velocity = velocity * targetDir.normalized;
+
+        lastAttackTime = Time.time;
     }
 
     public bool CanSeePlayer()
     {
-        var directionToTarget = (player.transform.position - transform.position).normalized;
-        //Debug.Log(Vector3.Angle(transform.forward, directionToTarget));
-        if (Vector3.Angle(transform.forward, directionToTarget) >= fieldOfViewAngle)
-        {
-            var distanceToTarget = Vector3.Distance(transform.position, player.transform.position);
-            var let1 = Physics.Raycast(transform.position, directionToTarget, distanceToTarget, obstructionMask);
-            //Debug.Log(let1);
-            if (!let1)
-            {
-                return true;
-            }
-        }
+        var dirToPlayer = player.transform.position - transform.position;
+        var angleToPlayer = Vector3.Angle(transform.parent.transform.forward, dirToPlayer);
 
-        return false;
+        if (!(angleToPlayer < ViewAngle / 2) || !(dirToPlayer.magnitude < ViewDistance)) 
+            return false;
+        
+        if (!Physics.Raycast(transform.position, dirToPlayer.normalized, out var hit, ViewDistance)) 
+            return false;
+        
+        return hit.transform == player.transform;
     }
 
     public bool CanAttackPlayer()
     {
         var distanceToPlayer = Vector3.Distance(transform.position, player.transform.position);
-        return distanceToPlayer <= AttackDistance ? true : false;
+        
+        return distanceToPlayer <= AttackDistance;
     }
 
     public float GetHealthPercentage()
     {
-        return (Health / MaxHealth) * 100;
+        return Health / MaxHealth * 100;
     }
 
     public void RunAway()
     {
-        agent.SetDestination(Vector3.Normalize(transform.position - player.transform.position) * 5);
+        var toPlayerReversed = transform.position - player.transform.position;
+        //toPlayerReversed.Normalize();
+        toPlayerReversed *= 5;
+        var goodPosition = transform.position + toPlayerReversed;
+
+        agent.SetDestination(goodPosition);
     }
 
     public float GetDistanceToPlayer()
@@ -186,7 +221,12 @@ public class MicroApples : CreatureBase, IMob
 
     public void ChasePlayer()
     {
-        agent.SetDestination(player.transform.position);
+        var toPlayer = transform.position - player.transform.position;
+        toPlayer.Normalize();
+        var goodLengthToPlayer = AttackDistance * toPlayer;
+        var goodPosition = player.transform.position + goodLengthToPlayer;
+
+        agent.SetDestination(goodPosition);
     }
 
     public void TryPickRandomDestination()
@@ -205,9 +245,6 @@ public class MicroApples : CreatureBase, IMob
 
         //agent.SetPath(path);
     }
-
-    public IState PreviousState { get; set; }
-    public bool IsBower { get; set; }
 
 
     private void UpdateDestination()

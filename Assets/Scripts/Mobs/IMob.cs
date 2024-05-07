@@ -15,4 +15,7 @@ public interface IMob
     public float GetCriticalHealthPercentage();
     public void ChasePlayer();
     public void TryPickRandomDestination();
+    
+    public IState PreviousState { get; set; }
+    public bool IsBower { get; set; }
 }

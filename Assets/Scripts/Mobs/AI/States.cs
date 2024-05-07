@@ -17,9 +17,18 @@ public class WanderState : IState
 
     public void Execute()
     {
+        if (mob.IsBower && mob.GetDistanceToPlayer() < mob.GetCriticalDistance())
+        {
+            mob.StateMachine.ChangeState(new RunBackState(mob));
+            
+            mob.PreviousState = this;
+        }
+        
         if (mob.GetHealthPercentage() <= mob.GetCriticalHealthPercentage() && mob.GetDistanceToPlayer() <= mob.GetCriticalDistance())
         {
             mob.StateMachine.ChangeState(new PanicState(mob));
+            
+            mob.PreviousState = this;
             return;
         }
 
@@ -29,6 +38,8 @@ public class WanderState : IState
         if (timer > wanderTime)
         {
             mob.StateMachine.ChangeState(new IdleState(mob));
+            
+            mob.PreviousState = this;
         }
 
         if (mob.CanSeePlayer())
@@ -36,10 +47,14 @@ public class WanderState : IState
             if (mob.CanAttackPlayer())
             {
                 mob.StateMachine.ChangeState(new AttackState(mob));
+                
+                mob.PreviousState = this;
             }
             else
             {
                 mob.StateMachine.ChangeState(new ChaseState(mob));
+                
+                mob.PreviousState = this;
             }
         }
     }
@@ -61,9 +76,18 @@ public class IdleState : IState
 
     public void Execute()
     {
+        if (mob.IsBower && mob.GetDistanceToPlayer() < mob.GetCriticalDistance())
+        {
+            mob.StateMachine.ChangeState(new RunBackState(mob));
+            
+            mob.PreviousState = this;
+        }
+        
         if (mob.GetHealthPercentage() <= mob.GetCriticalHealthPercentage() && mob.GetDistanceToPlayer() <= mob.GetCriticalDistance())
         {
             mob.StateMachine.ChangeState(new PanicState(mob));
+            
+            mob.PreviousState = this;
             return;
         }
 
@@ -71,6 +95,8 @@ public class IdleState : IState
         if (timer > idleTime)
         {
             mob.StateMachine.ChangeState(new WanderState(mob));
+            
+            mob.PreviousState = this;
         }
 
         if (mob.CanSeePlayer())
@@ -78,10 +104,14 @@ public class IdleState : IState
             if (mob.CanAttackPlayer())
             {
                 mob.StateMachine.ChangeState(new AttackState(mob));
+                
+                mob.PreviousState = this;
             }
             else
             {
                 mob.StateMachine.ChangeState(new ChaseState(mob));
+                
+                mob.PreviousState = this;
             }
         }
     }
@@ -99,9 +129,18 @@ public class AttackState : IState
 
     public void Execute()
     {
+        if (mob.IsBower && mob.GetDistanceToPlayer() < mob.GetCriticalDistance())
+        {
+            mob.StateMachine.ChangeState(new RunBackState(mob));
+            
+            mob.PreviousState = this;
+        }
+        
         if (mob.GetHealthPercentage() <= mob.GetCriticalHealthPercentage() && mob.GetDistanceToPlayer() <= mob.GetCriticalDistance())
         {
             mob.StateMachine.ChangeState(new PanicState(mob));
+            
+            mob.PreviousState = this;
             return;
         }
 
@@ -110,10 +149,14 @@ public class AttackState : IState
             if (mob.CanSeePlayer())
             {
                 mob.StateMachine.ChangeState(new ChaseState(mob));
+                
+                mob.PreviousState = this;
             }
             else
             {
                 mob.StateMachine.ChangeState(new IdleState(mob));
+                
+                mob.PreviousState = this;
             }
         }
     }
@@ -134,9 +177,18 @@ public class ChaseState : IState
 
     public void Execute()
     {
+        if (mob.IsBower && mob.GetDistanceToPlayer() < mob.GetCriticalDistance())
+        {
+            mob.StateMachine.ChangeState(new RunBackState(mob));
+            
+            mob.PreviousState = this;
+        }
+        
         if (mob.GetHealthPercentage() <= mob.GetCriticalHealthPercentage() && mob.GetDistanceToPlayer() <= mob.GetCriticalDistance())
         {
             mob.StateMachine.ChangeState(new PanicState(mob));
+            
+            mob.PreviousState = this;
             return;
         }
 
@@ -147,6 +199,8 @@ public class ChaseState : IState
             if (mob.CanAttackPlayer())
             {
                 mob.StateMachine.ChangeState(new AttackState(mob));
+                
+                mob.PreviousState = this;
                 return;
             }
 
@@ -159,6 +213,8 @@ public class ChaseState : IState
         else
         {
             mob.StateMachine.ChangeState(new WanderState(mob));
+            
+            mob.PreviousState = this;
         }
     }
 }
@@ -179,6 +235,29 @@ public class PanicState : IState
         if (mob.GetHealthPercentage() > mob.GetCriticalHealthPercentage() || mob.GetDistanceToPlayer() > mob.GetCriticalDistance())
         {
             mob.StateMachine.ChangeState(new IdleState(mob));
+            
+            mob.PreviousState = this;
+        }
+    }
+}
+
+public class RunBackState : IState
+{
+    private IMob mob;
+
+    public RunBackState(IMob mob)
+    {
+        this.mob = mob;
+        mob.RunAway();
+    }
+    
+    public void Execute()
+    {
+        if (mob.GetDistanceToPlayer() > mob.GetCriticalDistance())
+        {
+            mob.StateMachine.ChangeState(new IdleState(mob));
+            
+            mob.PreviousState = this;
         }
     }
 }
