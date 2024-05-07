@@ -29,18 +29,23 @@ public class Bower : CreatureBase, IMob
     public IState PreviousState { get; set; }
     public bool IsBower { get; set; } = true;
 
+    public GameObject projectilePrefab;
     public float rotationSpeed = 1.0f;
     public float rotationAngle = 90.0f;
     public float rotationInterval = 2.0f;
+    
     private float currentAngle;
     private bool isRotating;
     private float timer;
+    private const float attackCooldown = 2.5f;
+    private float lastAttackTime = 0;
 
     private Animator animator;
 
 
     public Bower() : base(20, 1)
     {
+        ViewAngle = 110;
     }
     
     private void Start()
@@ -53,15 +58,12 @@ public class Bower : CreatureBase, IMob
         StateMachine.ChangeState(new IdleState(this));
         path = new NavMeshPath();
     }
-
+    
     private void Update()
     {
         timer += Time.deltaTime;
 
         StateMachine.Update();
-        /*Debug.Log(StateMachine.currentState);
-        Debug.Log((agent.destination, player.transform.position));
-        */
 
         Debug.Log((PreviousState, StateMachine.currentState, StateMachine.StateBrandNew));
         if (StateMachine.currentState is IdleState && PreviousState is RunBackState && StateMachine.StateBrandNew)
@@ -102,7 +104,8 @@ public class Bower : CreatureBase, IMob
             animator.SetBool("Idle", false);
             animator.SetBool("IsRunning", false);
             //animator.SetTrigger("Attack");
-            PerformAttack();
+            if (Time.time - lastAttackTime > attackCooldown)
+                PerformAttack();
         }
         else if (StateMachine.currentState is RunBackState)
         {
@@ -147,18 +150,32 @@ public class Bower : CreatureBase, IMob
 
     public override void PerformAttack()
     {
-        //Debug.Log("MicroApple Atakin");
-        //player.ConsumeDamage(Damage);
+        var projectile = Instantiate(projectilePrefab, transform.position + new Vector3(0, 1, 0), Quaternion.identity);
+        var rb = projectile.GetComponent<Rigidbody>();
+
+        var targetDir = player.transform.position - transform.position;
+        var h = targetDir.y; // высота
+        targetDir.y = 0; // расстояние на плоскости xz
+        var distance = targetDir.magnitude;
+        var a = 22 * Mathf.Deg2Rad;
+        targetDir.y = distance * Mathf.Tan(a);
+        distance += h / Mathf.Tan(a);
+
+        // Рассчитываем начальную скорость
+        var velocity = Mathf.Sqrt(distance * Physics.gravity.magnitude / Mathf.Sin(2 * a));
+        rb.velocity = velocity * targetDir.normalized;
+
+        lastAttackTime = Time.time;
     }
 
     public bool CanSeePlayer()
     {
         var dirToPlayer = player.transform.position - transform.position;
-        var angleToPlayer = Vector3.Angle(transform.forward, dirToPlayer);
+        var angleToPlayer = Vector3.Angle(transform.parent.transform.forward, dirToPlayer);
 
         if (!(angleToPlayer < ViewAngle / 2) || !(dirToPlayer.magnitude < ViewDistance)) 
             return false;
-
+        
         if (!Physics.Raycast(transform.position, dirToPlayer.normalized, out var hit, ViewDistance)) 
             return false;
         

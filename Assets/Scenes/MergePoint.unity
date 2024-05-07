@@ -843,6 +843,18 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1059442269}
     - target: {fileID: 419849817451887196, guid: 801750deb61711740aa508e651d593bf, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 419849817451887196, guid: 801750deb61711740aa508e651d593bf, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 419849817451887196, guid: 801750deb61711740aa508e651d593bf, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 419849817451887196, guid: 801750deb61711740aa508e651d593bf, type: 3}
       propertyPath: m_LocalPosition.x
       value: 10.394
       objectReference: {fileID: 0}
@@ -1733,6 +1745,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 0
   randomPointRadius: 50
+  projectilePrefab: {fileID: 407761066331171673, guid: 920ccaa477c38d64ca3b1989aabacdd4, type: 3}
   rotationSpeed: 1
   rotationAngle: 90
   rotationInterval: 2
