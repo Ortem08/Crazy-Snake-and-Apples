@@ -1,10 +1,18 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 
 public class CardInventory
 {
+    
+    // Подбор ICard. params: selected index
+    public UnityEvent<int> OnPickUpCard { get; } = new();
+    
+    // Выброс ICard. params: selected index
+    public UnityEvent<int> OnDropCard { get; } = new();
+    
     public List<ICard> Cards { get; }
 
     public int Capasity { get; }
@@ -28,6 +36,7 @@ public class CardInventory
             if (Cards[i] == null)
             {
                 Cards[i] = card;
+                OnPickUpCard.Invoke(i);
                 Count++;
                 return true;
             }
@@ -37,8 +46,11 @@ public class CardInventory
 
     public void RemoveCard(ICard card)
     {
-        if (Cards.Remove(card))
+        var index = Cards.IndexOf(card);
+        if (index != -1)
         {
+            Cards.RemoveAt(index);
+            OnDropCard.Invoke(index);
             Count--;
         }
     }

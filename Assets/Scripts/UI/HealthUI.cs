@@ -3,17 +3,20 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using Unity.VisualScripting;
 
 public class HealthUI : MonoBehaviour
 {
     [SerializeField]
-    private GameObject user;
+    private IHurtable user;
+    
+    // [SerializeField]
+    // private GameObject user;
     
     [SerializeField]
     private GameObject healthObjectPrefab;
     
     private GameObject healthBarObject;
-    private IHurtable userHurtable;
     private GameObject healthObject;
     private Image healthBarImage;
     private TextMeshProUGUI healthProgress;
@@ -31,19 +34,23 @@ public class HealthUI : MonoBehaviour
     
     void Awake()
     {
-        userHurtable = user.GetComponent<IHurtable>();
+        if (user is null)
+        {
+            user = FindObjectOfType<PlayerComponent>();
+            Debug.Log($"Player in Health: {user}");
+        }
         healthObject = Instantiate(healthObjectPrefab, transform);
         
         healthBarImage = healthObject.GetComponent<Image>();
         healthProgress = healthObject.GetComponentInChildren<TextMeshProUGUI>();
         
-        SetHealthUI(userHurtable.Health, userHurtable.MaxHealth);
+        SetHealthUI(user.Health, user.MaxHealth);
         healthBarImage.color = originalColor;
         
         // Ударили
-        userHurtable.OnHealthDecrease.AddListener(DecreaseHealthUI);
+        user.OnHealthDecrease.AddListener(DecreaseHealthUI);
         // Полечили
-        userHurtable.OnHealthIncrease.AddListener(IncreaseHealthUI);
+        user.OnHealthIncrease.AddListener(IncreaseHealthUI);
     }
     
     private void SetHealthUI(float health, float maxHealth)
