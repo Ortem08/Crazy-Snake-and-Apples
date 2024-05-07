@@ -30,7 +30,7 @@ public class Boss : CreatureBase
     {
         player = GameObject.FindGameObjectWithTag("Player");
         //FireProjectiles();
-        StartCoroutine(SelectAbility());
+        StartCoroutine(PerformLightningAttack());
     }
 
     private IEnumerator PerformLightningAttack()
