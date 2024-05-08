@@ -155,6 +155,7 @@ public class Canon : MonoBehaviour, ICardBasedItem, IChargeable
             return false;
         }
         ChargeInfo.CurrentCharge -= 1;
+        OnChargeChanged?.Invoke(ChargeInfo);
         StartCoroutine(StartFireAndRechargeAnimationAndCountdown());
 
         foreach (var tree in projectileForest)
@@ -249,6 +250,7 @@ public class Canon : MonoBehaviour, ICardBasedItem, IChargeable
         yield return new WaitForSeconds(rechargeTime);
         ChargeInfo.CurrentCharge = ChargeInfo.MaxCharge;
         indicatorRenderer.material.color = Color.green;
+        OnChargeChanged?.Invoke(ChargeInfo);
     }
 
     private void EnsureInHandPosition()

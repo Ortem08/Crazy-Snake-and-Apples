@@ -40,11 +40,20 @@ public class CheapPistol : MonoBehaviour, ICardBasedItem, IChargeable
     [SerializeField]
     private bool useInspectorSpellList = true;
 
+    [SerializeField]
+    private Renderer indicatorRenderer;
+
+    private readonly float rechargeTime = 0.5f;
+
+
+    private Animator animator;
+
     private void Awake()
     {
         CardInventory = new CardInventory(7);   // cheap
-        ChargeInfo = new ChargeInfo(30); // im tired of reloading
+        ChargeInfo = new ChargeInfo(1); // im tired of reloading
         colliderForDetection = GetComponent<Collider>();
+        animator = GetComponent<Animator>();
     }
 
     private void Start()
@@ -74,6 +83,11 @@ public class CheapPistol : MonoBehaviour, ICardBasedItem, IChargeable
             new Rect(0.0f, 0.0f, spriteTexture.width, spriteTexture.height),
                 new Vector2(0.5f, 0.5f)
             );
+
+        if (indicatorRenderer == null)
+        {
+            throw new Exception("indicator renderer not set");
+        }
     }
 
     public void DropOut()
@@ -82,8 +96,8 @@ public class CheapPistol : MonoBehaviour, ICardBasedItem, IChargeable
         transform.rotation = Quaternion.identity;
 
         avatar.SetActive(true);
-        avatar.transform.localPosition = Vector3.zero;
-        avatar.transform.localRotation = Quaternion.identity;
+        //avatar.transform.localPosition = Vector3.zero;
+        //avatar.transform.localRotation = Quaternion.identity;
 
         colliderForDetection.enabled = true;
 
@@ -114,17 +128,51 @@ public class CheapPistol : MonoBehaviour, ICardBasedItem, IChargeable
         this.user = user;
         transform.parent = user.CameraTransform;
 
-        transform.localPosition = Vector3.zero + new Vector3(0.4f, -0.2f, 1f);
+        transform.localPosition = Vector3.zero + new Vector3(0.5f, 0.1f, 1f);
 
-        transform.forward = user.CameraTransform.forward;
+        //transform.forward = user.CameraTransform.forward;
 
-        avatar.transform.localEulerAngles = new Vector3(90, 0, 0);
+        transform.rotation = user.CameraTransform.rotation;
+        transform.Rotate(Vector3.forward * 140, Space.Self);
+
+        //avatar.transform.localEulerAngles = new Vector3(90, 0, 0);
     }
 
     public bool TryUsePrimaryAction()
     {
-        transform.forward = user.CameraTransform.forward;
+        //transform.forward = user.CameraTransform.forward;
 
+        if (!TryPrepareProjectileForest(out var projectileForest))
+        {
+            return false;
+        }
+
+        if (ChargeInfo.CurrentCharge <= 0)
+        {
+            return false;
+        }
+        ChargeInfo.CurrentCharge -= 1;
+        OnChargeChanged?.Invoke(ChargeInfo);
+
+        StartCoroutine(StartShootingCountdown());
+
+        DoShooting(projectileForest);
+        return true;
+    }
+
+    private IEnumerator StartShootingCountdown()
+    {
+        //indicatorRenderer.material.color = Color.yellow;
+        animator.SetTrigger("TrRecoil");
+        indicatorRenderer.material.SetVector("_EmissionColor", new Vector4(0, 0, 0) * 0.7f);
+        yield return new WaitForSeconds(rechargeTime);
+        ChargeInfo.CurrentCharge = ChargeInfo.MaxCharge;
+        //indicatorRenderer.material.color = Color.green;
+        indicatorRenderer.material.SetVector("_EmissionColor", new Vector4(0, 1, 0) * 0.7f);
+    }
+
+    private bool TryPrepareProjectileForest(out List<IProjectileTreeNode> projectileForest)
+    {
         var spellList = spells;
 
         if (!useInspectorSpellList)
@@ -132,21 +180,24 @@ public class CheapPistol : MonoBehaviour, ICardBasedItem, IChargeable
             spellList = CardInventory.Cards.Where(card => card != null).Select(card => card.Spell).ToList(); // crime agains humanity
         }
 
-        var projectileForest = projectileFactory.AssembleProjectileForest(spellList);
+        projectileForest = projectileFactory.AssembleProjectileForest(spellList);
 
         if (projectileForest.Count == 0)
         {
             Debug.Log("insert spell please");
             return false;
         }
+        return true;
+    }
 
+    private void DoShooting(List<IProjectileTreeNode> projectileForest)
+    {
         foreach (var tree in projectileForest)
         {
             var instance = tree.InstantiateProjectile();
             if (instance.TryGetComponent<IProjectile>(out var projectile))
             {
                 Vector3 shootDirection = user.CameraTransform.forward;
-                //var delta = (user.CameraTransform.right - user.CameraTransform.up) * 0.02f;
                 Vector3 startPosition = user.CameraTransform.position + shootDirection * 0.1f;
 
                 if (projectile is GunShot)
@@ -166,8 +217,6 @@ public class CheapPistol : MonoBehaviour, ICardBasedItem, IChargeable
                 throw new System.Exception("WTF?! Instance is not a projectile. Thats forbidden by law!");
             }
         }
-
-        return true;
     }
 
     public bool TryUseSecondaryAction()

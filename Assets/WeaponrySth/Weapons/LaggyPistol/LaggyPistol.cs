@@ -42,7 +42,7 @@ public class LaggyPistol : MonoBehaviour, ICardBasedItem, IChargeable
 
     private Animator animator;
 
-    private float cooldown = 1f / 3f;
+    private float cooldown = 1f / 5f;
     private float lastShotTime;
 
     private Vector3 inHandAvatarInitialEulerAngles;
