@@ -33,9 +33,29 @@ public class Canon : MonoBehaviour, ICardBasedItem, IChargeable
     [SerializeField]
     private GameObject avatar;
 
+    [SerializeField]
+    private Renderer indicatorRenderer;
+
+    private Animator animator;
+
+    [SerializeField]
+    private Transform tipOfTheCanon;
+
+    private readonly float rechargeTime = 0.834f + 1.5f; //do not change - it is in sync with animation clip
+
+    private readonly float meleeDamageDelay = 0.02f;
+    private readonly float meleeAttackTime = 0.833f;  // same here
+
+    private bool performingMeleeAttack = false;
+
+    private readonly float pushImpulse = 50;
+
+    private readonly float meleeDamage = 10;
+
     private void Awake()
     {
         canonCollider = GetComponent<Collider>();
+        animator = GetComponent<Animator>();
     }
 
     private void Start()
@@ -60,6 +80,16 @@ public class Canon : MonoBehaviour, ICardBasedItem, IChargeable
             new Rect(0.0f, 0.0f, spriteTexture.width, spriteTexture.height),
                 new Vector2(0.5f, 0.5f)
         );
+
+        if (indicatorRenderer == null)
+        {
+            throw new Exception("indicator not set");
+        }
+
+        if (tipOfTheCanon == null)
+        {
+            throw new Exception("tip on the cannon not set");
+        }
     }
 
     public void DropOut()
@@ -120,6 +150,13 @@ public class Canon : MonoBehaviour, ICardBasedItem, IChargeable
             return false;
         }
 
+        if (ChargeInfo.CurrentCharge <= 0 || performingMeleeAttack)
+        {
+            return false;
+        }
+        ChargeInfo.CurrentCharge -= 1;
+        StartCoroutine(StartFireAndRechargeAnimationAndCountdown());
+
         foreach (var tree in projectileForest)
         {
             var instance = tree.InstantiateProjectile();
@@ -146,11 +183,36 @@ public class Canon : MonoBehaviour, ICardBasedItem, IChargeable
 
     public bool TryUseSecondaryAction()
     {
-        var length = 3;
-        var width = 2;
-        var height = 2;
+        if (ChargeInfo.CurrentCharge <= 0 || performingMeleeAttack)
+        {
+            return false;
+        }
 
-        var boxCenter = user.CameraTransform.position + user.CameraTransform.forward * (length / 2);
+        performingMeleeAttack = true;
+
+        StartCoroutine(StartMeleeAttack());
+        
+        return true;
+    }
+
+    private IEnumerator StartMeleeAttack()
+    {
+        animator.SetTrigger("TrMeleeAttack");
+        indicatorRenderer.material.color = Color.blue;
+        yield return new WaitForSeconds(meleeDamageDelay);
+        DoMeleeAttackDamage();
+        yield return new WaitForSeconds(meleeAttackTime - meleeDamageDelay);
+        indicatorRenderer.material.color = Color.green;
+        performingMeleeAttack = false;
+    }
+
+    private void DoMeleeAttackDamage()
+    {
+        var length = 4;
+        var width = 1.3f;
+        var height = 1.3f;
+
+        var boxCenter = tipOfTheCanon.position;
         var halfExdends = new Vector3(width / 2, height / 2, length / 2);
 
         foreach (var collider in Physics.OverlapBox(boxCenter, halfExdends, user.CameraTransform.rotation, LayersStorage.PossiblyHurtables))
@@ -161,23 +223,32 @@ public class Canon : MonoBehaviour, ICardBasedItem, IChargeable
             }
             if (collider.gameObject.TryGetComponent<IHurtable>(out var hurtable))
             {
-                hurtable.TakeDamage(new DamageInfo(1, DamageType.MeleeDamage));
+                hurtable.TakeDamage(new DamageInfo(meleeDamage, DamageType.MeleeDamage));
             }
             if (collider.gameObject == null)
             {
                 continue;
             }
+            Debug.Log(collider.gameObject);
             if (collider.gameObject.TryGetComponent<IPushable>(out var pushable))
             {
-                pushable.Push(user.CameraTransform.forward * 10);
+                pushable.Push(user.CameraTransform.forward * pushImpulse);
             }
             else if (collider.gameObject.TryGetComponent<Rigidbody>(out var rb))
             {
-                rb.AddForce(user.CameraTransform.forward * 10, ForceMode.Impulse);
+                Debug.Log("here");
+                rb.AddForce(user.CameraTransform.forward * pushImpulse, ForceMode.Impulse);
             }
         }
+    }
 
-        return true;
+    private IEnumerator StartFireAndRechargeAnimationAndCountdown()
+    {
+        indicatorRenderer.material.color = Color.red;
+        animator.SetTrigger("TrPrimaryFire");
+        yield return new WaitForSeconds(rechargeTime);
+        ChargeInfo.CurrentCharge = ChargeInfo.MaxCharge;
+        indicatorRenderer.material.color = Color.green;
     }
 
     private void EnsureInHandPosition()
