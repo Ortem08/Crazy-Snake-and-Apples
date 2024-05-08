@@ -2,49 +2,40 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 
-public class CheapPistol : MonoBehaviour, ICardBasedItem, IChargeable
+public class Canon : MonoBehaviour, ICardBasedItem, IChargeable
 {
-    public CardInventory CardInventory { get; private set; }
+    [SerializeField]
+    private List<Spell> spells;
 
-    public ChargeInfo ChargeInfo { get; private set; }
+    [SerializeField]
+    private bool useInspectorSpellList;
+
+    public CardInventory CardInventory { get; } = new CardInventory(10);
+
+    public ChargeInfo ChargeInfo { get; private set; } = new ChargeInfo(1);
 
     public event Action<ChargeInfo> OnChargeChanged;
 
+    private Collider canonCollider;
+
     private ProjectileFactory projectileFactory;
 
-    [SerializeField]
-    private GameObject avatar;
-
-    [SerializeField]
-    private Transform tipOfTheGun;
+    private IUser user;
 
     [SerializeField]
     private Texture2D spriteTexture;
 
     private Sprite sprite;
 
-    private Collider colliderForDetection;
-
-    private IUser user;
-
-    // spells
-
-    // temporary (before GUI is in use)
     [SerializeField]
-    private List<Spell> spells;
-
-    // end spells
-
-    [SerializeField]
-    private bool useInspectorSpellList = true;
+    private GameObject avatar;
 
     private void Awake()
     {
-        CardInventory = new CardInventory(7);   // cheap
-        ChargeInfo = new ChargeInfo(30); // im tired of reloading
-        colliderForDetection = GetComponent<Collider>();
+        canonCollider = GetComponent<Collider>();
     }
 
     private void Start()
@@ -60,11 +51,6 @@ public class CheapPistol : MonoBehaviour, ICardBasedItem, IChargeable
             throw new Exception($"avatar for {name} not set");
         }
 
-        if (tipOfTheGun == null)
-        {
-            throw new Exception($"tip of the gun transform for {name} not set");
-        }
-
         if (spriteTexture == null)
         {
             throw new Exception("sprite texture not found");
@@ -73,7 +59,7 @@ public class CheapPistol : MonoBehaviour, ICardBasedItem, IChargeable
         sprite = Sprite.Create(spriteTexture,
             new Rect(0.0f, 0.0f, spriteTexture.width, spriteTexture.height),
                 new Vector2(0.5f, 0.5f)
-            );
+        );
     }
 
     public void DropOut()
@@ -82,10 +68,8 @@ public class CheapPistol : MonoBehaviour, ICardBasedItem, IChargeable
         transform.rotation = Quaternion.identity;
 
         avatar.SetActive(true);
-        avatar.transform.localPosition = Vector3.zero;
-        avatar.transform.localRotation = Quaternion.identity;
 
-        colliderForDetection.enabled = true;
+        canonCollider.enabled = true;
 
         OnChargeChanged = null;
 
@@ -100,6 +84,7 @@ public class CheapPistol : MonoBehaviour, ICardBasedItem, IChargeable
     public void OnSelect()
     {
         avatar.SetActive(true);
+        EnsureInHandPosition();
     }
 
     public void OnUnselect()
@@ -109,22 +94,17 @@ public class CheapPistol : MonoBehaviour, ICardBasedItem, IChargeable
 
     public void SetUser(IUser user)
     {
-        colliderForDetection.enabled = false;
+        canonCollider.enabled = false;
 
         this.user = user;
         transform.parent = user.CameraTransform;
 
-        transform.localPosition = Vector3.zero + new Vector3(0.4f, -0.2f, 1f);
-
-        transform.forward = user.CameraTransform.forward;
-
-        avatar.transform.localEulerAngles = new Vector3(90, 0, 0);
+        avatar.SetActive(true);
+        EnsureInHandPosition();
     }
 
     public bool TryUsePrimaryAction()
     {
-        transform.forward = user.CameraTransform.forward;
-
         var spellList = spells;
 
         if (!useInspectorSpellList)
@@ -146,13 +126,7 @@ public class CheapPistol : MonoBehaviour, ICardBasedItem, IChargeable
             if (instance.TryGetComponent<IProjectile>(out var projectile))
             {
                 Vector3 shootDirection = user.CameraTransform.forward;
-                //var delta = (user.CameraTransform.right - user.CameraTransform.up) * 0.02f;
                 Vector3 startPosition = user.CameraTransform.position + shootDirection * 0.1f;
-
-                if (projectile is GunShot)
-                {
-                    (projectile as GunShot).SetVisibleRayBeginning(tipOfTheGun.position);
-                }
 
                 if (projectile.TryGetModificationInterface<IUserSecure>(out var userSecure))
                 {
@@ -163,7 +137,7 @@ public class CheapPistol : MonoBehaviour, ICardBasedItem, IChargeable
             }
             else
             {
-                throw new System.Exception("WTF?! Instance is not a projectile. Thats forbidden by law!");
+                throw new Exception("WTF?! Instance is not a projectile. Thats forbidden by law!");
             }
         }
 
@@ -172,7 +146,43 @@ public class CheapPistol : MonoBehaviour, ICardBasedItem, IChargeable
 
     public bool TryUseSecondaryAction()
     {
-        Debug.Log("Nope");
+        var length = 3;
+        var width = 2;
+        var height = 2;
+
+        var boxCenter = user.CameraTransform.position + user.CameraTransform.forward * (length / 2);
+        var halfExdends = new Vector3(width / 2, height / 2, length / 2);
+
+        foreach (var collider in Physics.OverlapBox(boxCenter, halfExdends, user.CameraTransform.rotation, LayersStorage.PossiblyHurtables))
+        {
+            if (user.UserGameObject == collider.gameObject)
+            {
+                continue;
+            }
+            if (collider.gameObject.TryGetComponent<IHurtable>(out var hurtable))
+            {
+                hurtable.TakeDamage(new DamageInfo(1, DamageType.MeleeDamage));
+            }
+            if (collider.gameObject == null)
+            {
+                continue;
+            }
+            if (collider.gameObject.TryGetComponent<IPushable>(out var pushable))
+            {
+                pushable.Push(user.CameraTransform.forward * 10);
+            }
+            else if (collider.gameObject.TryGetComponent<Rigidbody>(out var rb))
+            {
+                rb.AddForce(user.CameraTransform.forward * 10, ForceMode.Impulse);
+            }
+        }
+
         return true;
+    }
+
+    private void EnsureInHandPosition()
+    {
+        transform.forward = user.CameraTransform.forward;
+        transform.localPosition = new Vector3(0.6f, -0.6f, 1f);
     }
 }
