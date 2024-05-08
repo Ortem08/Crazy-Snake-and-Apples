@@ -12,16 +12,21 @@ namespace Environment
 
         private void Update()
         {
-            if (Physics.CheckSphere(transform.position, interactionRadius, playerMask))
+            if (Input.GetKeyDown(KeyCode.P))
             {
-                if (Input.GetKeyDown(KeyCode.P))
+                foreach (var obj in Physics.OverlapSphere(transform.position, interactionRadius, playerMask) )
                 {
-                    if (isOpen)
-                        Close();
-                    else
-                        Open();
-                    isOpen = !isOpen;
+                    if (obj.tag == "Player")
+                    //if (Physics.CheckSphere(transform.position, interactionRadius, playerMask))
+                    {
+                        if (isOpen)
+                            Close();
+                        else
+                            Open();
+                        isOpen = !isOpen;
+                    }
                 }
+
             }
         }
         

@@ -3,17 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class InventoryUI : MonoBehaviour
+public class FastAccessInventoryUI : MonoBehaviour
 {
-    [SerializeField]
+    // [SerializeField]
     private PlayerComponent player;
     
-    [SerializeField] 
-    private GameObject FastAccessInventory;
-    [SerializeField] 
-    private GameObject Inventory;
-
-    // Первые fastAccessCapacity из totalCapacity под fastAccessInventory
     [SerializeField] 
     private Image[] FastAccessItemHolderImages;
     private GameObject[] ItemHolders;
@@ -21,14 +15,13 @@ public class InventoryUI : MonoBehaviour
     
     [SerializeField]
     private GameObject itemHolderPrefab;
-    
-    [SerializeField]
-    private int fastAccessCapacity = 4;
-    
-    private int totalCapacity;
+   
+    public int totalCapacity { get; private set; }
     
     void Start()
     {
+        player = FindObjectOfType<PlayerComponent>();
+        Debug.Log($"Player in Inventory: {player}");
         LoadInventory();
         player.Inventory.OnCnangeIndex.AddListener(OnCnangeIndex);
         player.Inventory.OnPickUpItem.AddListener(OnPickUpItem);
@@ -40,23 +33,16 @@ public class InventoryUI : MonoBehaviour
         totalCapacity = player.Inventory.Capacity;
         ItemHolders = new GameObject[totalCapacity];
         ItemImages = new Image[totalCapacity];
-        FastAccessItemHolderImages = new Image[fastAccessCapacity];
+        FastAccessItemHolderImages = new Image[totalCapacity];
         
-        for (var i = 0; i < fastAccessCapacity; i++)
+        for (var i = 0; i < totalCapacity; i++)
         {
-            ItemHolders[i] = Instantiate(itemHolderPrefab, FastAccessInventory.transform);
+            ItemHolders[i] = Instantiate(itemHolderPrefab, transform);
             FastAccessItemHolderImages[i] = ItemHolders[i].GetComponentsInChildren<Image>()[1];
             ItemImages[i] = ItemHolders[i].GetComponent<Image>();
         }
         
-        for (var i = fastAccessCapacity; i < totalCapacity - fastAccessCapacity; i++)
-        {
-            ItemHolders[i] = Instantiate(itemHolderPrefab, Inventory.transform);
-            ItemImages[i] = ItemHolders[i].GetComponent<Image>();
-        }
-        Inventory.SetActive(false);
-        
-        FastAccessItemHolderImages[0].color = Color.red;
+        FastAccessItemHolderImages[player.Inventory.SelectedIndex].color = Color.red;
     }
     
     private void OnDropItem(int index)
@@ -79,8 +65,8 @@ public class InventoryUI : MonoBehaviour
 
     private void OnCnangeIndex(int lastIndex, int index)
     {
-        if (0 <= lastIndex && lastIndex < fastAccessCapacity
-            && 0 <= index && index < fastAccessCapacity)
+        if (0 <= lastIndex && lastIndex < totalCapacity
+            && 0 <= index && index < totalCapacity)
         {
             FastAccessItemHolderImages[lastIndex].color = Color.white;
             FastAccessItemHolderImages[index].color = Color.red;

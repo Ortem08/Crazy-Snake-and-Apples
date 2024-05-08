@@ -5,12 +5,18 @@ using UnityEngine;
 public enum Spell
 {
     // Projectiles
-    Explosion,
-    GunShot,
-    Grenade,
+    Explosion = 0,
+    GunShot = 1,
+    Grenade = 2,
+    Tracker = 3,
+    CanonBall = 4,
 
     // Modifiers
-    BouncinessIncrease,
-    DamageIncreaseConstant,
-    Piercing,
+    BouncinessIncrease = 101,
+    DamageIncreaseConstant = 102,
+    Piercing = 103,
+
+    // Branching
+    AscendTree = 201,
+    AscendTreeTwice = 202,
 }

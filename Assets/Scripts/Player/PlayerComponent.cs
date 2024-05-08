@@ -48,6 +48,8 @@ public class PlayerComponent : MonoBehaviour, IHurtable, IUser, IPushable
 
     public UserType UserType => UserType.Player;
 
+    public GameObject UserGameObject => gameObject;
+
     public void ConsumeDamage(float amount)
     {
         TakeDamage(new DamageInfo(amount));
@@ -69,7 +71,7 @@ public class PlayerComponent : MonoBehaviour, IHurtable, IUser, IPushable
 
     private void Awake()
     {
-        inventory = new Inventory(24);  // why 24? too much
+        inventory = new Inventory();  
 
         CardInventory = new CardInventory(24);
 

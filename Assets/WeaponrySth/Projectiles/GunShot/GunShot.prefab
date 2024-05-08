@@ -149,3 +149,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f62956c0e2eca5b47a09ebd85a83e1a2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  lineDetectorPrefab: {fileID: 724924113826944423, guid: c246d67015494a545ba1159c6471e1b2, type: 3}

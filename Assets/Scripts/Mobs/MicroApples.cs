@@ -194,6 +194,10 @@ public class MicroApples : CreatureBase, IMob
         var randomPoint = transform.position + Random.insideUnitSphere * randomPointRadius;
         NavMesh.SamplePosition(randomPoint, out var hit, randomPointRadius, 1);
         var destination = hit.position;
+        
+        if (hit.position.x > 10e9 || hit.position.y > 10e9 || hit.position.z > 10e9)
+            return;
+        
         agent.CalculatePath(destination, path);
 
         if (path.status == NavMeshPathStatus.PathComplete)
@@ -201,6 +205,9 @@ public class MicroApples : CreatureBase, IMob
 
         //agent.SetPath(path);
     }
+
+    public IState PreviousState { get; set; }
+    public bool IsBower { get; set; }
 
 
     private void UpdateDestination()

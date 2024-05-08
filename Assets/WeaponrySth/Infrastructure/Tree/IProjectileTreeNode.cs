@@ -9,6 +9,10 @@ public interface IProjectileTreeNode : ISubscriptable
 
     public IEnumerable<IProjectileTreeNode> Children { get; }
 
+    public void AddChild(IProjectileTreeNode child);
+
+    public void AddModifier(IModifier modifier);
+
     public IEnumerable<IModifier> Modifiers { get; }
 
     public GameObject InstantiateProjectile();

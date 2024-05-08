@@ -25,6 +25,18 @@ public class CardFactory : MonoBehaviour
     [SerializeField]
     private Texture2D grenadeTexture;
 
+    [SerializeField]
+    private Texture2D AscendTreeTexture;
+
+    [SerializeField]
+    private Texture2D AscendTreeTwiceTexture;
+
+    [SerializeField]
+    private Texture2D TrackerTexture;
+
+    [SerializeField]
+    private Texture2D CanonBallTexture;
+
     public CardAvatar CreateCardAvatar(ICard card, Vector3 position)
     {
         var avatar = Instantiate(cardAvatarPrefab, position, Quaternion.identity)
@@ -61,6 +73,26 @@ public class CardFactory : MonoBehaviour
         else if (spell == Spell.Grenade)
         {
             return new GrenadeCard(grenadeTexture);
+        }
+        else if (spell == Spell.Tracker)
+        {
+            return new TrackerCard(TrackerTexture);
+        }
+        else if (spell == Spell.CanonBall)
+        {
+            return new GenericCard(CanonBallTexture, Spell.CanonBall, "CanonBall", SpellType.Projectile, "shoots a canonball");
+        }
+
+        // branching
+        if (spell == Spell.AscendTree)
+        {
+            return new GenericCard(AscendTreeTexture, Spell.AscendTree, "AscendTree",
+                SpellType.Branching, "Chain next projectile after parent of previous one. So next and previous projectiles will be emmited simultaneously. (Can be stacked)");
+        }
+        else if (spell == Spell.AscendTreeTwice)
+        {
+            return new GenericCard(AscendTreeTwiceTexture, Spell.AscendTreeTwice, nameof(Spell.AscendTreeTwice),
+                SpellType.Branching, "Chain next projectile after grand parent of previous one. So next and second previous projectiles will be emmited simultaneously");
         }
 
         throw new System.Exception($"spell {spell} was not resolved by {nameof(CardFactory)}");
