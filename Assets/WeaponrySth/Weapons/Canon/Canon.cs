@@ -224,7 +224,7 @@ public class Canon : MonoBehaviour, ICardBasedItem, IChargeable
             }
             if (collider.gameObject.TryGetComponent<IHurtable>(out var hurtable))
             {
-                hurtable.TakeDamage(new DamageInfo(meleeDamage, DamageType.MeleeDamage));
+                hurtable.TakeDamage(new DamageInfo(meleeDamage, DamageType.MeleeDamage).WithImpulse(user.CameraTransform.forward * pushImpulse));
             }
             if (collider.gameObject == null)
             {
