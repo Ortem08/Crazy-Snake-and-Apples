@@ -11,8 +11,8 @@ GameObject:
   - component: {fileID: 2565763653004492326}
   - component: {fileID: 2666821700368628052}
   - component: {fileID: 8738810537448226082}
-  - component: {fileID: 153056737415463300}
   - component: {fileID: 8845864682091741912}
+  - component: {fileID: 6363670533073671671}
   m_Layer: 0
   m_Name: MazeBuilder
   m_TagString: Untagged
@@ -85,27 +85,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &153056737415463300
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1670578467179968952}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &8845864682091741912
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -120,8 +99,45 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   IgnoreSeed: 1
   Seed: 42
+  PlacementThreshold: 0.1
   WallThickness: 1
   PassageThickness: 4
-  TotalWallHeight: 6
-  MazeSize_X: 10
-  MazeSize_Z: 10
+  WallHeight: 4
+  WallMaterial: {fileID: 2100000, guid: c64008731a9bacb488931c03031dfb38, type: 2}
+  MazeSize_X: 15
+  MazeSize_Z: 15
+  CentralRoomSize_X: 3
+  CentralRoomSize_Z: 3
+  Door: {fileID: 0}
+  Environment: {fileID: 0}
+  OnFinishedBuildingMaze:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 6363670533073671671}
+        m_TargetAssemblyTypeName: PlacementManager, Assembly-CSharp
+        m_MethodName: StartProcess
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &6363670533073671671
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1670578467179968952}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9ce4b6d178b24dcc91e384312ddb68df, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MazeBuilder: {fileID: 8845864682091741912}
+  placementItems: []
+  IgnoredSeed: 1
+  Seed: 42

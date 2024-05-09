@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Assets.Mazes;
+using Unity.AI.Navigation;
 using UnityEngine;
 using Random = System.Random;
 
@@ -9,12 +10,14 @@ public class PlacementManager : MonoBehaviour
 {
     public MazeBuilder MazeBuilder;
 
-    private List<IPlacementItem> placementItems;
+    [SerializeField] public List<GameObject> placementObjs = new ();
+    [SerializeField] private bool IgnoredSeed;
+    [SerializeField] private int Seed;
 
     private int mazeHeight;
     private int mazeWidth;
     
-    private int[,] placementMap;
+    public int[,] PlacementValuesMap { get; private set; }
 
     private Random rnd;
 
@@ -29,18 +32,20 @@ public class PlacementManager : MonoBehaviour
     public void StartProcess()
     {
         Init();
-        foreach (var item in placementItems)
+        foreach (var obj in placementObjs)
         {
-            item.Place(this);
+            obj.GetComponent<IPlacementItem>().Place(this);
         }
+        MazeBuilder.Environment.GetComponent<NavMeshSurface>().BuildNavMesh();
+        Destroy(gameObject);
     }
 
     private void Init()
     {
         mazeHeight = MazeBuilder.Maze.GetLength(0) / 2;
         mazeWidth = MazeBuilder.Maze.GetLength(1) / 2;
-        rnd = new Random();
-        placementMap = new int[mazeHeight, mazeWidth];
+        rnd = new Random(IgnoredSeed ? (int)DateTime.Now.Ticks : Seed);
+        PlacementValuesMap = new int[mazeHeight, mazeWidth];
     }
     
     public void PlaceOnPlacementMap(Vector2Int pos, int placementValue)
@@ -53,7 +58,7 @@ public class PlacementManager : MonoBehaviour
         {
             for (int j = startCol; j < endCol; j++)
             {
-                placementMap[i, j] += placementValue - Math.Max(Math.Abs(pos.x - i), Math.Abs(pos.y - j));
+                PlacementValuesMap[i, j] += placementValue - Math.Max(Math.Abs(pos.x - i), Math.Abs(pos.y - j));
             }
         }
     }
@@ -84,7 +89,7 @@ public class PlacementManager : MonoBehaviour
 
     private Vector2Int BfsPosition(Vector2Int start, int maxPlacementValue)
     {
-        if (placementMap[start.x, start.y] <= maxPlacementValue)
+        if (PlacementValuesMap[start.x, start.y] <= maxPlacementValue)
             return start;
         
         var q = new Queue<Vector2Int>();
@@ -103,10 +108,10 @@ public class PlacementManager : MonoBehaviour
                 q.Enqueue(next);
                 visited.Add(next);
 
-                if (placementMap[result.x, result.y] > placementMap[next.x, next.y])
+                if (PlacementValuesMap[result.x, result.y] > PlacementValuesMap[next.x, next.y])
                 {
                     result = next;
-                    if (placementMap[result.x, result.y] <= maxPlacementValue)
+                    if (PlacementValuesMap[result.x, result.y] <= maxPlacementValue)
                         return result;
                 }
             }
@@ -122,19 +127,7 @@ public class PlacementManager : MonoBehaviour
             .Where(next => IsOnField(next, mazeHeight, mazeWidth) && !visited.Contains(next));
     }
 
-    public List<Vector2Int> GetNextPoints(
-        Vector2Int current,
-        List<Vector2Int> deltaVariants,
-        MazeCell[,] maze,
-        Func<Vector2Int, MazeCell[,], bool> predicate)
-    {
-        return deltaVariants
-            .Select(d => d + current)
-            .Where(p => predicate(p, maze))
-            .ToList();
-    }
-
-    public bool IsOnField(Vector2Int point, int height, int width)
+    private bool IsOnField(Vector2Int point, int height, int width)
     {
         return !(point.x < 0 || point.x >= height || point.y < 0 || point.y >= width);
     }

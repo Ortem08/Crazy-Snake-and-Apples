@@ -1,6 +1,7 @@
 ﻿using Unity.AI.Navigation;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace Assets.Mazes
 {
@@ -27,23 +28,22 @@ namespace Assets.Mazes
         public int CentralRoomSize_X = 4;
 
         public int CentralRoomSize_Z = 4;
-
-        public GameObject Door;
-
+        
         public GameObject Environment;
         
         public MazeCell[,] Maze { get; private set; }
 
+        public UnityEvent OnFinishedBuildingMaze;
+
         public void Start()
         {
-            var maze = GenerateMaze();
-            Maze = maze;
+            Maze = GenerateMaze();
 
-            var mazeWallsObject = Build(maze);
+            var mazeWallsObject = Build();
+            
+            mazeWallsObject.transform.parent = Environment.transform;
 
-            if (Environment != null)
-                BuildNavMeshForAI(mazeWallsObject);
-
+            OnFinishedBuildingMaze?.Invoke();
             // Destroy(gameObject);    //remove mazeBuilder from scene
         }
 
@@ -60,21 +60,14 @@ namespace Assets.Mazes
             return maze;
         }
 
-        private GameObject Build(MazeCell[,] maze)
+        private GameObject Build()
         {
             var wallBuilder = new WallBuilderSimple(WallMaterial, WallThickness, PassageThickness, WallHeight);
 
-            var mazeWallsObject = wallBuilder.BuildWalls(maze);
-            wallBuilder.BuildExitDoor(maze, Door, mazeWallsObject);
+            var mazeWallsObject = wallBuilder.BuildWalls(Maze);
             mazeWallsObject.transform.position = transform.position;
 
             return mazeWallsObject;
-        }
-
-        private void BuildNavMeshForAI(GameObject mazeWallsObject)
-        {
-            mazeWallsObject.transform.parent = Environment.transform;
-            Environment.GetComponent<NavMeshSurface>().BuildNavMesh();
         }
     }
 }

@@ -80,35 +80,4 @@ public class WallBuilderSimple
                     );
         return wallPart;
     }
-
-    public void BuildExitDoor(MazeCell[,] maze, GameObject doorPrefab, GameObject mazeWallsObject)
-    {
-        var rowsCount = maze.GetLength(0);
-        var colsCount = maze.GetLength(1);
-        for (int i = 0; i < colsCount; i++)
-        {
-            for (int j = 0; j < rowsCount; j++)
-            {
-                if (maze[i, j] == MazeCell.ExitDoor)
-                {
-                    // var door = UnityEngine.Object.Instantiate(doorPrefab, mazeWallsObject.transform);
-                    var door = doorPrefab;
-                    door.transform.parent = mazeWallsObject.transform;
-                    
-                    door.transform.localPosition = new Vector3(
-                        ((WallThickness + PassageThickness) / 2.0f) * i,
-                        WallHeight / 2.0f,
-                        ((WallThickness + PassageThickness) / 2.0f) * j
-                    );
-                        
-                    if (j == 0)
-                        door.transform.Rotate(Vector3.up, -90);
-                    else if (j == colsCount - 1)
-                        door.transform.Rotate(Vector3.up, 90);
-                    else if (i == rowsCount - 1)
-                        door.transform.Rotate(Vector3.up, 180);
-                }
-            }
-        }
-    }
 }

@@ -4,19 +4,26 @@ using UnityEngine;
 
 namespace Items
 {
-    public class DoorKey : MonoBehaviour
+    public class DoorKey : MonoBehaviour, IPlacementItem
     {
         [SerializeField] private Door door;
 
-        private void Update()
+        private void Start()
         {
-            if (Input.GetKeyDown(KeyCode.J))
-            {
-                MakeDoorActive();
-                Destroy(gameObject);
-            }
+            door.enabled = false;
         }
 
-        public void MakeDoorActive() => door.enabled = true;
+        public void OnPickUp()
+        {
+            door.enabled = true;
+            Destroy(gameObject);
+        }
+        
+        public void Place(PlacementManager manager)
+        {
+            var position = manager.GetPositionInUnity(manager.GetPosition());
+            position.y = 1;
+            transform.position = position;
+        }
     }
 }

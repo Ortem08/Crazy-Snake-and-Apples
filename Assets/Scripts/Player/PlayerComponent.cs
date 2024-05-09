@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Environment;
+using Items;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -141,6 +143,16 @@ public class PlayerComponent : MonoBehaviour, IHurtable, IUser, IPushable
                     cardAvatar.PickUp();
                     return true;
                 }
+            }
+            if (item.TryGetComponent<DoorKey>(out var doorKey))
+            {
+                doorKey.OnPickUp();
+                return true;
+            }
+            if (item.TryGetComponent<Door>(out var door))
+            {
+                door.Interact();
+                return true;
             }
         }
         return false;
