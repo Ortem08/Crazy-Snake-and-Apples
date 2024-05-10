@@ -90,9 +90,14 @@ public class PistolMimic : MonoBehaviour, IInventoryItem, IHurtable
         }
     }
 
-    public void SetParameters(CardInventory cardInventory)
+    public void SetCards(CardInventory cardInventory)
     {
         CardInventory = cardInventory;
+    }
+
+    public void SetUseCardsFromInventory(bool useCardsFromInventory)
+    {
+        useInspectorSpellList = !useCardsFromInventory;
     }
 
     // Update is called once per frame

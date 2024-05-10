@@ -13,7 +13,7 @@ public class Canon : MonoBehaviour, ICardBasedItem, IChargeable
     [SerializeField]
     private bool useInspectorSpellList;
 
-    public CardInventory CardInventory { get; } = new CardInventory(10);
+    public CardInventory CardInventory { get; private set; } = new CardInventory(10);
 
     public ChargeInfo ChargeInfo { get; private set; } = new ChargeInfo(1);
 
@@ -257,5 +257,15 @@ public class Canon : MonoBehaviour, ICardBasedItem, IChargeable
     {
         transform.forward = user.CameraTransform.forward;
         transform.localPosition = new Vector3(0.6f, -0.6f, 1f);
+    }
+
+    public void SetCards(CardInventory cardInventory)
+    {
+        this.CardInventory = cardInventory;
+    }
+
+    public void SetUseCardsFromInventory(bool useCardsFromInventory)
+    {
+        useInspectorSpellList = !useCardsFromInventory;
     }
 }

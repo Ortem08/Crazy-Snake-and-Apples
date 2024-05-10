@@ -224,4 +224,14 @@ public class CheapPistol : MonoBehaviour, ICardBasedItem, IChargeable
         Debug.Log("Nope");
         return true;
     }
+
+    public void SetCards(CardInventory cardInventory)
+    {
+        this.CardInventory = cardInventory;
+    }
+
+    public void SetUseCardsFromInventory(bool useCardsFromInventory)
+    {
+        useInspectorSpellList = !useCardsFromInventory;
+    }
 }

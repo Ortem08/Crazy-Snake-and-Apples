@@ -131,6 +131,8 @@ public class GunShot : ProjectileBase, IDamaging, IPierceable, IBouncing
             yield return new WaitForSeconds(0.03f);
             OnProjectileEvent?.Invoke(new CompositionBasedProjectileInfo(expInfos));
         }
+
+        Destroy(gameObject);
     }
 
     private LineDetector MakePartFire(Vector3 origin, Vector3 direction, out List<object> expirationInfos, Vector3? visibleStartPos = null)

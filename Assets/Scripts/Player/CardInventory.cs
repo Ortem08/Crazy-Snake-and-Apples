@@ -31,13 +31,16 @@ public class CardInventory
 
     public bool TryAddCard(ICard card)
     {
+        Debug.Log(Cards.Count);
         for (int i = 0; i < Cards.Count; i++)
         {
+            Debug.Log(i);
             if (Cards[i] == null)
             {
                 Cards[i] = card;
                 OnPickUpCard.Invoke(i);
                 Count++;
+                
                 return true;
             }
         }
