@@ -73,7 +73,7 @@ public class PlayerComponent : MonoBehaviour, IHurtable, IUser, IPushable
     {
         inventory = new Inventory();  
 
-        CardInventory = new CardInventory(24);
+        CardInventory = new CardInventory(48);
 
         QuakeMovenentController = GetComponent<QuakeCPMPlayerMovement>();
 

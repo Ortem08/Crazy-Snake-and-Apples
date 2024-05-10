@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using TMPro;
 
 public class CardInventoryUI : MonoBehaviour
 {
@@ -10,21 +12,48 @@ public class CardInventoryUI : MonoBehaviour
     [SerializeField] 
     private GameObject PlayerInventoryPlaceHolder;
     [SerializeField] 
+    private GameObject DescriptionPlaceHolder;
+    [SerializeField] 
     private WeaponInsideInventory[] WeaponHolders;
+    [SerializeField] 
+    private GameObject cardHolderPrefab; 
     
     // [SerializeField] private GameObject Player;
     private PlayerComponent player;
     private CardInventory cardInventory => player.CardInventory;
     private Inventory inventory => player.Inventory;
+    
+    private GameObject[] playerCardHolders;
+    private Image[] playerCardImages;
+    private Image[] playerCardSpriteImages;
+    
+    private Image DescriptionSpriteImage;
+    private TextMeshProUGUI DescriptionText;
+    
+    private int playerCardCapacity;
+
+    private const string startDescription = "Select a card to read its description.";
 
     private void Start()
     {
         player = FindObjectOfType<PlayerComponent>();
         Debug.Log($"Player in Card Inventory: {player}");
-        Debug.Log(gameObject.activeSelf);
         gameObject.SetActive(false);
-        Debug.Log(gameObject.activeSelf);
         
+        DescriptionSpriteImage = DescriptionPlaceHolder.GetComponentsInChildren<Image>()[2];
+        DescriptionText = DescriptionPlaceHolder.GetComponentInChildren<TextMeshProUGUI>();
+        DescriptionText.text = startDescription;
+        
+        playerCardCapacity = player.CardInventory.Capasity;
+        playerCardHolders = new GameObject[playerCardCapacity];
+        playerCardImages = new Image[playerCardCapacity];
+        playerCardSpriteImages = new Image[playerCardCapacity];
+        for (int i = 0; i < playerCardCapacity; i++)
+        {
+            playerCardHolders[i] = Instantiate(cardHolderPrefab, PlayerInventoryPlaceHolder.transform);
+            playerCardImages[i] = playerCardHolders[i].GetComponentsInChildren<Image>()[1];
+            playerCardSpriteImages[i] = playerCardHolders[i].GetComponent<Image>();
+        }
     }
     
     public void OpenInventory()
@@ -38,6 +67,20 @@ public class CardInventoryUI : MonoBehaviour
         {
             var cardBasedItem = inventory.Items[i] as ICardBasedItem;
             WeaponHolders[i].ReloadInventory(cardBasedItem);
+        }
+        
+        for (var i = 0; i < playerCardCapacity; i++)
+        {
+            if (cardInventory.Cards[i] is not null)
+            {
+                playerCardSpriteImages[i].sprite = cardInventory.Cards[i].Sprite;
+                playerCardSpriteImages[i].color = Color.white;
+            }
+            else if (playerCardImages[i].sprite is not null)
+            {
+                playerCardSpriteImages[i].sprite = null;
+                playerCardSpriteImages[i].color = Color.clear;
+            }
         }
     }
     
