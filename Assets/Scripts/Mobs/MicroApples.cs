@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.Android;
+using static UnityEngine.GraphicsBuffer;
 using Random = UnityEngine.Random;
 
 public class MicroApples : CreatureBase, IMob
@@ -24,6 +26,12 @@ public class MicroApples : CreatureBase, IMob
 
     [SerializeField] private float randomPointRadius = 5f;
 
+    [SerializeField]
+    private MicroAppleEnemyDamageDetector damageDetector;
+
+    [SerializeField]
+    private GameObject deadBodyPrefab;
+
 
     public float rotationSpeed = 1.0f;
     public float rotationAngle = 90.0f;
@@ -34,8 +42,10 @@ public class MicroApples : CreatureBase, IMob
 
     private Animator animator;
 
-    private PlayerComponent playerComponent;
+    private bool isDead = false;
 
+
+    private DamageInfo attackDamage = new DamageInfo(5, DamageType.MeleeDamage);
 
     public MicroApples() : base(20, 1)
     {
@@ -44,12 +54,18 @@ public class MicroApples : CreatureBase, IMob
     private void Start()
     {
         animator = gameObject.GetComponentInParent<Animator>();
+
         agent = GetComponentInParent<NavMeshAgent>();
         player = GameObject.FindGameObjectWithTag("Player");
-        playerComponent = player.GetComponent<PlayerComponent>();
         StateMachine = new StateMachine();
         StateMachine.ChangeState(new IdleState(this));
         path = new NavMeshPath();
+
+        if (damageDetector == null)
+        {
+            throw new Exception("damage detector not set");
+        }
+        damageDetector.OnTriggerEvent += OnPossiblyDamageRecieverDetection;
     }
 
     private void Update()
@@ -87,7 +103,12 @@ public class MicroApples : CreatureBase, IMob
             animator.SetBool("Idle", false);
             animator.SetBool("IsRunning", false);
             animator.SetTrigger("Attack");
-            PerformAttack();
+            var dir = player.transform.position - agent.transform.position;
+            if (dir.magnitude > 0)
+            {
+                var rotation = Quaternion.LookRotation(dir);
+                agent.transform.rotation = Quaternion.Lerp(agent.transform.rotation, rotation, 5 * Time.deltaTime);
+            }
         }
         else if (StateMachine.currentState is PanicState)
         {
@@ -212,19 +233,65 @@ public class MicroApples : CreatureBase, IMob
     public bool IsBower { get; set; }
 
 
-    private void UpdateDestination()
+    private void OnPossiblyDamageRecieverDetection(Collider collider)
     {
-        var check = CanSeePlayer();
-        Debug.Log(check);
-        if (check)
+        if (StateMachine.currentState is not AttackState)
         {
-            agent.stoppingDistance = 2;
-            agent.SetDestination(player.transform.position);
+            return;
         }
-        else
-            agent.stoppingDistance = 0;
+        if (! collider.gameObject.TryGetComponent<IHurtable>(out var hurtable))
+        {
+            return;
+        }
+        hurtable.TakeDamage(attackDamage);
+        if (collider.gameObject.TryGetComponent<IPushable>(out var pushable))
+        {
+            pushable.Push(transform.forward * 3);
+        }
+    }
 
-        if (!agent.hasPath || (agent.hasPath && !check))
-            TryPickRandomDestination();
+
+    /*    private void UpdateDestination()
+        {
+            var check = CanSeePlayer();
+            Debug.Log(check);
+            if (check)
+            {
+                agent.stoppingDistance = 2;
+                agent.SetDestination(player.transform.position);
+            }
+            else
+                agent.stoppingDistance = 0;
+
+            if (!agent.hasPath || (agent.hasPath && !check))
+                TryPickRandomDestination();
+        }*/
+
+    
+
+    public override void Die()
+    {
+        Destroy(transform.parent.gameObject);
+    }
+
+    public void DieCinematically(DamageInfo damageInfo)
+    {
+        if (isDead) return;
+        isDead = true;
+        var deadBody = Instantiate(deadBodyPrefab);
+        deadBody.transform.position = transform.position;
+        var impulseModified = damageInfo.Impulse.normalized * Mathf.Min(10, damageInfo.Impulse.magnitude);
+        deadBody.GetComponent<Rigidbody>().AddForce(impulseModified, ForceMode.Impulse);
+        Die();
+    }
+
+    public override void TakeDamage(DamageInfo damageInfo)
+    {
+        Health -= damageInfo.Amount;
+        if (Health <= 0)
+        {
+            DieCinematically(damageInfo);
+        }
+
     }
 }

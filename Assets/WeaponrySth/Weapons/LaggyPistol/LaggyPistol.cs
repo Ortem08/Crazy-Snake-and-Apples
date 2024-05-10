@@ -42,10 +42,13 @@ public class LaggyPistol : MonoBehaviour, ICardBasedItem, IChargeable
 
     private Animator animator;
 
-    private float cooldown = 1f / 3f;
+    private float cooldown = 1f / 5f;
     private float lastShotTime;
 
     private Vector3 inHandAvatarInitialEulerAngles;
+
+    [SerializeField]
+    private bool useInspectorSpellList = true;
 
     // animation ruling logic
     private bool recharging = false;
@@ -142,7 +145,7 @@ public class LaggyPistol : MonoBehaviour, ICardBasedItem, IChargeable
 
         EnsureInHandAvatarPosision();
 
-        var spellList = spells;
+/*        var spellList = spells;
         if (CardInventory.Count > 0)
         {
             spellList = CardInventory
@@ -150,6 +153,13 @@ public class LaggyPistol : MonoBehaviour, ICardBasedItem, IChargeable
                         .Where(c => c != null)
                         .Select(c => c.Spell)
                         .ToList();
+        }*/
+
+        var spellList = spells;
+
+        if (!useInspectorSpellList)
+        {
+            spellList = CardInventory.Cards.Where(card => card != null).Select(card => card.Spell).ToList(); // crime agains humanity
         }
 
         var projectileForest = projectileFactory.AssembleProjectileForest(spellList);
@@ -244,4 +254,14 @@ public class LaggyPistol : MonoBehaviour, ICardBasedItem, IChargeable
     }
 
     public Sprite GetItemAvatarSprite() => sprite;
+
+    public void SetCards(CardInventory cardInventory)
+    {
+        this.CardInventory = cardInventory;
+    }
+
+    public void SetUseCardsFromInventory(bool useCardsFromInventory)
+    {
+        useInspectorSpellList = !useCardsFromInventory;
+    }
 }

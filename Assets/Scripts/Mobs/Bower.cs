@@ -65,12 +65,12 @@ public class Bower : CreatureBase, IMob
 
         StateMachine.Update();
 
-        Debug.Log((PreviousState, StateMachine.currentState, StateMachine.StateBrandNew));
+        //Debug.Log((PreviousState, StateMachine.currentState, StateMachine.StateBrandNew));
         if (StateMachine.currentState is IdleState && PreviousState is RunBackState && StateMachine.StateBrandNew)
         {
-            Debug.Log(agent.remainingDistance);
+            //Debug.Log(agent.remainingDistance);
             
-            Debug.Log("ROTAAAAAAAAAAATION");
+            //Debug.Log("ROTAAAAAAAAAAATION");
             transform.parent.transform.Rotate(0, 180, 0);
             agent.ResetPath();
             StateMachine.StateBrandNew = false;
