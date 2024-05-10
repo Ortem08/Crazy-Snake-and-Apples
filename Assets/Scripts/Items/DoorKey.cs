@@ -21,8 +21,8 @@ namespace Items
         
         public void Place(PlacementManager manager)
         {
-            var position = manager.GetPositionInUnity(manager.GetPosition());
-            position.y = 1;
+            var position = manager.GetTransformPosition(manager.GetPosition());
+            position.y = 0;
             transform.position = position;
         }
     }

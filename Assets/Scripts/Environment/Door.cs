@@ -49,7 +49,7 @@ namespace Environment
             if (position == Vector2Int.zero)
                 return;
             
-            transform.position = manager.GetPositionInUnity(position);
+            transform.position = manager.GetTransformPosition(position);
             transform.parent = manager.MazeBuilder.Environment.transform;
             if (position.x == 0)
                 transform.Rotate(Vector3.up, 90);

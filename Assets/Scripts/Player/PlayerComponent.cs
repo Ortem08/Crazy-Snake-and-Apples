@@ -9,7 +9,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Events;
 
-public class PlayerComponent : MonoBehaviour, IHurtable, IUser, IPushable
+public class PlayerComponent : MonoBehaviour, IHurtable, IUser, IPushable, IPlacer
 {
     public UnityEvent<float, float> OnHealthDecrease { get; } = new();
     public UnityEvent<float, float> OnHealthIncrease { get; } = new();
@@ -160,11 +160,20 @@ public class PlayerComponent : MonoBehaviour, IHurtable, IUser, IPushable
 
     private bool TryDropItem()
     {
-        return inventory.TryDropCurrent(); ;
+        return inventory.TryDropCurrent();
     }
 
     public void Push(Vector3 impulse)
     {
         QuakeMovenentController.AddVelocity(impulse);   // believe that player mass is 1
+    }
+
+    public void Place(PlacementManager manager)
+    {
+        var position = manager.GetPosition(0);
+        var positionInUnity = manager.GetTransformPosition(position);
+        positionInUnity.y = manager.MazeBuilder.WallHeight;
+        manager.AddOnPlacementMap(position, 10);
+        transform.position = positionInUnity;
     }
 }

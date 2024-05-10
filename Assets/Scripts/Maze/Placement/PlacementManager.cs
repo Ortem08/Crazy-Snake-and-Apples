@@ -48,7 +48,7 @@ public class PlacementManager : MonoBehaviour
         PlacementValuesMap = new int[mazeHeight, mazeWidth];
     }
     
-    public void PlaceOnPlacementMap(Vector2Int pos, int placementValue)
+    public void AddOnPlacementMap(Vector2Int pos, int placementValue)
     {
         var startRow = Math.Max(0, pos.x - placementValue);
         var endRow = Math.Min(mazeHeight, startRow + 2 * placementValue);
@@ -75,7 +75,7 @@ public class PlacementManager : MonoBehaviour
         return new Vector2Int(2 * result.x + 1, 2 * result.y + 1);
     }
 
-    public Vector3 GetPositionInUnity(Vector2Int pos)
+    public Vector3 GetTransformPosition(Vector2Int pos)
     {
         var positionInMaze = new Vector3(
             ((MazeBuilder.WallThickness + MazeBuilder.PassageThickness) / 2.0f) * pos.x,
@@ -83,6 +83,17 @@ public class PlacementManager : MonoBehaviour
             ((MazeBuilder.WallThickness + MazeBuilder.PassageThickness) / 2.0f) * pos.y
         );
         return positionInMaze + MazeBuilder.transform.position;
+    }
+    
+    public Vector3 GetShiftInsideCell()
+    {
+        var x = (int)(MazeBuilder.PassageThickness - 1) / 2;
+        if (Rnd.NextDouble() < 0.5)
+            x = -x;
+        var z = (int)(MazeBuilder.PassageThickness - 1) / 2;
+        if (Rnd.NextDouble() < 0.5)
+            z = -z;
+        return new Vector3(x, 0, z);
     }
 
     private Vector2Int GetPositionInMaze() => new(Rnd.Next(mazeHeight), Rnd.Next(mazeWidth));
@@ -116,7 +127,6 @@ public class PlacementManager : MonoBehaviour
                 }
             }
         }
-
         return result;
     }
 

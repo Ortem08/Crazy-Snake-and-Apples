@@ -35,42 +35,30 @@ public class CardPlacer : MonoBehaviour, IPlacer
 
     private CardFactory cardFactory;
 
-    private void Awake()
-    { 
-        cardFactory = GameObject.FindGameObjectWithTag("CardFactory").GetComponent<CardFactory>();
-    }
-
     public void Place(PlacementManager manager)
     {
+        if (cardFactory == null)
+            cardFactory = GameObject.FindGameObjectWithTag("CardFactory").GetComponent<CardFactory>();
         foreach (var (spellType, dict) in instanceCount)
         {
             foreach (var (spell, count)  in dict)
             {
                 for (int i = 0; i < count; i++)
                 {
-                    PlaceInstance(spell, manager);
+                    PlaceCard(spell, manager);
                 }
             }
         }
     }
 
-    private void PlaceInstance(Spell spell, PlacementManager manager)
+    private void PlaceCard(Spell spell, PlacementManager manager)
     {
         var position = manager.GetPosition(0);
         var instance = cardFactory.CreateCard(spell);
-        var positionInUnity = manager.GetPositionInUnity(position) + GetShift(manager);
+        var positionInUnity = manager.GetTransformPosition(position) + manager.GetShiftInsideCell();
         cardFactory.CreateCardAvatar(instance, positionInUnity);
-        manager.PlaceOnPlacementMap(position, 1);
+        manager.AddOnPlacementMap(position, 2);
     }
 
-    private Vector3 GetShift(PlacementManager manager)
-    {
-        var x = (int)(manager.MazeBuilder.PassageThickness - 1) / 2;
-        if (manager.Rnd.NextDouble() < 0.5)
-            x = -x;
-        var z = (int)(manager.MazeBuilder.PassageThickness - 1) / 2;
-        if (manager.Rnd.NextDouble() < 0.5)
-            z = -z;
-        return new Vector3(x, 0, z);
-    }
+    
 }

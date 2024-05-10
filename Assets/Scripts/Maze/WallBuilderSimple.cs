@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
-using Environment;
 using Object = System.Object;
 
 public class WallBuilderSimple
