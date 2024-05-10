@@ -94,7 +94,9 @@ namespace Assets.Mazes
             var height = maze.GetLength(0) / 2;
             var width = maze.GetLength(1) / 2;
             
-            var exit = GetRandomPointOnBorder(height, width, seed);
+            // var exit = GetRandomPointOnBorder(height, width, seed);
+            var random = new Random(seed ?? (int)DateTime.Now.Ticks);
+            var exit = (x : 0, y : 2 * random.Next(1, maze.GetLength(1) / 2 - 1) + 1);
             maze[exit.x, exit.y] = MazeCell.ExitDoor;
         }
         

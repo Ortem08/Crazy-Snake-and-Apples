@@ -79,4 +79,71 @@ public class WallBuilderSimple
                     );
         return wallPart;
     }
+
+    public void BuildWaitingRoom(MazeCell[,] maze, GameObject mazeWallsObject)
+    {
+        var length = 10;
+        
+        var exitDoorPosition = FindExitDoor(maze);
+
+        var room = new MazeCell[5, length];
+
+        for (int i = 1; i < length; i++)
+        {
+            for (int j = 1; j < 4; j++)
+            {
+                room[j, i] = MazeCell.Empty;
+            }
+        }
+
+        var roomObject = BuildWalls(room);
+
+        roomObject.transform.parent = mazeWallsObject.transform;
+        
+        if (exitDoorPosition.x == 0)
+        {
+            roomObject.transform.localRotation = Quaternion.AngleAxis(90, Vector3.up);
+            roomObject.transform.localPosition = new Vector3(
+                -((WallThickness + PassageThickness) * length - PassageThickness) / 2.0f,
+                0,
+                (WallThickness + PassageThickness) * exitDoorPosition.y / 2.0f + (WallThickness + PassageThickness) / 2);
+        }
+        // else if (exitDoorPosition.x == maze.GetLength(0) - 1)
+        // {
+        //     roomObject.transform.localRotation = Quaternion.AngleAxis(-90, Vector3.up);
+        //     roomObject.transform.localPosition = new Vector3(
+        //         (WallThickness + PassageThickness) * maze.GetLength(0) / 2.0f - PassageThickness,
+        //         0,
+        //         (WallThickness + PassageThickness) * exitDoorPosition.y / 2.0f);
+        // }
+        // else if (exitDoorPosition.y == 0)
+        // {
+        //     roomObject.transform.localPosition = new Vector3(
+        //         -(WallThickness + PassageThickness) * exitDoorPosition.x / 2.0f,
+        //         0,
+        //         (WallThickness + PassageThickness) * maze.GetLength(1) / 2.0f - PassageThickness);
+        // }
+        // else
+        // {
+        //     roomObject.transform.localRotation = Quaternion.AngleAxis(180, Vector3.up);
+        //     roomObject.transform.localPosition = new Vector3(
+        //         (WallThickness + PassageThickness) * exitDoorPosition.x / 2.0f,
+        //         0,
+        //         (WallThickness + PassageThickness) * maze.GetLength(1) / 2.0f - PassageThickness);
+        // }
+    }
+    
+    private Vector2Int FindExitDoor(MazeCell[,] maze)
+    {
+        for (int i = 0; i < maze.GetLength(0); i++)
+        {
+            for (int j = 0; j < maze.GetLength(1); j++)
+            {
+                if (maze[i, j] == MazeCell.ExitDoor)
+                    return new Vector2Int(i, j);
+            }
+        }
+
+        return Vector2Int.zero;
+    }
 }

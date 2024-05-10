@@ -1,4 +1,5 @@
-﻿using Unity.AI.Navigation;
+﻿using System.Collections;
+using Unity.AI.Navigation;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
@@ -43,8 +44,14 @@ namespace Assets.Mazes
             
             mazeWallsObject.transform.parent = Environment.transform;
 
-            OnFinishedBuildingMaze?.Invoke();
+            StartCoroutine(Finish());
             // Destroy(gameObject);    //remove mazeBuilder from scene
+        }
+
+        private IEnumerator Finish()
+        {
+            yield return new WaitForEndOfFrame();
+            OnFinishedBuildingMaze?.Invoke();
         }
 
         private MazeCell[,] GenerateMaze()
@@ -67,6 +74,7 @@ namespace Assets.Mazes
             var mazeWallsObject = wallBuilder.BuildWalls(Maze);
             mazeWallsObject.transform.position = transform.position;
 
+            wallBuilder.BuildWaitingRoom(Maze, mazeWallsObject);
             return mazeWallsObject;
         }
     }

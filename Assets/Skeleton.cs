@@ -7,7 +7,7 @@ using UnityEngine;
 using UnityEngine.AI;
 using Random = UnityEngine.Random;
 
-public class Skeleton : CreatureBase, IMob
+public class Skeleton : CreatureBase, IMob, IPlacer
 {
     private GameObject player { get; set; }
     private const float AttackDistance = 2f;
@@ -259,5 +259,15 @@ public class Skeleton : CreatureBase, IMob
             agent.SetPath(path);
 
         //agent.SetPath(path);
+    }
+
+    public void Place(PlacementManager manager)
+    {
+        for (int i = 0; i < 3; i++)
+        {
+            var position = manager.GetPosition(2);
+            Instantiate(gameObject, manager.GetTransformPosition(position), Quaternion.identity);
+            manager.AddOnPlacementMap(position, 10);   
+        }
     }
 }
