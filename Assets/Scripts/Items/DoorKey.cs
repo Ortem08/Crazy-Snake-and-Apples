@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Items
 {
-    public class DoorKey : MonoBehaviour, IPlacementItem
+    public class DoorKey : MonoBehaviour, IPlacer
     {
         [SerializeField] private Door door;
 

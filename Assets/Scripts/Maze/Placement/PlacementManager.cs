@@ -19,7 +19,7 @@ public class PlacementManager : MonoBehaviour
     
     public int[,] PlacementValuesMap { get; private set; }
 
-    private Random rnd;
+    public Random Rnd { get; private set; }
 
     private readonly List<Vector2Int> directions = new()
     {
@@ -34,7 +34,7 @@ public class PlacementManager : MonoBehaviour
         Init();
         foreach (var obj in placementObjs)
         {
-            obj.GetComponent<IPlacementItem>().Place(this);
+            obj.GetComponent<IPlacer>().Place(this);
         }
         MazeBuilder.Environment.GetComponent<NavMeshSurface>().BuildNavMesh();
         Destroy(gameObject);
@@ -44,7 +44,7 @@ public class PlacementManager : MonoBehaviour
     {
         mazeHeight = MazeBuilder.Maze.GetLength(0) / 2;
         mazeWidth = MazeBuilder.Maze.GetLength(1) / 2;
-        rnd = new Random(IgnoredSeed ? (int)DateTime.Now.Ticks : Seed);
+        Rnd = new Random(IgnoredSeed ? (int)DateTime.Now.Ticks : Seed);
         PlacementValuesMap = new int[mazeHeight, mazeWidth];
     }
     
@@ -85,7 +85,7 @@ public class PlacementManager : MonoBehaviour
         return positionInMaze + MazeBuilder.transform.position;
     }
 
-    private Vector2Int GetPositionInMaze() => new(rnd.Next(mazeHeight), rnd.Next(mazeWidth));
+    private Vector2Int GetPositionInMaze() => new(Rnd.Next(mazeHeight), Rnd.Next(mazeWidth));
 
     private Vector2Int BfsPosition(Vector2Int start, int maxPlacementValue)
     {

@@ -3,23 +3,29 @@ using UnityEngine;
 
 namespace Environment
 {
-    public class Door : MonoBehaviour, IPlacementItem
+    public class Door : MonoBehaviour, IPlacer
     {
         private Animator animator;
-        private BoxCollider collider;
         private bool isOpen;
+
+        [SerializeField]
+        private NotificationManager notificationManager;
+
+        private string OnPlayerInteractWithoutKeyMsg = "Заперто. Надо попробывать найти ключ";
 
         private void Start()
         {
             animator = GetComponent<Animator>();
-            collider = GetComponent<BoxCollider>();
         }
 
         public void Interact()
         {
             if (enabled == false)
+            {
+                notificationManager?.Notify(OnPlayerInteractWithoutKeyMsg);
                 return;
-            
+            }
+
             if (isOpen)
                 Close();
             else
@@ -29,14 +35,12 @@ namespace Environment
 
         private void Open()
         {
-            collider.enabled = false;
             animator.SetBool("isOpen", true);
         }
 
         private void Close()
         {
             animator.SetBool("isOpen", false);
-            collider.enabled = true;
         }
 
         public void Place(PlacementManager manager)

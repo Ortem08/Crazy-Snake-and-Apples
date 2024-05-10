@@ -1,5 +1,5 @@
 ﻿
-public interface IPlacementItem
+public interface IPlacer
 {
     public void Place(PlacementManager manager);
 }
