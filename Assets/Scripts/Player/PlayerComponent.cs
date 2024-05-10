@@ -173,7 +173,7 @@ public class PlayerComponent : MonoBehaviour, IHurtable, IUser, IPushable, IPlac
         var position = manager.GetPosition(0);
         var positionInUnity = manager.GetTransformPosition(position);
         positionInUnity.y = manager.MazeBuilder.WallHeight;
-        manager.AddOnPlacementMap(position, 10);
+        manager.AddOnPlacementMap(position, 31);
         transform.position = positionInUnity;
     }
 }
