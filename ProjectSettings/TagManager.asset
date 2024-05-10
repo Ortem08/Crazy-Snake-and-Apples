@@ -9,6 +9,7 @@ TagManager:
   - SoundController
   - ProjectileFactory
   - CardFactory
+  - WeaponFactory
   layers:
   - Default
   - TransparentFX

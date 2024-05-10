@@ -94,18 +94,18 @@ public class CanonBall : ProjectileBase, IDamaging, IUserSecure, IBouncing
                         new HitSomethingInfo(collision.gameObject, contact.point, contact.impulse.normalized, contact.normal)
                     }));
 
-        AttemptHuring(collision.gameObject, contact.impulse.magnitude);        
+        AttemptHuring(collision.gameObject, contact.impulse * -1);
 
         StartCoroutine(DieWithTime());
     }
 
-    private void AttemptHuring(GameObject obj, float impulse)
+    private void AttemptHuring(GameObject obj, Vector3 impulse)
     {
         if (!obj.TryGetComponent<IHurtable>(out var hurtable))
         {
             return;
         }
-        hurtable.TakeDamage(DamageInfo.SetAmount(DamageInfo.Amount * impulse / ThrowingImpulse));
+        hurtable.TakeDamage(DamageInfo.SetAmount(DamageInfo.Amount * impulse.magnitude / ThrowingImpulse).WithImpulse(impulse));
     }
 
     private void OnDetectorTriggerEnterEvent(Collider collider)
@@ -123,7 +123,7 @@ public class CanonBall : ProjectileBase, IDamaging, IUserSecure, IBouncing
             return;
         }
         var scalar = Mathf.Min(rb.velocity.magnitude * rb.mass, pushImpulseLimit);
-        AttemptHuring(collider.gameObject, rb.velocity.magnitude);
+        AttemptHuring(collider.gameObject, rb.velocity * rb.mass);
         if (collider.gameObject.TryGetComponent<IPushable>(out var pushable))
         {
             pushable.Push(rb.velocity.normalized * scalar);

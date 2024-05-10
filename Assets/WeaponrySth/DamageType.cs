@@ -8,4 +8,5 @@ using UnityEngine;
     None = 0,
     ProjectileDamage = 1,
     ExplosionDamage = 1 << 1,
+    MeleeDamage = 1 << 2,
 }
