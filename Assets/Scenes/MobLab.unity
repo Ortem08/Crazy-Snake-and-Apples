@@ -131,6 +131,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 460594218397464680, guid: 1c98a82ff7e0cf84298ec9ee26918992, type: 3}
+      propertyPath: ApplePrefab
+      value: 
+      objectReference: {fileID: 651043407059732446, guid: 934017029cb447c47a4218066839019c, type: 3}
+    - target: {fileID: 460594218397464680, guid: 1c98a82ff7e0cf84298ec9ee26918992, type: 3}
+      propertyPath: JumpAwaySpeed
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1980830813093177288, guid: 1c98a82ff7e0cf84298ec9ee26918992, type: 3}
+      propertyPath: m_Speed
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6979811646514362424, guid: 1c98a82ff7e0cf84298ec9ee26918992, type: 3}
       propertyPath: player
       value: 
