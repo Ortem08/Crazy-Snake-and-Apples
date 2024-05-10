@@ -38,8 +38,9 @@ public class FastAccessInventoryUI : MonoBehaviour
         for (var i = 0; i < totalCapacity; i++)
         {
             ItemHolders[i] = Instantiate(itemHolderPrefab, transform);
-            FastAccessItemHolderImages[i] = ItemHolders[i].GetComponentsInChildren<Image>()[1];
-            ItemImages[i] = ItemHolders[i].GetComponent<Image>();
+            var images =  ItemHolders[i].GetComponentsInChildren<Image>();
+            FastAccessItemHolderImages[i] = images[0];
+            ItemImages[i] = images[1];
         }
         
         FastAccessItemHolderImages[player.Inventory.SelectedIndex].color = Color.red;

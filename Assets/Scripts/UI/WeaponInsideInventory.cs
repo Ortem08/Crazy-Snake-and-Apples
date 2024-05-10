@@ -34,6 +34,7 @@ public class WeaponInsideInventory : MonoBehaviour
         if (weapon != null && weaponCardBased != null 
             && Capacity == weaponCardBased.CardInventory.Capasity)
         {
+            gameObject.SetActive(true);
             weapon = weaponCardBased;
             SetWeaponSprite();
             for (var i = 0; i < Capacity; i++)
@@ -49,13 +50,18 @@ public class WeaponInsideInventory : MonoBehaviour
         
         if (weapon is not null && weaponCardBased is null)
         {
+            gameObject.SetActive(false);
+            
             WeaponIcon.color = Color.clear;
-            for (var i = 0; i < Capacity; i++)
-            {
-                Destroy(ItemHolders[i]);
-            }
+            
+            // Раскомментировать, если количество карт в инвентаре оружия != 20
+            // for (var i = 0; i < Capacity; i++)
+            // {
+            //     Destroy(ItemHolders[i]);
+            // }
+            
             weapon = null;
-
+            
             return;
         }
         
@@ -64,6 +70,7 @@ public class WeaponInsideInventory : MonoBehaviour
 
     private void ChangedCapacityReload(ICardBasedItem weaponCardBased)
     {
+        gameObject.SetActive(true);
         for (var i = 0; i < Capacity; i++)
         {
             Destroy(ItemHolders[i]);
@@ -79,8 +86,9 @@ public class WeaponInsideInventory : MonoBehaviour
         for (var i = 0; i < Capacity; i++)
         {
             ItemHolders[i] = Instantiate(itemHolderPrefab, CardsHolder.transform);
-            FastAccessItemHolderImages[i] = ItemHolders[i].GetComponentsInChildren<Image>()[1];
-            ItemImages[i] = ItemHolders[i].GetComponent<Image>();
+            var images =  ItemHolders[i].GetComponentsInChildren<Image>();
+            FastAccessItemHolderImages[i] = images[0];
+            ItemImages[i] = images[1];
             if (inventory.Cards[i] != null)
             {
                 SetCardSprite(i);

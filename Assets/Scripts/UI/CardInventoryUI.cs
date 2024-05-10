@@ -51,8 +51,9 @@ public class CardInventoryUI : MonoBehaviour
         for (int i = 0; i < playerCardCapacity; i++)
         {
             playerCardHolders[i] = Instantiate(cardHolderPrefab, PlayerInventoryPlaceHolder.transform);
-            playerCardImages[i] = playerCardHolders[i].GetComponentsInChildren<Image>()[1];
-            playerCardSpriteImages[i] = playerCardHolders[i].GetComponent<Image>();
+            var images =  playerCardHolders[i].GetComponentsInChildren<Image>();
+            playerCardImages[i] = images[0];
+            playerCardSpriteImages[i] = images[1];
         }
     }
     
