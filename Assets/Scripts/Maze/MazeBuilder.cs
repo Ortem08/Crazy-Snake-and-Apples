@@ -74,6 +74,7 @@ namespace Assets.Mazes
             var mazeWallsObject = wallBuilder.BuildWalls(Maze);
             mazeWallsObject.transform.position = transform.position;
 
+            wallBuilder.BuildWaitingRoom(Maze, mazeWallsObject);
             return mazeWallsObject;
         }
     }
