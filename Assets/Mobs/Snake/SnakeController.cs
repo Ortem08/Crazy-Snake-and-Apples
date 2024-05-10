@@ -7,7 +7,7 @@ using UnityEngine.Events;
 
 public class SnakeController : MonoBehaviour, IHurtable
 {
-    public float Health { get; private set; } = 1;
+    public float Health { get; private set; } = 100;
 
     public float MaxHealth {  get; private set; } = 100;
 
@@ -29,6 +29,13 @@ public class SnakeController : MonoBehaviour, IHurtable
 
     [SerializeField]
     private GameObject ApplePrefab;
+
+    public void SetStageOne()
+    {
+        Health = 100;
+        MaxHealth = 100;
+        CanDie = false;
+    }
 
     public void ConsumeDamage(float amount)
     {

@@ -343,7 +343,7 @@ NavMeshAgent:
   m_Enabled: 1
   m_AgentTypeID: -1372625422
   m_Radius: 0.5
-  m_Speed: 15
+  m_Speed: 0
   m_Acceleration: 90
   avoidancePriority: 50
   m_AngularSpeed: 500
@@ -352,7 +352,7 @@ NavMeshAgent:
   m_AutoBraking: 1
   m_AutoRepath: 1
   m_Height: 2
-  m_BaseOffset: 0
+  m_BaseOffset: 15
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
 --- !u!114 &6979811646514362424
@@ -386,6 +386,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5b478b6cd627dbe408d8b617384bcaac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ApplePrefab: {fileID: 651043407059732446, guid: 934017029cb447c47a4218066839019c, type: 3}
 --- !u!4 &7853332430460732792 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 037fa5bf9fb923446afcee08c3be8404, type: 3}

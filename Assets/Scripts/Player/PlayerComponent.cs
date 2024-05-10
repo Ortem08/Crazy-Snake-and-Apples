@@ -14,7 +14,7 @@ public class PlayerComponent : MonoBehaviour, IHurtable, IUser, IPushable, IPlac
     public UnityEvent<float, float> OnHealthDecrease { get; } = new();
     public UnityEvent<float, float> OnHealthIncrease { get; } = new();
 
-    
+
     [SerializeField]
     private float ItemPickUpRadius = 3;
 
@@ -29,7 +29,7 @@ public class PlayerComponent : MonoBehaviour, IHurtable, IUser, IPushable, IPlac
     public Transform CameraTransform => cameraTransform;
 
     public Transform SelfTransform => transform;
-    
+
     public Inventory Inventory => inventory;
     private Inventory inventory;
 
@@ -39,7 +39,7 @@ public class PlayerComponent : MonoBehaviour, IHurtable, IUser, IPushable, IPlac
 
     [SerializeField]
     private float health = 100;
-    
+
     [SerializeField]
     private float maxHealth = 100f;
 
@@ -51,6 +51,18 @@ public class PlayerComponent : MonoBehaviour, IHurtable, IUser, IPushable, IPlac
     public UserType UserType => UserType.Player;
 
     public GameObject UserGameObject => gameObject;
+
+    private bool isDead = false;
+
+    public event Action OnPlayerDead;
+
+    public void Resurrect(Vector3 position)
+    {
+        isDead = false;
+        health = MaxHealth;
+        OnHealthIncrease?.Invoke(health, maxHealth);
+        transform.position = position;
+    }
 
     public void ConsumeDamage(float amount)
     {
@@ -64,11 +76,17 @@ public class PlayerComponent : MonoBehaviour, IHurtable, IUser, IPushable, IPlac
         if (health < 0)
         {
             Debug.Log("stop shooting! I`m already dead");
+            Die();
         }
         else
         {
             OnHealthDecrease.Invoke(health, MaxHealth);
         }
+    }
+
+    private void Die()
+    {
+        OnPlayerDead?.Invoke();
     }
 
     private void Awake()
