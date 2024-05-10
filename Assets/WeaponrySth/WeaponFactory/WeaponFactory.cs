@@ -43,9 +43,9 @@ public class WeaponFactory : MonoBehaviour
         if (UnityEngine.Random.value < 0.1f)
         {
             var mimic = Instantiate(mimicPistolPrefab, position, Quaternion.identity);
-            var mimicCapacity = generator.Next(2, 5);
+            var mimicCapacity = generator.Next(2, 10);
             var mimicInventory = new CardInventory(mimicCapacity);
-            var spells = GetRandomSpellsLevelOne(generator.Next(1, mimicCapacity));
+            var spells = GetRandomSpellsLevelOne(generator.Next(1, mimicCapacity), Spell.GunShot);
             foreach (var spell in spells)
             {
                 mimicInventory.TryAddCard(cardFactory.CreateCard(spell));
