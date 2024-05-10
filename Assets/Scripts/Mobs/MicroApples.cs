@@ -34,6 +34,8 @@ public class MicroApples : CreatureBase, IMob
 
     private Animator animator;
 
+    private PlayerComponent playerComponent;
+
 
     public MicroApples() : base(20, 1)
     {
@@ -42,9 +44,9 @@ public class MicroApples : CreatureBase, IMob
     private void Start()
     {
         animator = gameObject.GetComponentInParent<Animator>();
-
         agent = GetComponentInParent<NavMeshAgent>();
         player = GameObject.FindGameObjectWithTag("Player");
+        playerComponent = player.GetComponent<PlayerComponent>();
         StateMachine = new StateMachine();
         StateMachine.ChangeState(new IdleState(this));
         path = new NavMeshPath();
