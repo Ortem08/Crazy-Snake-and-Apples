@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,9 +9,13 @@ public class PauseScript : MonoBehaviour
 {
     public static bool GameIsPaused;
     public GameObject PauseMenuUI;
-    
-    //Объект игрока, чтобы во время паузы не реагировал на мышь
-    //public GameObject player;
+
+    private GameObject player;
+
+    private void Awake()
+    {
+        player = GameObject.FindGameObjectWithTag("Player");
+    }
 
     private void Update()
     {
@@ -28,8 +33,8 @@ public class PauseScript : MonoBehaviour
         PauseMenuUI.SetActive(false);
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
-        //player.GetComponent<CameraMove>().enabled = true;
-        //player.SetActive(true);
+        SingletonInputManager.instance.InputMap.Enable();
+        player.SetActive(true);
         Time.timeScale = 1f;
         GameIsPaused = false;
     }
@@ -39,8 +44,8 @@ public class PauseScript : MonoBehaviour
         PauseMenuUI.SetActive(true);
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
-        //player.GetComponent<CameraMove>().enabled = false;
-        //player.SetActive(false);
+        SingletonInputManager.instance.InputMap.Disable();
+        player.SetActive(false);
         Time.timeScale = 0f;
         GameIsPaused = true;
     }

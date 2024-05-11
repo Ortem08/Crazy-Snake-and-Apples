@@ -3,18 +3,18 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 using UnityEngine.Audio;
+using UnityEngine.Serialization;
 using Random = System.Random;
 
 public class SoundController : MonoBehaviour
 {
+    public float GeneralVolume;
     public GameObject SoundObject;
     
-    private AudioMixer mixer;
-    
-    private static Dictionary<string, string> nameToPath;
-
     public float PlaySound(string soundType, float volume, Vector3 position, GameObject parent=null)
     {
+        UpdateFields();
+        
         var length = 0f;
         try
         {
@@ -39,7 +39,7 @@ public class SoundController : MonoBehaviour
             var path = $"Sounds/{soundType}/{soundType}_{random.Next(1, filesCount)}";
 
             audioSource.clip = Resources.Load<AudioClip>(path);
-            audioSource.volume = volume;
+            audioSource.volume = GeneralVolume * volume;
             audioSource.spatialBlend = 1f;
             audioSource.Play();
 
@@ -53,5 +53,9 @@ public class SoundController : MonoBehaviour
         
         return length;
     }
-    
+
+    private void UpdateFields()
+    {
+        GeneralVolume = PlayerPrefs.HasKey("Volume") ? PlayerPrefs.GetFloat("Volume") : 1;
+    }
 }

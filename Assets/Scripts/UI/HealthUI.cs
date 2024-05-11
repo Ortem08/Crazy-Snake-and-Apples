@@ -55,8 +55,8 @@ public class HealthUI : MonoBehaviour
     
     private void SetHealthUI(float health, float maxHealth)
     {
-        healthBarImage.fillAmount = health / maxHealth;
-        healthProgress.text = string.Format(healthProgressFormat, health, maxHealth);
+        healthBarImage.fillAmount = health < 0 ? 0 : health / maxHealth;
+        healthProgress.text = string.Format(healthProgressFormat, health < 0 ? 0 : health, maxHealth);
     }
     
     private void DecreaseHealthUI(float health, float maxHealth)

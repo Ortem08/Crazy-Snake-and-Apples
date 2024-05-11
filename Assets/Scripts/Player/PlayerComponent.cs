@@ -75,14 +75,11 @@ public class PlayerComponent : MonoBehaviour, IHurtable, IUser, IPushable, IPlac
     {
         health -= damageInfo.Amount;
         Debug.Log($"Player Hurt: health = {health}");
+        OnHealthDecrease.Invoke(Mathf.Round(health), MaxHealth);
         if (health < 0)
         {
             Debug.Log("stop shooting! I`m already dead");
             Die();
-        }
-        else
-        {
-            OnHealthDecrease.Invoke(health, MaxHealth);
         }
 
         soundController.PlaySound("PlayerHurt", 0.5f, transform.position, gameObject);
