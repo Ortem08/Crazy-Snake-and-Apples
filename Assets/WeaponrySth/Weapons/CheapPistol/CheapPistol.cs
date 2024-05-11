@@ -44,16 +44,19 @@ public class CheapPistol : MonoBehaviour, ICardBasedItem, IChargeable
     private Renderer indicatorRenderer;
 
     private readonly float rechargeTime = 0.5f;
-
-
+    
     private Animator animator;
 
+    private SoundController soundController;
+    
     private void Awake()
     {
         CardInventory = new CardInventory(7);   // cheap
         ChargeInfo = new ChargeInfo(1); // im tired of reloading
         colliderForDetection = GetComponent<Collider>();
         animator = GetComponent<Animator>();
+
+        soundController = GameObject.FindGameObjectWithTag("SoundController").GetComponent<SoundController>();
     }
 
     private void Start()
@@ -192,6 +195,8 @@ public class CheapPistol : MonoBehaviour, ICardBasedItem, IChargeable
 
     private void DoShooting(List<IProjectileTreeNode> projectileForest)
     {
+        soundController.PlaySound("LaserShot", 0.5f, transform.position, gameObject);
+        
         foreach (var tree in projectileForest)
         {
             var instance = tree.InstantiateProjectile();

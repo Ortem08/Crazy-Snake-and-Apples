@@ -43,7 +43,10 @@ public class Skeleton : CreatureBase, IMob, IPlacer
     private Animator animator;
     private PlayerComponent playerComponent;
 
-
+    private SoundController soundController;
+    private float lastSoundPlay;
+    private float soundCooldown = 1.5f;
+    
     public Skeleton() : base(20, 1)
     {
         ViewAngle = 110;
@@ -58,6 +61,8 @@ public class Skeleton : CreatureBase, IMob, IPlacer
         StateMachine = new StateMachine();
         StateMachine.ChangeState(new IdleState(this));
         path = new NavMeshPath();
+
+        soundController = GameObject.FindGameObjectWithTag("SoundController").GetComponent<SoundController>();
     }
 
     private void Update()
@@ -108,6 +113,12 @@ public class Skeleton : CreatureBase, IMob, IPlacer
             animator.SetBool("IsRunning", true);
             animator.SetBool("Idle", false);
             RunAway();
+        }
+
+        if (Time.time - lastSoundPlay > soundCooldown)
+        {
+            soundController.PlaySound("Skeleton", 0.2f, transform.position, gameObject);
+            lastSoundPlay = Time.time;
         }
     }
 
@@ -212,6 +223,7 @@ public class Skeleton : CreatureBase, IMob, IPlacer
         agent.enabled = false;
         this.enabled = false;
 
+        soundController.PlaySound("SkeletonDeath", 0.5f, transform.position);
         //animator.enabled = false;
         //DetachChildrenRecursively(gameObject.transform);
     }
