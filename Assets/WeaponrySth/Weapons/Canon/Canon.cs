@@ -52,6 +52,8 @@ public class Canon : MonoBehaviour, ICardBasedItem, IChargeable
 
     private readonly float meleeDamage = 10;
 
+    private SoundController soundController;
+
     private void Awake()
     {
         canonCollider = GetComponent<Collider>();
@@ -90,6 +92,8 @@ public class Canon : MonoBehaviour, ICardBasedItem, IChargeable
         {
             throw new Exception("tip on the cannon not set");
         }
+
+        soundController = GameObject.FindGameObjectWithTag("SoundController").GetComponent<SoundController>();
     }
 
     public void DropOut()
@@ -234,11 +238,13 @@ public class Canon : MonoBehaviour, ICardBasedItem, IChargeable
             if (collider.gameObject.TryGetComponent<IPushable>(out var pushable))
             {
                 pushable.Push(user.CameraTransform.forward * pushImpulse);
+                soundController.PlaySound("CannonBackPunch", 0.5f, transform.position, gameObject);
             }
             else if (collider.gameObject.TryGetComponent<Rigidbody>(out var rb))
             {
                 Debug.Log("here");
                 rb.AddForce(user.CameraTransform.forward * pushImpulse, ForceMode.Impulse);
+                soundController.PlaySound("CannonBackPunch", 0.5f, transform.position, gameObject);
             }
         }
     }
@@ -247,6 +253,10 @@ public class Canon : MonoBehaviour, ICardBasedItem, IChargeable
     {
         indicatorRenderer.material.color = Color.red;
         animator.SetTrigger("TrPrimaryFire");
+
+        soundController.PlaySound("CannonShot", 0.5f, transform.position, gameObject);
+        soundController.PlaySound("CannonReload", 0.5f, transform.position, gameObject);
+        
         yield return new WaitForSeconds(rechargeTime);
         ChargeInfo.CurrentCharge = ChargeInfo.MaxCharge;
         indicatorRenderer.material.color = Color.green;
