@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -16,6 +17,7 @@ public class WeaponInsideInventory : MonoBehaviour
     [SerializeField] 
     private Image[] FastAccessItemHolderImages;
     private GameObject[] ItemHolders;
+    private Dictionary<GameObject, int> holderIndexes;
     private Image[] ItemImages;
     
     [SerializeField]
@@ -26,12 +28,15 @@ public class WeaponInsideInventory : MonoBehaviour
     void Awake()
     {
         ItemHolders = new GameObject[Capacity];
+        holderIndexes = new Dictionary<GameObject, int>();
         ItemImages = new Image[Capacity];
         FastAccessItemHolderImages = new Image[Capacity];
         
         for (var i = 0; i < Capacity; i++)
         {
             ItemHolders[i] = Instantiate(itemHolderPrefab, CardsHolder.transform);
+            holderIndexes[ItemHolders[i]] = i;
+            
             var images =  ItemHolders[i].GetComponentsInChildren<Image>();
             FastAccessItemHolderImages[i] = images[0];
             ItemImages[i] = images[1];  
@@ -70,7 +75,19 @@ public class WeaponInsideInventory : MonoBehaviour
             return;
         }
     }
-
+    
+    public bool TrySetDescription(GameObject item,
+        out ICard card)
+    {
+        card = null;
+        
+        if (!holderIndexes.TryGetValue(item, out var index))
+            return false;
+        
+        card = inventory.Cards[index];
+        return true;
+    }
+    
     private void SetCardSprite(int index)
     {
         var sprite = inventory.Cards[index].Sprite;
@@ -90,7 +107,4 @@ public class WeaponInsideInventory : MonoBehaviour
             WeaponIcon.color = Color.white;
         }
     }
-    
-    // private void OnPickUpCard(int index)
-    //     => SetCardSprite(index);
 }

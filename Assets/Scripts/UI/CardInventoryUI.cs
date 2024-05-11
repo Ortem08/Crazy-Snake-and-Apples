@@ -13,6 +13,7 @@ public class CardInventoryUI : MonoBehaviour
     private GameObject PlayerInventoryPlaceHolder;
     [SerializeField] 
     private GameObject DescriptionPlaceHolder;
+    
     [SerializeField] 
     private WeaponInsideInventory[] WeaponHolders;
     [SerializeField] 
@@ -24,6 +25,8 @@ public class CardInventoryUI : MonoBehaviour
     private Inventory inventory => player.Inventory;
     
     private GameObject[] playerCardHolders;
+    private Dictionary<GameObject, int> holderIndexes;
+    private ClickHandler[] clickHandlers;
     private Image[] playerCardImages;
     private Image[] playerCardSpriteImages;
     
@@ -31,35 +34,53 @@ public class CardInventoryUI : MonoBehaviour
     private TextMeshProUGUI DescriptionText;
     
     private int playerCardCapacity;
+    private bool isOpened;
 
-    private const string startDescription = "Select a card to read its description.";
+    private const string DefaultDescription = "Select a card to read its description.";
 
-    private void Start()
+    private void Awake()
+    {
+        gameObject.SetActive(false);
+    }
+    
+
+    private void FirstOpen()
     {
         player = FindObjectOfType<PlayerComponent>();
-        Debug.Log($"Player in Card Inventory: {player}");
-        gameObject.SetActive(false);
-        
-        DescriptionSpriteImage = DescriptionPlaceHolder.GetComponentsInChildren<Image>()[2];
-        DescriptionText = DescriptionPlaceHolder.GetComponentInChildren<TextMeshProUGUI>();
-        DescriptionText.text = startDescription;
         
         playerCardCapacity = player.CardInventory.Capasity;
         playerCardHolders = new GameObject[playerCardCapacity];
+        holderIndexes = new Dictionary<GameObject, int>();
+        
         playerCardImages = new Image[playerCardCapacity];
         playerCardSpriteImages = new Image[playerCardCapacity];
+        clickHandlers = new ClickHandler[playerCardCapacity];
+        
+        DescriptionSpriteImage = DescriptionPlaceHolder.GetComponentsInChildren<Image>()[2];
+        DescriptionText = DescriptionPlaceHolder.GetComponentInChildren<TextMeshProUGUI>();
+        DescriptionText.text = DefaultDescription;
         
         for (int i = 0; i < playerCardCapacity; i++)
         {
             playerCardHolders[i] = Instantiate(cardHolderPrefab, PlayerInventoryPlaceHolder.transform);
+            holderIndexes[playerCardHolders[i]] = i;
+            
+            clickHandlers[i] = playerCardHolders[i].GetComponentInChildren<ClickHandler>();
+            clickHandlers[i].OnClick.AddListener(SetDescription);
+            
             var images =  playerCardHolders[i].GetComponentsInChildren<Image>();
             playerCardImages[i] = images[0];
             playerCardSpriteImages[i] = images[1];
         }
+
+        isOpened = true;
     }
     
     public void OpenInventory()
     {
+        if (!isOpened)
+            FirstOpen();
+        
         gameObject.SetActive(true);
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
@@ -99,5 +120,39 @@ public class CardInventoryUI : MonoBehaviour
         SingletonInputManager.instance.InputMap.Enable();
         
         Time.timeScale = 1f;
+    }
+
+    private void SetDescription(GameObject item)
+    {
+        ICard card = null;
+        if (!holderIndexes.TryGetValue(item, out var index))
+        {
+            foreach (var weapon in WeaponHolders)
+            {
+                if (weapon.TrySetDescription(item, out card))
+                    break;
+            }
+        }
+        else
+        {
+            card = cardInventory.Cards[index];
+        }
+        
+        if (card is null)
+        {
+            SetDefaultDescription();
+            return;
+        }
+            
+        DescriptionSpriteImage.sprite = card.Sprite;
+        DescriptionSpriteImage.color = Color.white;
+        DescriptionText.text = card.Description;
+    }
+
+    private void SetDefaultDescription()
+    {
+        DescriptionSpriteImage.sprite = null;
+        DescriptionSpriteImage.color = Color.clear;
+        DescriptionText.text = DefaultDescription;
     }
 }
