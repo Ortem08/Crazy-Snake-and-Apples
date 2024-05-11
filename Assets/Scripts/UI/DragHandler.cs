@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class UIItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
+public class DragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
-    private Vector2 originalPosition;
+    public GameObject OriginalParent => originalParent.gameObject;
+    
+    private Vector3 originalPosition;
     private RectTransform rectTransform;
     private Transform originalParent;
     private CanvasGroup canvasGroup;
@@ -35,11 +37,8 @@ public class UIItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHa
     
     public void OnEndDrag(PointerEventData eventData)
     {
-        if (rectTransform.parent == rectTransform.parent.root)
-        {
-            rectTransform.position = originalPosition; 
-            rectTransform.SetParent(originalParent);
-        }
+        rectTransform.position = originalPosition; 
+        rectTransform.SetParent(originalParent);
         canvasGroup.blocksRaycasts = true;
     }
 }

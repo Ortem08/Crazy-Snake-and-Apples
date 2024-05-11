@@ -14,6 +14,7 @@ public class CardInventoryUI : MonoBehaviour
     [SerializeField] 
     private GameObject DescriptionPlaceHolder;
     
+    
     [SerializeField] 
     private WeaponInsideInventory[] WeaponHolders;
     [SerializeField] 
@@ -25,8 +26,7 @@ public class CardInventoryUI : MonoBehaviour
     private Inventory inventory => player.Inventory;
     
     private GameObject[] playerCardHolders;
-    private Dictionary<GameObject, int> holderIndexes;
-    private ClickHandler[] clickHandlers;
+    private Dictionary<GameObject, int> spriteImagesIndexes;
     private Image[] playerCardImages;
     private Image[] playerCardSpriteImages;
     
@@ -38,23 +38,16 @@ public class CardInventoryUI : MonoBehaviour
 
     private const string DefaultDescription = "Select a card to read its description.";
 
-    private void Awake()
-    {
-        gameObject.SetActive(false);
-    }
-    
-
-    private void FirstOpen()
+    private void Start()
     {
         player = FindObjectOfType<PlayerComponent>();
         
         playerCardCapacity = player.CardInventory.Capasity;
         playerCardHolders = new GameObject[playerCardCapacity];
-        holderIndexes = new Dictionary<GameObject, int>();
+        spriteImagesIndexes = new Dictionary<GameObject, int>();
         
         playerCardImages = new Image[playerCardCapacity];
         playerCardSpriteImages = new Image[playerCardCapacity];
-        clickHandlers = new ClickHandler[playerCardCapacity];
         
         DescriptionSpriteImage = DescriptionPlaceHolder.GetComponentsInChildren<Image>()[2];
         DescriptionText = DescriptionPlaceHolder.GetComponentInChildren<TextMeshProUGUI>();
@@ -63,23 +56,29 @@ public class CardInventoryUI : MonoBehaviour
         for (int i = 0; i < playerCardCapacity; i++)
         {
             playerCardHolders[i] = Instantiate(cardHolderPrefab, PlayerInventoryPlaceHolder.transform);
-            holderIndexes[playerCardHolders[i]] = i;
             
-            clickHandlers[i] = playerCardHolders[i].GetComponentInChildren<ClickHandler>();
-            clickHandlers[i].OnClick.AddListener(SetDescription);
+            var clickHandler = playerCardHolders[i].GetComponentInChildren<ClickHandler>();
+            clickHandler.OnClick.AddListener(SetDescription);
+            
+            var dropHandler = playerCardHolders[i].GetComponentInChildren<DropHandler>();
+            dropHandler.OnSwap.AddListener(SwapCards);
             
             var images =  playerCardHolders[i].GetComponentsInChildren<Image>();
             playerCardImages[i] = images[0];
             playerCardSpriteImages[i] = images[1];
+            
+            spriteImagesIndexes[playerCardSpriteImages[i].gameObject] = i;
         }
 
         isOpened = true;
+        
+        gameObject.SetActive(false);
     }
     
     public void OpenInventory()
     {
-        if (!isOpened)
-            FirstOpen();
+        // if (!isOpened)
+        //     FirstOpen();
         
         gameObject.SetActive(true);
         Cursor.visible = true;
@@ -97,16 +96,7 @@ public class CardInventoryUI : MonoBehaviour
         
         for (var i = 0; i < playerCardCapacity; i++)
         {
-            if (cardInventory.Cards[i] is not null)
-            {
-                playerCardSpriteImages[i].sprite = cardInventory.Cards[i].Sprite;
-                playerCardSpriteImages[i].color = Color.white;
-            }
-            else if (playerCardImages[i].sprite is not null)
-            {
-                playerCardSpriteImages[i].sprite = null;
-                playerCardSpriteImages[i].color = Color.clear;
-            }
+            SetSprite(i);
         }
     }
     
@@ -122,10 +112,10 @@ public class CardInventoryUI : MonoBehaviour
         Time.timeScale = 1f;
     }
 
-    private void SetDescription(GameObject item)
+    public void SetDescription(GameObject item)
     {
         ICard card = null;
-        if (!holderIndexes.TryGetValue(item, out var index))
+        if (!spriteImagesIndexes.TryGetValue(item, out var index))
         {
             foreach (var weapon in WeaponHolders)
             {
@@ -154,5 +144,68 @@ public class CardInventoryUI : MonoBehaviour
         DescriptionSpriteImage.sprite = null;
         DescriptionSpriteImage.color = Color.clear;
         DescriptionText.text = DefaultDescription;
+    }
+
+    public void SwapCards(GameObject first, GameObject second)
+    {
+        var isSwappingFirst = TryGetSwapInfo(first,
+            out var imageFirst, out var inventoryFirst, out var indexFirst);
+        var isSwappingSecond = TryGetSwapInfo(second,
+            out var imageSecond, out var inventorySecond, out var indexSecond);
+        if (!isSwappingFirst || !isSwappingSecond)
+        {
+            throw new ArgumentException($"Can't swap cards {first.name} and {second.name}.");
+        }
+        
+        var tempItem = inventoryFirst.Cards[indexFirst];
+        inventoryFirst.Cards[indexFirst] = inventorySecond.Cards[indexSecond];
+        inventorySecond.Cards[indexSecond] = tempItem;
+
+        SetSprite(imageFirst, inventoryFirst.Cards[indexFirst]);
+        SetSprite(imageSecond, inventorySecond.Cards[indexSecond]);
+    }
+
+    private bool TryGetSwapInfo(GameObject item, 
+        out Image image, out CardInventory inventory, out int index)
+    {
+        image = null;
+        inventory = null;
+        if (!spriteImagesIndexes.TryGetValue(item, out index))
+        {
+            foreach (var weapon in WeaponHolders)
+            {
+                if (weapon.TryGetSwapInfo(item, out image, out inventory, out index))
+                {
+                    return true;
+                }
+            }
+        }
+        else
+        {
+            inventory = cardInventory;
+            image = playerCardSpriteImages[index];
+            return true;
+        }
+
+        return false;
+    }
+
+    private void SetSprite(int i)
+    {
+        SetSprite(playerCardSpriteImages[i], cardInventory.Cards[i]);
+    }
+    
+    public static void SetSprite(Image image, ICard card)
+    {
+        if (card is not null)
+        {
+            image.sprite = card.Sprite;
+            image.color = Color.white;
+        }
+        else if (image.sprite is not null)
+        {
+            image.sprite = null;
+            image.color = Color.clear;
+        }
     }
 }
