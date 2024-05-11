@@ -1412,6 +1412,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: WeaponPlacer
       objectReference: {fileID: 0}
+    - target: {fileID: 3790540077752353960, guid: a10dd003acf1a5a42aeff7475e02dd41, type: 3}
+      propertyPath: weaponCount
+      value: 12
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
