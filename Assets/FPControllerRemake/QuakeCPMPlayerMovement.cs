@@ -131,6 +131,10 @@ public class QuakeCPMPlayerMovement : MonoBehaviour
 
         _controller = GetComponent<CharacterController>();
         soundController = GameObject.FindGameObjectWithTag("SoundController").GetComponent<SoundController>();
+        if (soundController == null)
+        {
+            throw new System.Exception("set sound controller");
+        }
         isGrounded = true;
     }
 
