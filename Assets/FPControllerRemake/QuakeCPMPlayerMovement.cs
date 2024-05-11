@@ -40,6 +40,39 @@ struct Cmd
     public float upMove;
 }
 
+// allow to use new input system like an old one
+
+/*public class QInputMock
+{
+    private Vector2 movementInput;
+
+    public void Init()
+    {
+        SingletonInputManager.instance.InputMap.Gameplay.Movement.performed += Movement_performed;
+    }
+
+    private void Movement_performed(UnityEngine.InputSystem.InputAction.CallbackContext obj)
+    {
+        movementInput = obj.ReadValue<Vector2>();
+        throw new System.Exception("got some input lets goooo!");
+    }
+
+    public float GetValueX()
+    {
+        return movementInput.x;
+    }
+
+    public float GetValueY()
+    {
+        return movementInput.y;
+    }
+
+    public void Destroy()
+    {
+        SingletonInputManager.instance.InputMap.Gameplay.Movement.performed -= Movement_performed;
+    }
+}*/
+
 public class QuakeCPMPlayerMovement : MonoBehaviour
 {
     public Transform playerView;     // Camera
@@ -99,6 +132,9 @@ public class QuakeCPMPlayerMovement : MonoBehaviour
     private float lastHeight;
     private bool isGrounded;
 
+    // input retrieving
+    //private QInputMock qInputMock = new QInputMock();
+
     public void AddVelocity(Vector3 velocity)
     {
         // not very good
@@ -112,6 +148,8 @@ public class QuakeCPMPlayerMovement : MonoBehaviour
 
     private void Start()
     {
+        //qInputMock.Init();
+
         // Hide the cursor
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
@@ -130,16 +168,21 @@ public class QuakeCPMPlayerMovement : MonoBehaviour
             transform.position.z);
 
         _controller = GetComponent<CharacterController>();
+        isGrounded = true;
         soundController = GameObject.FindGameObjectWithTag("SoundController").GetComponent<SoundController>();
         if (soundController == null)
         {
             throw new System.Exception("set sound controller");
         }
-        isGrounded = true;
     }
 
     private void Update()
     {
+/*        if (Input.GetAxisRaw("Vertical") != 0)
+        {
+            AddVelocity(new Vector3(0, 20, 0));
+        }*/
+
         // Do FPS calculation
         frameCount++;
         dt += Time.deltaTime;
@@ -337,21 +380,29 @@ public class QuakeCPMPlayerMovement : MonoBehaviour
         // Reset the gravity velocity
         playerVelocity.y = -gravity * Time.deltaTime;
 
-        if (!isGrounded)
+        try
         {
-            isGrounded = true;
-            soundController.PlaySound("Landing", 1f, transform.position, gameObject);
+            if (!isGrounded)
+            {
+                isGrounded = true;
+                soundController?.PlaySound("Landing", 1f, transform.position, gameObject);
+            }
+
+            if (GetVelocity().magnitude > 1 && Time.time - lastStepTime > stepCooldown)
+            {
+                soundController?.PlaySound("Steps", 0.5f, transform.position, gameObject);
+                lastStepTime = Time.time;
+            }
         }
-        
-        if (GetVelocity().magnitude > 1 && Time.time - lastStepTime > stepCooldown)
+        catch (System.Exception exc)
         {
-            soundController.PlaySound("Steps", 0.5f, transform.position, gameObject);
-            lastStepTime = Time.time;
+            Debug.LogException(exc);
         }
+
         
         if(wishJump)
         {
-            soundController.PlaySound("Jump", 0.5f, transform.position, gameObject);
+            soundController?.PlaySound("Jump", 0.5f, transform.position, gameObject);
             playerVelocity.y = jumpSpeed;
             wishJump = false;
             isGrounded = false;
