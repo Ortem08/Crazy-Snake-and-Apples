@@ -296,10 +296,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 6979811646514362424, guid: 1c98a82ff7e0cf84298ec9ee26918992, type: 3}
-      propertyPath: player
-      value: 
-      objectReference: {fileID: 1689304349}
     - target: {fileID: 7473570268571148226, guid: 1c98a82ff7e0cf84298ec9ee26918992, type: 3}
       propertyPath: m_Name
       value: Snake_angry_PREFAB
@@ -6345,11 +6341,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: fd2e181e0381a7e4787e5a74b892149c, type: 3}
---- !u!4 &1689304349 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 6162938373772777100, guid: fd2e181e0381a7e4787e5a74b892149c, type: 3}
-  m_PrefabInstance: {fileID: 1689304348}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1759592873
 PrefabInstance:
   m_ObjectHideFlags: 0

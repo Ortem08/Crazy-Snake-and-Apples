@@ -10,7 +10,7 @@ public class PauseScript : MonoBehaviour
     public GameObject PauseMenuUI;
     
     //Объект игрока, чтобы во время паузы не реагировал на мышь
-    public GameObject player;
+    //public GameObject player;
 
     private void Update()
     {
@@ -29,7 +29,7 @@ public class PauseScript : MonoBehaviour
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
         //player.GetComponent<CameraMove>().enabled = true;
-        player.SetActive(true);
+        //player.SetActive(true);
         Time.timeScale = 1f;
         GameIsPaused = false;
     }
@@ -40,7 +40,7 @@ public class PauseScript : MonoBehaviour
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
         //player.GetComponent<CameraMove>().enabled = false;
-        player.SetActive(false);
+        //player.SetActive(false);
         Time.timeScale = 0f;
         GameIsPaused = true;
     }

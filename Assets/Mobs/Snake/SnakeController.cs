@@ -7,7 +7,7 @@ using UnityEngine.Events;
 
 public class SnakeController : MonoBehaviour, IHurtable
 {
-    public float Health { get; private set; } = 100;
+    public float Health { get; private set; } = 10;
 
     public float MaxHealth {  get; private set; } = 100;
 
@@ -25,7 +25,7 @@ public class SnakeController : MonoBehaviour, IHurtable
 
     private bool isDead = false;
 
-    private event Action OnSnakeDefeat;
+    public event Action<Vector3> OnSnakeDefeat;
 
     [SerializeField]
     private GameObject ApplePrefab;
@@ -59,7 +59,7 @@ public class SnakeController : MonoBehaviour, IHurtable
         }
         isDead = true;
 
-        OnSnakeDefeat?.Invoke();
+        OnSnakeDefeat?.Invoke(transform.position);
 
         if (!CanDie)
         {

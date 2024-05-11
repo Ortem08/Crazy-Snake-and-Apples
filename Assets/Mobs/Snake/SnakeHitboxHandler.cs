@@ -22,6 +22,7 @@ public class SnakeHitboxHandler : MonoBehaviour, IHurtable
 
     public void TakeDamage(DamageInfo damageInfo)
     {
+        Debug.Log("damage consumed");
         snakeController.TakeDamage(damageInfo);
     }
 

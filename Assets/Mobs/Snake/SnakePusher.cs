@@ -8,6 +8,11 @@ public class SnakePusher : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         var pushingImpulse = (transform.forward * 5 + transform.up) * 5;
+        if (other.gameObject.TryGetComponent<IHurtable>(out var hurtable))
+        {
+            hurtable.TakeDamage(new DamageInfo(5, DamageType.MeleeDamage));
+        }
+
         if (other.gameObject.TryGetComponent<IPushable>(out var pushable))
         {
             pushable.Push(pushingImpulse);

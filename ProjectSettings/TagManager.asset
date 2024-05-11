@@ -10,6 +10,7 @@ TagManager:
   - ProjectileFactory
   - CardFactory
   - WeaponFactory
+  - Snake
   layers:
   - Default
   - TransparentFX
