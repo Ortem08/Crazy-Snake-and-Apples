@@ -179,12 +179,17 @@ public class LaggyPistol : MonoBehaviour, ICardBasedItem, IChargeable
             if (instance.TryGetComponent<IProjectile>(out var projectile))
             {
                 Vector3 shootDirection = user.CameraTransform.forward;
-                var delta = (user.CameraTransform.right - user.CameraTransform.up) * 0.02f;
+                //var delta = (user.CameraTransform.right - user.CameraTransform.up) * 0.02f;
                 Vector3 startPosition = user.CameraTransform.position + shootDirection * 0.1f;
 
                 if (projectile is GunShot)
                 {
                     (projectile as GunShot).SetVisibleRayBeginning(tipOfTheGun.position);
+                }
+
+                if (projectile.TryGetModificationInterface<IUserSecure>(out var userSecure))
+                {
+                    userSecure.EnsureProtectionOfObjectWith(user.UserGameObject.GetInstanceID());
                 }
 
                 projectile.Fire(startPosition, shootDirection, user.Velocity);
