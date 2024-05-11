@@ -32,6 +32,7 @@ public class PlacementManager : MonoBehaviour
     public void StartProcess()
     {
         Init();
+        Debug.Log("here");
         foreach (var obj in placementObjs)
         {
             obj.GetComponent<IPlacer>().Place(this);

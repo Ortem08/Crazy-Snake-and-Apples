@@ -194,4 +194,15 @@ public class PlayerComponent : MonoBehaviour, IHurtable, IUser, IPushable, IPlac
         manager.AddOnPlacementMap(position, 31);
         transform.position = positionInUnity;
     }
+
+    private void OnDestroy()
+    {
+        SingletonInputManager.instance.InputMap.Gameplay.PickItem.performed -= PickItem_performed;
+        SingletonInputManager.instance.InputMap.Gameplay.DropItem.performed -= DropItem_performed;
+
+        SingletonInputManager.instance.InputMap.Gameplay.UseItemPrimaryAction.performed -= UseItemPrimaryAction_performed;
+        SingletonInputManager.instance.InputMap.Gameplay.UseItemSecondaryAction.performed -= UseItemSecondaryAction_performed;
+
+        SingletonInputManager.instance.InputMap.Gameplay.ItemSelect.performed -= ItemSelect_performed;
+    }
 }

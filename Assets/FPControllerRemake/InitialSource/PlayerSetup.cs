@@ -6,7 +6,7 @@ using UnityEngine;
 // This script, although readable was not created out to be super readable for beginners.
 // Its just for setup and is not used during gameplay
 [CustomEditor(typeof(PlayerMovement))]
-public class PlayerSetup : Editor
+public class PlayerSetup : UnityEditor.Editor
 {
     string dialogTitle = "Player Movement Setup v1.1", dialogYes = "Yeah", dialogNo = "No thanks";
 

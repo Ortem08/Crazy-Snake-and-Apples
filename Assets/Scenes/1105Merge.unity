@@ -1215,6 +1215,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: MazeBuilder
       objectReference: {fileID: 0}
+    - target: {fileID: 1670578467179968952, guid: 0db8ff4c6a7143748b9ed71e576e05b8, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2565763653004492326, guid: 0db8ff4c6a7143748b9ed71e576e05b8, type: 3}
       propertyPath: m_LocalPosition.x
       value: -13.2

@@ -45,10 +45,14 @@ namespace Environment
 
         public void Place(PlacementManager manager)
         {
+            Debug.Log("door placer called");
             var position = FindPosition(manager.MazeBuilder.Maze);
             if (position == Vector2Int.zero)
                 return;
-            
+
+            Debug.Log("door found");
+            Debug.Log(manager.GetTransformPosition(position));
+
             transform.position = manager.GetTransformPosition(position);
             transform.parent = manager.MazeBuilder.Environment.transform;
             if (position.x == 0)

@@ -2,10 +2,6 @@
 using System.Collections.Generic;
 using System.Net.Mime;
 using JetBrains.Annotations;
-using static UnityEditor.Progress;
-using UnityEditor;
-using UnityEditor.UI;
-using UnityEngine;
 using UnityEngine.Events;
 
 public class Inventory
