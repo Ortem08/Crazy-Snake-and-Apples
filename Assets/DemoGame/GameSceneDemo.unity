@@ -577,6 +577,7 @@ GameObject:
   m_Component:
   - component: {fileID: 246233071}
   - component: {fileID: 246233070}
+  - component: {fileID: 246233072}
   m_Layer: 0
   m_Name: Directional Light
   m_TagString: Untagged
@@ -661,6 +662,29 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
+--- !u!114 &246233072
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 246233069}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 474bcb49853aa07438625e644c072ee6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Version: 3
+  m_UsePipelineSettings: 1
+  m_AdditionalLightsShadowResolutionTier: 2
+  m_LightLayerMask: 1
+  m_RenderingLayers: 1
+  m_CustomShadowLayers: 0
+  m_ShadowLayerMask: 1
+  m_ShadowRenderingLayers: 1
+  m_LightCookieSize: {x: 1, y: 1}
+  m_LightCookieOffset: {x: 0, y: 0}
+  m_SoftShadowQuality: 0
 --- !u!1001 &254352702
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1877,6 +1901,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1265925019208036174, guid: e9a12831cd241e643838d7cd795562d6, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2378316005451451385, guid: e9a12831cd241e643838d7cd795562d6, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
@@ -6506,6 +6534,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8650920036995840395, guid: fd2e181e0381a7e4787e5a74b892149c, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: b665fc57bde6303449ac438dbac5d435, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -6612,6 +6644,10 @@ PrefabInstance:
       propertyPath: placementObjs.Array.data[8]
       value: 
       objectReference: {fileID: 5441411867270320675, guid: e567e3953fdade040805aab9d6dba253, type: 3}
+    - target: {fileID: 8738810537448226082, guid: 0db8ff4c6a7143748b9ed71e576e05b8, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: b665fc57bde6303449ac438dbac5d435, type: 2}
     - target: {fileID: 8845864682091741912, guid: 0db8ff4c6a7143748b9ed71e576e05b8, type: 3}
       propertyPath: Door
       value: 
