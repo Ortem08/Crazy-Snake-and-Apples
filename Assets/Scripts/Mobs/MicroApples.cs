@@ -44,6 +44,7 @@ public class MicroApples : CreatureBase, IMob
 
     private bool isDead = false;
 
+    private SoundController soundController;
 
     private DamageInfo attackDamage = new DamageInfo(5, DamageType.MeleeDamage);
 
@@ -66,6 +67,8 @@ public class MicroApples : CreatureBase, IMob
             throw new Exception("damage detector not set");
         }
         damageDetector.OnTriggerEvent += OnPossiblyDamageRecieverDetection;
+
+        soundController = GameObject.FindGameObjectWithTag("SoundController").GetComponent<SoundController>();
     }
 
     private void Update()
@@ -154,6 +157,7 @@ public class MicroApples : CreatureBase, IMob
 
     public override void PerformAttack()
     {
+        
         //Debug.Log("MicroApple Atakin");
         //player.ConsumeDamage(Damage);
     }
@@ -244,6 +248,9 @@ public class MicroApples : CreatureBase, IMob
             return;
         }
         hurtable.TakeDamage(attackDamage);
+        
+        soundController.PlaySound("AppleAttack", 0.5f, transform.position, gameObject);
+        
         if (collider.gameObject.TryGetComponent<IPushable>(out var pushable))
         {
             pushable.Push(transform.forward * 3);
@@ -279,6 +286,9 @@ public class MicroApples : CreatureBase, IMob
         if (isDead) return;
         isDead = true;
         var deadBody = Instantiate(deadBodyPrefab);
+        
+        soundController.PlaySound("AppleDeath", 0.5f, transform.position, deadBody);
+        
         deadBody.transform.position = transform.position;
         var impulseModified = damageInfo.Impulse.normalized * Mathf.Min(10, damageInfo.Impulse.magnitude);
         deadBody.GetComponent<Rigidbody>().AddForce(impulseModified, ForceMode.Impulse);

@@ -93,6 +93,12 @@ public class QuakeCPMPlayerMovement : MonoBehaviour
     // Player commands, stores wish commands that the player asks for (Forward, back, jump, etc)
     private Cmd _cmd;
 
+    private SoundController soundController;
+    private float lastStepTime;
+    private float stepCooldown = 0.5f;
+    private float lastHeight;
+    private bool isGrounded;
+
     public void AddVelocity(Vector3 velocity)
     {
         // not very good
@@ -124,6 +130,8 @@ public class QuakeCPMPlayerMovement : MonoBehaviour
             transform.position.z);
 
         _controller = GetComponent<CharacterController>();
+        soundController = GameObject.FindGameObjectWithTag("SoundController").GetComponent<SoundController>();
+        isGrounded = true;
     }
 
     private void Update()
@@ -136,7 +144,7 @@ public class QuakeCPMPlayerMovement : MonoBehaviour
             fps = Mathf.Round(frameCount / dt);
             frameCount = 0;
             dt -= 1.0f / fpsDisplayRate;
-                 }
+        }
         /* Ensure that the cursor is locked into the screen */
         if (Cursor.lockState != CursorLockMode.Locked) {
             if (Input.GetButtonDown("Fire1"))
@@ -164,6 +172,7 @@ public class QuakeCPMPlayerMovement : MonoBehaviour
             GroundMove();
         else if(!_controller.isGrounded)
             AirMove();
+        
 
         // Move the controller
         _controller.Move(playerVelocity * Time.deltaTime);
@@ -324,10 +333,24 @@ public class QuakeCPMPlayerMovement : MonoBehaviour
         // Reset the gravity velocity
         playerVelocity.y = -gravity * Time.deltaTime;
 
+        if (!isGrounded)
+        {
+            isGrounded = true;
+            soundController.PlaySound("Landing", 1f, transform.position, gameObject);
+        }
+        
+        if (GetVelocity().magnitude > 1 && Time.time - lastStepTime > stepCooldown)
+        {
+            soundController.PlaySound("Steps", 0.5f, transform.position, gameObject);
+            lastStepTime = Time.time;
+        }
+        
         if(wishJump)
         {
+            soundController.PlaySound("Jump", 0.5f, transform.position, gameObject);
             playerVelocity.y = jumpSpeed;
             wishJump = false;
+            isGrounded = false;
         }
     }
 

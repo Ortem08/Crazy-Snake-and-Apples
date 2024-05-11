@@ -52,6 +52,8 @@ public class PlayerComponent : MonoBehaviour, IHurtable, IUser, IPushable, IPlac
 
     public GameObject UserGameObject => gameObject;
 
+    private SoundController soundController;
+
     public void ConsumeDamage(float amount)
     {
         TakeDamage(new DamageInfo(amount));
@@ -69,6 +71,8 @@ public class PlayerComponent : MonoBehaviour, IHurtable, IUser, IPushable, IPlac
         {
             OnHealthDecrease.Invoke(health, MaxHealth);
         }
+
+        soundController.PlaySound("PlayerHurt", 0.5f, transform.position, gameObject);
     }
 
     private void Awake()
@@ -86,6 +90,8 @@ public class PlayerComponent : MonoBehaviour, IHurtable, IUser, IPushable, IPlac
         SingletonInputManager.instance.InputMap.Gameplay.UseItemSecondaryAction.performed += UseItemSecondaryAction_performed;
 
         SingletonInputManager.instance.InputMap.Gameplay.ItemSelect.performed += ItemSelect_performed;
+
+        soundController = GameObject.FindGameObjectWithTag("SoundController").GetComponent<SoundController>();
     }
 
     private void ItemSelect_performed(UnityEngine.InputSystem.InputAction.CallbackContext obj)
