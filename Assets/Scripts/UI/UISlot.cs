@@ -1,18 +1,29 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
-public class UISlot : MonoBehaviour
+public class UISlot : MonoBehaviour, IDropHandler
 {
-    // Start is called before the first frame update
-    void Start()
+    private Image itemImage;
+    
+    private void Start()
     {
-        
+        itemImage = GetComponentsInChildren<Image>()[1];
     }
-
-    // Update is called once per frame
-    void Update()
+    public void OnDrop(PointerEventData eventData)
     {
+        // var k = eventData.pointerDrag.
+        // var tempImage = itemImage;
+        // itemImage.sprite = draggedItemImage.sprite;
+        // draggedItemImage.sprite = tempImage.sprite;
+        //
+        // if (itemImage.sprite is not null)
+        //     return;
         
+        var otherItemTransform = eventData.pointerDrag.transform;
+        otherItemTransform.SetParent(transform);
+        otherItemTransform.position = transform.position; 
     }
 }

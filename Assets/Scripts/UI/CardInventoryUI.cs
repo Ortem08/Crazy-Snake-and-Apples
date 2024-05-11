@@ -48,6 +48,7 @@ public class CardInventoryUI : MonoBehaviour
         playerCardHolders = new GameObject[playerCardCapacity];
         playerCardImages = new Image[playerCardCapacity];
         playerCardSpriteImages = new Image[playerCardCapacity];
+        
         for (int i = 0; i < playerCardCapacity; i++)
         {
             playerCardHolders[i] = Instantiate(cardHolderPrefab, PlayerInventoryPlaceHolder.transform);
@@ -63,7 +64,10 @@ public class CardInventoryUI : MonoBehaviour
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
         player.gameObject.SetActive(false);
+        SingletonInputManager.instance.InputMap.Disable();
+        
         Time.timeScale = 0f;
+        
         for (var i = 0; i < WeaponHolders.Length; i++)
         {
             var cardBasedItem = inventory.Items[i] as ICardBasedItem;
@@ -91,6 +95,9 @@ public class CardInventoryUI : MonoBehaviour
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
         player.gameObject.SetActive(true);
+
+        SingletonInputManager.instance.InputMap.Enable();
+        
         Time.timeScale = 1f;
     }
 }

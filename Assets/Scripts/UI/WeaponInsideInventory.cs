@@ -21,64 +21,10 @@ public class WeaponInsideInventory : MonoBehaviour
     [SerializeField]
     private GameObject itemHolderPrefab;
 
-    public int Capacity => inventory?.Capasity ?? 0;
+    public const int Capacity = 20;
     
-    void Start()
+    void Awake()
     {
-        // inventory.OnPickUpCard.AddListener(OnPickUpCard);
-        // inventory.OnDropCard.AddListener(OnDropCard);
-    }
-    
-    public void ReloadInventory(ICardBasedItem weaponCardBased)
-    {
-        if (weapon != null && weaponCardBased != null 
-            && Capacity == weaponCardBased.CardInventory.Capasity)
-        {
-            gameObject.SetActive(true);
-            weapon = weaponCardBased;
-            SetWeaponSprite();
-            for (var i = 0; i < Capacity; i++)
-            {
-                if (inventory.Cards[i] != null)
-                {
-                    SetCardSprite(i);
-                }
-            }
-
-            return;
-        }
-        
-        if (weapon is not null && weaponCardBased is null)
-        {
-            gameObject.SetActive(false);
-            
-            WeaponIcon.color = Color.clear;
-            
-            // Раскомментировать, если количество карт в инвентаре оружия != 20
-            // for (var i = 0; i < Capacity; i++)
-            // {
-            //     Destroy(ItemHolders[i]);
-            // }
-            
-            weapon = null;
-            
-            return;
-        }
-        
-        ChangedCapacityReload(weaponCardBased);
-    }
-
-    private void ChangedCapacityReload(ICardBasedItem weaponCardBased)
-    {
-        gameObject.SetActive(true);
-        for (var i = 0; i < Capacity; i++)
-        {
-            Destroy(ItemHolders[i]);
-        }
-
-        weapon = weaponCardBased;
-        SetWeaponSprite();
-
         ItemHolders = new GameObject[Capacity];
         ItemImages = new Image[Capacity];
         FastAccessItemHolderImages = new Image[Capacity];
@@ -88,28 +34,50 @@ public class WeaponInsideInventory : MonoBehaviour
             ItemHolders[i] = Instantiate(itemHolderPrefab, CardsHolder.transform);
             var images =  ItemHolders[i].GetComponentsInChildren<Image>();
             FastAccessItemHolderImages[i] = images[0];
-            ItemImages[i] = images[1];
-            if (inventory.Cards[i] != null)
-            {
-                SetCardSprite(i);
-            }
+            ItemImages[i] = images[1];  
         }
+        CardsHolder.SetActive(false);
     }
     
-    // private void OnDropCard(int index)
-    // {
-    //     ItemImages[index].sprite = null;
-    //     ItemImages[index].color = Color.clear;
-    // }
+    public void ReloadInventory(ICardBasedItem weaponCardBased)
+    {
+        if (weaponCardBased != null)
+        {
+            CardsHolder.SetActive(true);
+            weapon = weaponCardBased;
+            SetWeaponSprite();
+            for (var i = 0; i < Capacity; i++)
+            {
+                if (inventory.Cards[i] != null)
+                {
+                    SetCardSprite(i);
+                }
+                else
+                {
+                    ItemImages[i].color = Color.clear;
+                    ItemImages[i].sprite = null;;
+                }
+            }
 
+            return;
+        }
+        
+        if (weapon is not null && weaponCardBased is null)
+        {
+            CardsHolder.SetActive(false);
+            WeaponIcon.color = Color.clear;
+            weapon = null;
+            return;
+        }
+    }
 
     private void SetCardSprite(int index)
     {
         var sprite = inventory.Cards[index].Sprite;
         if (sprite is not null)
         {
-            ItemImages[index].sprite = sprite;
             ItemImages[index].color = Color.white;
+            ItemImages[index].sprite = sprite;
         }
     }
     

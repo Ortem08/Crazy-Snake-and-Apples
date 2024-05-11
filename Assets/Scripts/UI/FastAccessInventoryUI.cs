@@ -55,7 +55,7 @@ public class FastAccessInventoryUI : MonoBehaviour
 
     private void OnPickUpItem(int index)
     {
-        Debug.Log(ItemImages[index]);
+        // Debug.Log(ItemImages[index]);
         var sprite = player.Inventory.SelectedItem.GetItemAvatarSprite();
         if (sprite != null)
         {

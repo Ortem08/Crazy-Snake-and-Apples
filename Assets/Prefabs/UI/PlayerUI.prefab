@@ -311,7 +311,7 @@ MonoBehaviour:
   - {fileID: 5956248618092933174}
   - {fileID: 8821946645630147904}
   - {fileID: 881187663700149781}
-  cardHolderPrefab: {fileID: 1869732413873564781, guid: 14f39ee6c70bc0349b14a9d06ea4b4f6, type: 3}
+  cardHolderPrefab: {fileID: 1869732413873564781, guid: 84669ce3d5a88e84fbde8e7a2467c685, type: 3}
 --- !u!1 &2515755443764796803
 GameObject:
   m_ObjectHideFlags: 0
