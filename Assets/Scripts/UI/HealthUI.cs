@@ -7,12 +7,12 @@ using Unity.VisualScripting;
 
 public class HealthUI : MonoBehaviour
 {
-    [SerializeField]
+    //[SerializeField]
     private IHurtable user;
-    
-    // [SerializeField]
-    // private GameObject user;
-    
+
+    [SerializeField]
+    private GameObject userGameObject;
+
     [SerializeField]
     private GameObject healthObjectPrefab;
     
@@ -34,6 +34,11 @@ public class HealthUI : MonoBehaviour
     
     void Awake()
     {
+        if (userGameObject != null)
+        {
+            user = userGameObject.GetComponent<IHurtable>();
+        }
+
         if (user is null)
         {
             user = FindObjectOfType<PlayerComponent>();

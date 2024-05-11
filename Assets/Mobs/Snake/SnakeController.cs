@@ -7,34 +7,38 @@ using UnityEngine.Events;
 
 public class SnakeController : MonoBehaviour, IHurtable
 {
+    [SerializeField]
+    private float initialHealth = 100;
+
     public float Health { get; private set; } = 10;
 
-    public float MaxHealth {  get; private set; } = 100;
+    public float MaxHealth => initialHealth;
 
-    public UnityEvent<float, float> OnHealthDecrease => throw new System.NotImplementedException();
+    public UnityEvent<float, float> OnHealthDecrease { get; } = new();
 
-    public UnityEvent<float, float> OnHealthIncrease => throw new System.NotImplementedException();
+    public UnityEvent<float, float> OnHealthIncrease { get; } = new();
 
-    public bool CanDie { get; set; } = true;
+    //public bool CanDie { get; set; } = true;
 
-    public float JumpAwayAcceleration { get; set; } = 3;
 
-    public float JumpAwaySpeed { get; set; } = 5;
-
-    public float JumpAwayTimeLeft { get; set; } = 10;
 
     private bool isDead = false;
 
     public event Action<Vector3> OnSnakeDefeat;
 
     [SerializeField]
-    private GameObject ApplePrefab;
+    protected GameObject ApplePrefab;
 
-    public void SetStageOne()
+    /*    public void SetStageOne()
+        {
+            Health = 100;
+            MaxHealth = 100;
+            CanDie = false;
+        }*/
+
+    protected void Start()
     {
-        Health = 100;
-        MaxHealth = 100;
-        CanDie = false;
+        Health = initialHealth;
     }
 
     public void ConsumeDamage(float amount)
@@ -45,13 +49,14 @@ public class SnakeController : MonoBehaviour, IHurtable
     public void TakeDamage(DamageInfo damageInfo)
     {
         Health -= damageInfo.Amount;
+        OnHealthDecrease.Invoke(Mathf.Max(Health, 0), MaxHealth);
         if (Health <= 0)
         {
             Die();
         }
     }
 
-    private void Die()
+    protected void Die()
     {
         if (isDead)
         {
@@ -61,16 +66,23 @@ public class SnakeController : MonoBehaviour, IHurtable
 
         OnSnakeDefeat?.Invoke(transform.position);
 
-        if (!CanDie)
+        AfterDefeatAction();
+
+/*        if (!CanDie)
         {
             // jump up
             StartCoroutine(JumpVeryHigh());
             return;
         }
-        ExplodeWithFruts();
+        ExplodeWithFruts();*/
     }
 
-    private IEnumerator JumpVeryHigh()
+    protected virtual void AfterDefeatAction()
+    {
+
+    }
+
+/*    private IEnumerator JumpVeryHigh()
     {
         if (TryGetComponent<NavMeshAgent>(out var agent))
         {
@@ -97,5 +109,5 @@ public class SnakeController : MonoBehaviour, IHurtable
             rb.AddExplosionForce(100, transform.position, 5, 3);
         }
         Destroy(gameObject);
-    }
+    }*/
 }

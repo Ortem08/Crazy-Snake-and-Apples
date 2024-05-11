@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class Snake : MonoBehaviour, IPlacer
+public class SnakePlacer : MonoBehaviour, IPlacer
 {
     public void Place(PlacementManager manager)
     {
