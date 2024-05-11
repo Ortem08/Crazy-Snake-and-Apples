@@ -15,7 +15,7 @@ public class CardInventoryUI : MonoBehaviour
     private GameObject DescriptionPlaceHolder;
     
     
-    [SerializeField] 
+    // [SerializeField] 
     private WeaponInsideInventory[] WeaponHolders;
     [SerializeField] 
     private GameObject cardHolderPrefab; 
@@ -40,8 +40,9 @@ public class CardInventoryUI : MonoBehaviour
 
     private void Start()
     {
+        WeaponHolders = GetComponentsInChildren<WeaponInsideInventory>();
+        Debug.Log($"Start WeaponHolders 0: {WeaponHolders[0]} Len: {WeaponHolders.Length} ");
         player = FindObjectOfType<PlayerComponent>();
-        
         playerCardCapacity = player.CardInventory.Capasity;
         playerCardHolders = new GameObject[playerCardCapacity];
         spriteImagesIndexes = new Dictionary<GameObject, int>();
@@ -79,6 +80,8 @@ public class CardInventoryUI : MonoBehaviour
     {
         // if (!isOpened)
         //     FirstOpen();
+        
+        Debug.Log($"Open WeaponHolders 0: {WeaponHolders[0]}");
         
         gameObject.SetActive(true);
         Cursor.visible = true;
