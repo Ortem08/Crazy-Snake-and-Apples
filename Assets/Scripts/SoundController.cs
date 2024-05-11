@@ -13,8 +13,9 @@ public class SoundController : MonoBehaviour
     
     private static Dictionary<string, string> nameToPath;
 
-    public void PlaySound(string soundType, float volume, Vector3 position, GameObject parent=null)
+    public float PlaySound(string soundType, float volume, Vector3 position, GameObject parent=null)
     {
+        var length = 0f;
         try
         {
             var filesCount = Directory.GetFiles($"Assets/Resources/Sounds/{soundType}").Length / 2;
@@ -31,6 +32,7 @@ public class SoundController : MonoBehaviour
             {
                 soundObject = Instantiate(SoundObject, position, Quaternion.identity);
             }
+
             soundObject.name = soundType;
 
             var audioSource = soundObject.AddComponent<AudioSource>();
@@ -40,12 +42,16 @@ public class SoundController : MonoBehaviour
             audioSource.volume = volume;
             audioSource.spatialBlend = 1f;
             audioSource.Play();
+
+            length = audioSource.clip.length;
             Destroy(soundObject, audioSource.clip.length);
         }
-        catch (System.Exception exc) 
+        catch (System.Exception exc)
         {
             Debug.LogException(exc);
         }
+        
+        return length;
     }
     
 }
