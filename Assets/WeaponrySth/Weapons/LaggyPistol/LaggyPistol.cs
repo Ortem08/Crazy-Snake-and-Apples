@@ -1,3 +1,4 @@
+using DG.Tweening;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -57,6 +58,8 @@ public class LaggyPistol : MonoBehaviour, ICardBasedItem, IChargeable
 
     private GameObject player;
 
+    private Transform cameraLayer;
+
     private void Awake()
     {
         colliderForDetection = GetComponent<Collider>();
@@ -68,6 +71,8 @@ public class LaggyPistol : MonoBehaviour, ICardBasedItem, IChargeable
 
     private void Start()
     {
+        cameraLayer = GameObject.FindGameObjectWithTag("MainCamera").transform.parent;
+
         player = GameObject.FindGameObjectWithTag("Player");
 
         animator = inHandAvatar.GetComponent<Animator>();
@@ -186,6 +191,9 @@ public class LaggyPistol : MonoBehaviour, ICardBasedItem, IChargeable
                 //var delta = (user.CameraTransform.right - user.CameraTransform.up) * 0.02f;
                 Vector3 startPosition = user.CameraTransform.position + shootDirection * 0.1f;
 
+                cameraLayer
+                    .DOLocalMoveY(1f, 0.15f);
+
                 soundController.PlaySound("PistolShot", 0.5f, gameObject.transform.position, player);
 
                 if (projectile is GunShot)
@@ -216,6 +224,8 @@ public class LaggyPistol : MonoBehaviour, ICardBasedItem, IChargeable
         
         return true;
     }
+
+
 
     public bool TryUseSecondaryAction()
     {

@@ -220,12 +220,11 @@ public class Skeleton : CreatureBase, IMob, IPlacer
         animator.SetBool("Idle", false);
         animator.SetBool("IsRunning", false);
         animator.SetTrigger("Die");
-        agent.enabled = false;
-        this.enabled = false;
 
         soundController.PlaySound("SkeletonDeath", 0.5f, transform.position);
-        //animator.enabled = false;
-        //DetachChildrenRecursively(gameObject.transform);
+
+        agent.enabled = false;
+        this.enabled = false;
     }
 
     void DetachChildrenRecursively(Transform parent)

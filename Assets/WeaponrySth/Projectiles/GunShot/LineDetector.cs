@@ -13,6 +13,9 @@ public class LineDetector : MonoBehaviour
 
     public RaycastHit? HardHit;
 
+    public float speed = 50.0f;
+    public float tracerLength = 5.0f;
+
     private void Awake()
     {
         lineRenderer = GetComponent<LineRenderer>();
@@ -64,11 +67,25 @@ public class LineDetector : MonoBehaviour
 
     private IEnumerator ShowLineAndExpire(Vector3 start, Vector3 end)
     {
-        lineRenderer.SetPosition(0, start);
-        lineRenderer.SetPosition(1, end);
+        float startTime = Time.time;
+        Vector3 currentStart = start;
 
         lineRenderer.enabled = true;
-        yield return new WaitForSeconds(lifetime);
+
+        while (Vector3.Distance(currentStart, end) > tracerLength)
+        {
+            float distCovered = (Time.time - startTime) * speed;
+            float fractionOfJourney = distCovered / Vector3.Distance(start, end);
+
+            currentStart = Vector3.Lerp(start, end, fractionOfJourney);
+            Vector3 currentEnd = currentStart + (end - start).normalized * tracerLength;
+
+            lineRenderer.SetPosition(0, currentStart);
+            lineRenderer.SetPosition(1, currentEnd);
+
+            yield return null;
+        }
+
         lineRenderer.enabled = false;
         Destroy(gameObject);
     }
