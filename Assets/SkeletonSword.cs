@@ -6,12 +6,17 @@ public class SkeletonSword : MonoBehaviour
 {
 
     private PlayerComponent playerComponent;
-    private float swordDamage;
+    private float swordDamage = 10;
     private Animator animator;
+
+    [SerializeField]
+    private Transform skeleton;
+
+    private float swordImpulseModule = 10;
 
     void Start()
     {
-        swordDamage = 1;
+        //swordDamage = 10;
         playerComponent = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerComponent>();
         animator = transform.root.GetComponent<Animator>();
     }
@@ -24,7 +29,16 @@ public class SkeletonSword : MonoBehaviour
 
         if (other.CompareTag("Player") && hash == attackStateHash)
         {
-            playerComponent.ConsumeDamage(swordDamage);
+            var delta = other.gameObject.transform.position - skeleton.position;
+            var deltaNorm = skeleton.forward;
+            if (delta.magnitude > 0)
+            {
+                deltaNorm = delta.normalized;
+            }
+
+            playerComponent.TakeDamage(new DamageInfo(swordDamage, DamageType.MeleeDamage, deltaNorm * swordImpulseModule));
+
+            playerComponent.Push(deltaNorm * swordImpulseModule);
         }
     }
 }

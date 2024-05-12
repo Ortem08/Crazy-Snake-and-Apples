@@ -94,6 +94,15 @@ public class Skeleton : CreatureBase, IMob, IPlacer
             animator.SetBool("IsWalking", false);
             animator.SetBool("Idle", false);
             animator.SetBool("IsRunning", false);
+
+            var dir = player.transform.position - agent.transform.position;
+            dir.y = 0;
+            if (dir.magnitude > 0)
+            {
+                var rotation = Quaternion.LookRotation(dir);
+                agent.transform.rotation = Quaternion.Lerp(agent.transform.rotation, rotation, 5 * Time.deltaTime);
+            }
+
             if (Time.time - lastAttackTime > attackCooldown)
             {
                 PerformAttack();
@@ -210,6 +219,12 @@ public class Skeleton : CreatureBase, IMob, IPlacer
         animator.SetBool("IsRunning", false);
         animator.SetTrigger("Die");
         agent.enabled = false;
+
+        if (gameObject.TryGetComponent<Collider>(out var collider))
+        {
+            collider.enabled = false;
+        }
+
         this.enabled = false;
 
         //animator.enabled = false;
