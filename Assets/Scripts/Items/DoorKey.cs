@@ -8,6 +8,8 @@ namespace Items
     {
         [SerializeField] private Door door;
 
+        [SerializeField] private NotificationManager notificationManager;
+
         private void Start()
         {
             door.enabled = false;
@@ -16,6 +18,7 @@ namespace Items
         public void OnPickUp()
         {
             door.enabled = true;
+            notificationManager?.Notify("Теперь можно открыть дверь");
             Destroy(gameObject);
         }
         

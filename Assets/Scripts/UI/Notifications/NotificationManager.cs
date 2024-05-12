@@ -6,24 +6,31 @@ public class NotificationManager : MonoBehaviour
 {
     [SerializeField] private TMP_Text textOutput;
     [SerializeField] private GameObject notificationUI;
-    private readonly WaitForSeconds popupDuration = new (1);
-    private bool isActive;
+    //private readonly WaitForSeconds popupDuration = new (1);
 
-    public void Notify(string text)
+    private Coroutine curCoroutine;
+
+    //private bool isActive;
+
+    public void Notify(string text, float showTime = 3)
     {
-        if (isActive)
-            return;
+/*        if (isActive)
+            return;*/
+        if (curCoroutine != null)
+        {
+            StopCoroutine(curCoroutine);
+        }
         
         textOutput.SetText(text);
         notificationUI.SetActive(true);
-        isActive = true;
-        StartCoroutine(PopupNotification());
+        //isActive = true;
+        StartCoroutine(DeactivateNotification(showTime));
     }
 
-    private IEnumerator PopupNotification()
+    private IEnumerator DeactivateNotification(float duration)
     {
-        yield return popupDuration;
+        yield return new WaitForSeconds(duration);
         notificationUI.SetActive(false);
-        isActive = false;
+        //isActive = false;
     }
 }

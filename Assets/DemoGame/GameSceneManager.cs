@@ -48,6 +48,12 @@ public class GameSceneManager : MonoBehaviour
     private void OnSnakeDeath(Vector3 position)
     {
         key.transform.position = position;
+        SnakeDefeatAction();
+    }
+
+    protected virtual void SnakeDefeatAction()
+    {
+
     }
 
     // call this when opened door and activated trigger
