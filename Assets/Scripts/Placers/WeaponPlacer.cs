@@ -6,6 +6,8 @@ public class WeaponPlacer : MonoBehaviour, IPlacer
     [SerializeField] private int weaponCount;
     private WeaponFactory weaponFactory;
 
+    [SerializeField] private GameObject weaponStandPrefab;
+
     [SerializeField]
     private int weaponLevel = 1;
 
@@ -31,7 +33,8 @@ public class WeaponPlacer : MonoBehaviour, IPlacer
 
     private void PlaceCube(Vector3 position, PlacementManager manager)
     {
-        var cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+        //var cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+        var cube = Instantiate(weaponStandPrefab);
         cube.transform.position = position;
         cube.transform.parent = manager.MazeBuilder.Environment.transform;
     }
