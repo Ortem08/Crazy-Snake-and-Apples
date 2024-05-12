@@ -16,6 +16,9 @@ public class Broccoli : CreatureBase
     private float creationTime;
     private float boomTimer;
     private SoundController soundController;
+
+    [SerializeField]
+    private GameObject explosionPrefab;
     
     public Broccoli() : base(2, 100)
     {
@@ -26,6 +29,11 @@ public class Broccoli : CreatureBase
         boomTimer = Random.Range(1.5f, 3f);
         creationTime = Time.time;
         soundController = GameObject.FindGameObjectWithTag("SoundController").GetComponent<SoundController>();
+
+        if (explosionPrefab == null)
+        {
+            throw new Exception("explosion prefab not set");
+        }
     }
     
     void Update()
@@ -45,21 +53,27 @@ public class Broccoli : CreatureBase
     // ReSharper disable Unity.PerformanceAnalysis
     public override void PerformAttack()
     {
-        var collidersArray = new Collider[50];
+        
+        var explosion = Instantiate(explosionPrefab).GetComponent<Explosion>();
+        explosion.SetParams(damageRadius: 3, impulseModule: 12, lifetime: 0.5f);
+        explosion.Fire(transform.position, direction: Vector3.up);
+
+/*        var collidersArray = new Collider[50];
         var thisCollider = gameObject.GetComponent<Collider>();
         Physics.OverlapSphereNonAlloc(transform.position, BoomRadius, collidersArray);
-        
+
         var creatureEntities = collidersArray
-            .Where(x => x && x != thisCollider 
+            .Where(x => x && x != thisCollider
                           && (x.CompareTag("Creature") || x.CompareTag("Player")))
             .Select(x => x.gameObject.GetComponent<IHurtable>());
-        
+
         soundController.PlaySound("BroccoliBoom", 0.6f, transform.position);
-        
+
         foreach (var creature in creatureEntities)
         {
             creature.TakeDamage(new DamageInfo(Damage));
-        }
+        }*/
+
         Die();
     }
     

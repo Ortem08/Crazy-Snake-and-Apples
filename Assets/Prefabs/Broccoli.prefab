@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 2612128606252432775}
   - component: {fileID: 7971362470967690380}
   - component: {fileID: 5486674848523221618}
-  m_Layer: 0
+  m_Layer: 17
   m_Name: Broccoli
   m_TagString: Creature
   m_Icon: {fileID: 0}
@@ -146,3 +146,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 78d061e271a94b40ab2eae4d8dac9c5e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  explosionPrefab: {fileID: 8934848126969446009, guid: bbc19249fd579d74ca9016f99bfc9549, type: 3}

@@ -20,7 +20,9 @@ public class Explosion : ProjectileBase, IDamaging
 
     private float lifetime = 0.2f;
 
-    private float impulseModule = 7;
+    private float impulseModule = 15;
+
+    private float explosionDownOffset = 2;
 
     private float time = 0;
 
@@ -32,7 +34,7 @@ public class Explosion : ProjectileBase, IDamaging
         StartCoroutine(Explode());
     }
 
-    public void SetParams(float damageRadius=1f, float impulseModule=7, float lifetime=0.2f, float? minVisisbleRadius=null, float? maxVisibleRadius = null)
+    public void SetParams(float damageRadius=1f, float impulseModule=10, float lifetime=0.2f, float? minVisisbleRadius=null, float? maxVisibleRadius = null)
     {
         if (minVisisbleRadius == null)
         {
@@ -99,10 +101,10 @@ public class Explosion : ProjectileBase, IDamaging
                 //Debug.Log(hurtable.ToString());
             }
 
-            var deltaDirection = (collision.gameObject.transform.position - transform.position).normalized;
+            var deltaDirection = (collision.gameObject.transform.position - (transform.position + Vector3.up * (-explosionDownOffset))).normalized;
             if (collision.gameObject.TryGetComponent<IPushable>(out var pushable))
             {
-                pushable.Push(deltaDirection * 10);
+                pushable.Push(deltaDirection * impulseModule);
             } 
             else if (collision.gameObject.TryGetComponent<Rigidbody>(out var rigidbody))
             {
