@@ -37,7 +37,7 @@ public class WeaponFactory : MonoBehaviour
         cardFactory = GameObject.FindGameObjectWithTag("CardFactory").GetComponent<CardFactory>();
     }
 
-    public GameObject CreateRandomWeaponLevelOne(Vector3 position)
+    public GameObject CreateRandomWeapon(Vector3 position, int level = 1)
     {
         // 1
         if (UnityEngine.Random.value < 0.1f)
@@ -59,22 +59,23 @@ public class WeaponFactory : MonoBehaviour
 
         if (UnityEngine.Random.value < 0.2f)
         {
-            return InsertRandomSpellsInWeaponLevelOne(canonPrefab, position, generator.NextDouble() < 0.5 ? Spell.CanonBall : Spell.Grenade); // 0.2 * 0.9
+            return InsertRandomSpellsInWeapon(canonPrefab, position, generator.NextDouble() < 0.5 ? Spell.CanonBall : Spell.Grenade); // 0.2 * 0.9
         }
         if (UnityEngine.Random.value < 0.5f)
         {
-            return InsertRandomSpellsInWeaponLevelOne(cheapPistolPrefab, position, Spell.GunShot);   // 0.4 * 0.9
+            return InsertRandomSpellsInWeapon(cheapPistolPrefab, position, Spell.GunShot);   // 0.4 * 0.9
         }
-        return InsertRandomSpellsInWeaponLevelOne(laggyPistolPrefab, position, Spell.GunShot);       // 0.4 * 0.9
+        return InsertRandomSpellsInWeapon(laggyPistolPrefab, position, Spell.GunShot);       // 0.4 * 0.9
     }
 
-    private GameObject InsertRandomSpellsInWeaponLevelOne(GameObject weaponPrefab, Vector3 position, Spell? firstSpell)
+    private GameObject InsertRandomSpellsInWeapon(GameObject weaponPrefab, Vector3 position, Spell? firstSpell, int level = 1)
     {
         var weapon = Instantiate(weaponPrefab, position, Quaternion.identity);
-        var capacity = generator.Next(2, 16);
+
+        var capacity = generator.Next(2, level > 1 ? 10 : 20);
         var inventory = new CardInventory(capacity);
 
-        foreach (var spell in GetRandomSpellsLevelOne(generator.Next(1, capacity), firstSpell))
+        foreach (var spell in GetRandomSpellsLevelOne(generator.Next(level > 1 ? Math.Max(1, capacity / 3) : 1, capacity), firstSpell))
         {
             //Debug.Log(inventory);
             inventory.TryAddCard(cardFactory.CreateCard(spell));

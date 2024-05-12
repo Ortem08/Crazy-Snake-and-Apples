@@ -5,6 +5,10 @@ public class WeaponPlacer : MonoBehaviour, IPlacer
 {
     [SerializeField] private int weaponCount;
     private WeaponFactory weaponFactory;
+
+    [SerializeField]
+    private int weaponLevel = 1;
+
     public void Place(PlacementManager manager)
     {
         if (weaponFactory == null)
@@ -21,7 +25,7 @@ public class WeaponPlacer : MonoBehaviour, IPlacer
         var transformPos = manager.GetTransformPosition(position) + manager.GetShiftInsideCell();
         PlaceCube(transformPos, manager);
         transformPos.y = 1;
-        weaponFactory.CreateRandomWeaponLevelOne(transformPos);
+        weaponFactory.CreateRandomWeapon(transformPos, weaponLevel);
         manager.AddOnPlacementMap(position, 5);
     }
 

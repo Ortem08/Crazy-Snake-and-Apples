@@ -19,7 +19,7 @@ public class RandWeapPromise : MonoBehaviour
         var wf = go.GetComponent<WeaponFactory>();
         Debug.Log(wf);
         Debug.Log(transform.position);
-        Debug.Log(wf.CreateRandomWeaponLevelOne(transform.position));
+        Debug.Log(wf.CreateRandomWeapon(transform.position));
         //wf.CreateRandomWeaponLevelOne(transform.position);
         Destroy(gameObject);
     }

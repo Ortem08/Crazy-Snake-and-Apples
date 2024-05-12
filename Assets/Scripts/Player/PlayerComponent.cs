@@ -56,12 +56,11 @@ public class PlayerComponent : MonoBehaviour, IHurtable, IUser, IPushable, IPlac
 
     public event Action OnPlayerDead;
 
-    public void Resurrect(Vector3 position)
+    public void Resurrect()
     {
         isDead = false;
         health = MaxHealth;
         OnHealthIncrease?.Invoke(health, maxHealth);
-        transform.position = position;
     }
 
     private SoundController soundController;
@@ -199,6 +198,7 @@ public class PlayerComponent : MonoBehaviour, IHurtable, IUser, IPushable, IPlac
         positionInUnity.y = manager.MazeBuilder.WallHeight;
         manager.AddOnPlacementMap(position, 31);
         transform.position = positionInUnity;
+        QuakeMovenentController.AddVelocity(- QuakeMovenentController.GetVelocity() - Vector3.up * 5);
     }
 
     private void OnDestroy()

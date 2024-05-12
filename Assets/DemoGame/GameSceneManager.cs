@@ -15,8 +15,8 @@ public class GameSceneManager : MonoBehaviour
     [SerializeField]
     private string SceneToGoOnPlayerDead = "DeadSceneDemo";
 
-    [SerializeField]
-    private string SceneToGoOnPlayerWin;
+/*    [SerializeField]
+    private string SceneToGoOnPlayerWin;*/
 
 
 
@@ -56,6 +56,12 @@ public class GameSceneManager : MonoBehaviour
         if (playerWin) return;
         playerWin = true;
 
-        SceneManager.LoadScene(SceneToGoOnPlayerWin);
+        GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerComponent>().Resurrect();
+        PlayerWinAction();
+    }
+
+    protected virtual void PlayerWinAction()
+    {
+        //SceneManager.LoadScene(SceneToGoOnPlayerWin);
     }
 }
