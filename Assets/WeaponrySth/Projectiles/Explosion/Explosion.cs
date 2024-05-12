@@ -12,11 +12,11 @@ public class Explosion : ProjectileBase, IDamaging
     [SerializeField]
     private GameObject externalSurface;
 
-    private float initialVisibleRadius = 0.1f;
+    private float initialVisibleRadius = 0.2f;
 
-    private float damageRadius = 0.75f;
+    private float damageRadius = 1.5f;
 
-    private float maxVisibleRadius = 1f;
+    private float maxVisibleRadius = 2f;
 
     private float lifetime = 0.2f;
 
