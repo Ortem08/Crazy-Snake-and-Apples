@@ -1383,7 +1383,7 @@ GameObject:
   - component: {fileID: 5801545836109837922}
   - component: {fileID: 7929022953265103436}
   - component: {fileID: 1362892417571162254}
-  m_Layer: 18
+  m_Layer: 13
   m_Name: SkeletonSword
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1489,6 +1489,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 790f5124b8896934b846523cec3bc849, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  skeleton: {fileID: 4668007332986112153}
 --- !u!1 &5441411867099450005
 GameObject:
   m_ObjectHideFlags: 0

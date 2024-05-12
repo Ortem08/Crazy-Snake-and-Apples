@@ -35,10 +35,11 @@ public class SkeletonSword : MonoBehaviour
             {
                 deltaNorm = delta.normalized;
             }
+            var pushDirection = (deltaNorm + Vector3.up / 2).normalized;
 
-            playerComponent.TakeDamage(new DamageInfo(swordDamage, DamageType.MeleeDamage, deltaNorm * swordImpulseModule));
+            playerComponent.TakeDamage(new DamageInfo(swordDamage, DamageType.MeleeDamage, pushDirection * swordImpulseModule));
 
-            playerComponent.Push(deltaNorm * swordImpulseModule);
+            playerComponent.Push(pushDirection * swordImpulseModule);
         }
     }
 }

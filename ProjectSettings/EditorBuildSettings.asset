@@ -11,10 +11,10 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Scenes/SampleScene.unity
     guid: 9fc0d4010bbf28b4594072e72b8655ab
-  - enabled: 1
+  - enabled: 0
     path: Assets/DemoGame/GameSceneDemo.unity
     guid: affe222f402d3964dac7893a88ea4aa0
-  - enabled: 1
+  - enabled: 0
     path: Assets/DemoGame/DeadSceneDemo.unity
     guid: 4bd7432a5c2f69f4ca42ae61a2c0fbca
   - enabled: 1
