@@ -1,10 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using GameObject = UnityEngine.GameObject;
 
 public class WeaponInsideInventory : MonoBehaviour
 {
+    private CardInventoryUI playerCardInventoryUI;
+        
     private ICardBasedItem weapon;
     private CardInventory inventory => weapon?.CardInventory;
     
@@ -16,32 +20,52 @@ public class WeaponInsideInventory : MonoBehaviour
     [SerializeField] 
     private Image[] FastAccessItemHolderImages;
     private GameObject[] ItemHolders;
+    private Dictionary<GameObject, int> holderIndexes;
     private Image[] ItemImages;
     
     [SerializeField]
     private GameObject itemHolderPrefab;
 
-    public int Capacity => inventory?.Capasity ?? 0;
+    public const int Capacity = 20;
     
     void Start()
     {
-        // inventory.OnPickUpCard.AddListener(OnPickUpCard);
-        // inventory.OnDropCard.AddListener(OnDropCard);
+        playerCardInventoryUI = GetComponentInParent<CardInventoryUI>();
+        
+        ItemHolders = new GameObject[Capacity];
+        holderIndexes = new Dictionary<GameObject, int>();
+        ItemImages = new Image[Capacity];
+        FastAccessItemHolderImages = new Image[Capacity];
+        
+        for (var i = 0; i < Capacity; i++)
+        {
+            ItemHolders[i] = Instantiate(itemHolderPrefab, CardsHolder.transform);
+            
+            var clickHandler = ItemHolders[i].GetComponentInChildren<ClickHandler>();
+            clickHandler.OnClick.AddListener(playerCardInventoryUI.SetDescription);
+            
+            var dropHandler = ItemHolders[i].GetComponentInChildren<DropHandler>();
+            dropHandler.OnSwap.AddListener(playerCardInventoryUI.SwapCards);
+            
+            var images =  ItemHolders[i].GetComponentsInChildren<Image>();
+            FastAccessItemHolderImages[i] = images[0];
+            ItemImages[i] = images[1];
+            
+            holderIndexes[ItemImages[i].gameObject] = i;
+        }
+        CardsHolder.SetActive(false);
     }
     
     public void ReloadInventory(ICardBasedItem weaponCardBased)
     {
-        if (weapon != null && weaponCardBased != null 
-            && Capacity == weaponCardBased.CardInventory.Capasity)
+        if (weaponCardBased != null)
         {
+            CardsHolder.SetActive(true);
             weapon = weaponCardBased;
             SetWeaponSprite();
             for (var i = 0; i < Capacity; i++)
             {
-                if (inventory.Cards[i] != null)
-                {
-                    SetCardSprite(i);
-                }
+                SetCardSprite(i);
             }
 
             return;
@@ -49,59 +73,51 @@ public class WeaponInsideInventory : MonoBehaviour
         
         if (weapon is not null && weaponCardBased is null)
         {
+            CardsHolder.SetActive(false);
             WeaponIcon.color = Color.clear;
-            for (var i = 0; i < Capacity; i++)
-            {
-                Destroy(ItemHolders[i]);
-            }
             weapon = null;
-
             return;
         }
-        
-        ChangedCapacityReload(weaponCardBased);
     }
 
-    private void ChangedCapacityReload(ICardBasedItem weaponCardBased)
+    public bool TryGetSwapInfo(GameObject item,
+        out Image image, out CardInventory inventory, out int index)
     {
-        for (var i = 0; i < Capacity; i++)
-        {
-            Destroy(ItemHolders[i]);
+        image = null;
+        inventory = null;
+        if (!holderIndexes.TryGetValue(item, out index))
+        {        
+            return false;
         }
-
-        weapon = weaponCardBased;
-        SetWeaponSprite();
-
-        ItemHolders = new GameObject[Capacity];
-        ItemImages = new Image[Capacity];
-        FastAccessItemHolderImages = new Image[Capacity];
         
-        for (var i = 0; i < Capacity; i++)
-        {
-            ItemHolders[i] = Instantiate(itemHolderPrefab, CardsHolder.transform);
-            FastAccessItemHolderImages[i] = ItemHolders[i].GetComponentsInChildren<Image>()[1];
-            ItemImages[i] = ItemHolders[i].GetComponent<Image>();
-            if (inventory.Cards[i] != null)
-            {
-                SetCardSprite(i);
-            }
-        }
+        inventory = this.inventory;
+        image = ItemImages[index];
+        return true;
     }
     
-    // private void OnDropCard(int index)
-    // {
-    //     ItemImages[index].sprite = null;
-    //     ItemImages[index].color = Color.clear;
-    // }
-
-
+    public bool TrySetDescription(GameObject item,
+        out ICard card)
+    {
+        card = null;
+        
+        if (!holderIndexes.TryGetValue(item, out var index))
+            return false;
+        
+        card = inventory.Cards[index];
+        return true;
+    }
+    
     private void SetCardSprite(int index)
     {
-        var sprite = inventory.Cards[index].Sprite;
-        if (sprite is not null)
+        if (inventory.Cards[index] is not null)
         {
-            ItemImages[index].sprite = sprite;
             ItemImages[index].color = Color.white;
+            ItemImages[index].sprite = inventory.Cards[index].Sprite;
+        }
+        else if (ItemImages[index].sprite is not null)
+        {
+            ItemImages[index].sprite = null;
+            ItemImages[index].color = Color.clear;
         }
     }
     
@@ -114,7 +130,4 @@ public class WeaponInsideInventory : MonoBehaviour
             WeaponIcon.color = Color.white;
         }
     }
-    
-    // private void OnPickUpCard(int index)
-    //     => SetCardSprite(index);
 }

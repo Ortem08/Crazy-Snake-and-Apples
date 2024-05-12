@@ -72,7 +72,9 @@ public class WeaponFactory : MonoBehaviour
     {
         var weapon = Instantiate(weaponPrefab, position, Quaternion.identity);
         var capacity = generator.Next(2, 16);
-        var inventory = new CardInventory(capacity);
+        
+        // capacity is const 20. But count as any.
+        var inventory = new CardInventory();
 
         foreach (var spell in GetRandomSpellsLevelOne(generator.Next(1, capacity), firstSpell))
         {
