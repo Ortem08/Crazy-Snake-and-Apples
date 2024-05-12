@@ -38,7 +38,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 320, y: 70}
+  m_SizeDelta: {x: 320, y: 60}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &8250737463740266062
 CanvasRenderer:
@@ -61,7 +61,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.3179422, g: 0.86415094, b: 0.79879254, a: 0.20392157}
+  m_Color: {r: 0.25817722, g: 0.2865915, b: 0.2981131, a: 0.57254905}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -93,7 +93,7 @@ MonoBehaviour:
   CardsHolder: {fileID: 2018236703720235022}
   WeaponIcon: {fileID: 6189364428711047527}
   FastAccessItemHolderImages: []
-  itemHolderPrefab: {fileID: 1869732413873564781, guid: 14f39ee6c70bc0349b14a9d06ea4b4f6, type: 3}
+  itemHolderPrefab: {fileID: 1869732413873564781, guid: 84669ce3d5a88e84fbde8e7a2467c685, type: 3}
 --- !u!1 &6766634239804990528
 GameObject:
   m_ObjectHideFlags: 0
@@ -129,7 +129,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: -125, y: 0}
-  m_SizeDelta: {x: 65, y: 65}
+  m_SizeDelta: {x: 60, y: 60}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3075613169287238800
 CanvasRenderer:
@@ -227,7 +227,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2392831120681178980, guid: d2e46fae00dfacb41a32eabc3ff2471c, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 70
+      value: 60
       objectReference: {fileID: 0}
     - target: {fileID: 2392831120681178980, guid: d2e46fae00dfacb41a32eabc3ff2471c, type: 3}
       propertyPath: m_LocalPosition.x

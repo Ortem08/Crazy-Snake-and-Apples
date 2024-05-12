@@ -4,14 +4,15 @@ using UnityEngine;
 
 public class PlayerParamsUpdater : MonoBehaviour
 {
-    public GameObject Player;
+    private GameObject player;
 
     private const int MouseSensetivityCoef = 28;
     
     private QuakeCPMPlayerMovement controller;
     void Start()
     {
-        controller = Player.GetComponent<QuakeCPMPlayerMovement>();
+        player = GameObject.FindGameObjectWithTag("Player");
+        controller = player.GetComponent<QuakeCPMPlayerMovement>();
 
         SetSensetivity();
     }
