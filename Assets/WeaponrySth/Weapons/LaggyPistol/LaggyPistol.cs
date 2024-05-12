@@ -55,6 +55,8 @@ public class LaggyPistol : MonoBehaviour, ICardBasedItem, IChargeable
     private float rechargeTime = 5;
     // end
 
+    private GameObject player;
+
     private void Awake()
     {
         colliderForDetection = GetComponent<Collider>();
@@ -66,6 +68,8 @@ public class LaggyPistol : MonoBehaviour, ICardBasedItem, IChargeable
 
     private void Start()
     {
+        player = GameObject.FindGameObjectWithTag("Player");
+
         animator = inHandAvatar.GetComponent<Animator>();
 
         inHandAvatarInitialEulerAngles = inHandAvatar.transform.localEulerAngles;
@@ -182,6 +186,8 @@ public class LaggyPistol : MonoBehaviour, ICardBasedItem, IChargeable
                 //var delta = (user.CameraTransform.right - user.CameraTransform.up) * 0.02f;
                 Vector3 startPosition = user.CameraTransform.position + shootDirection * 0.1f;
 
+                soundController.PlaySound("PistolShot", 0.5f, gameObject.transform.position, player);
+
                 if (projectile is GunShot)
                 {
                     (projectile as GunShot).SetVisibleRayBeginning(tipOfTheGun.position);
@@ -226,6 +232,9 @@ public class LaggyPistol : MonoBehaviour, ICardBasedItem, IChargeable
     {
         recharging = true;
         animator.SetTrigger("TrReload");
+
+        soundController.PlaySound("PistolReload", 0.5f, gameObject.transform.position, player);
+
         yield return new WaitForSeconds(rechargeTime);
         recharging = false;
         ChargeInfo.CurrentCharge = ChargeInfo.MaxCharge;

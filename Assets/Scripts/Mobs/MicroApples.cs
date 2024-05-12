@@ -77,8 +77,6 @@ public class MicroApples : CreatureBase, IMob
 
         StateMachine.Update();
 
-        //Debug.Log(CanSeePlayer());
-
         if (StateMachine.currentState is IdleState)
         {
             animator.SetBool("IsWalking", false);

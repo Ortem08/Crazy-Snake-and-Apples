@@ -26,6 +26,8 @@ public class Explosion : ProjectileBase, IDamaging
 
     private float time = 0;
 
+    private SoundController soundController;
+    
     public DamageInfo DamageInfo { get; set; } = new DamageInfo(20);
 
     public override void Fire(Vector3 origin, Vector3 direction, Vector3 baseVelocity = default)
@@ -54,6 +56,7 @@ public class Explosion : ProjectileBase, IDamaging
 
     private IEnumerator Explode()
     {
+        FindObjectOfType<SoundController>().PlaySound("Boom", 1f, externalSurface.transform.position);
         AdjustSurfaceSize();
         externalSurface.SetActive(true);
 

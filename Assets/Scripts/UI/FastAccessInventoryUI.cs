@@ -5,8 +5,8 @@ using UnityEngine.UI;
 
 public class FastAccessInventoryUI : MonoBehaviour
 {
-    // [SerializeField]
-    private PlayerComponent player;
+    private GameObject player;
+    private PlayerComponent playerComponent;
     
     [SerializeField] 
     private Image[] FastAccessItemHolderImages;
@@ -15,22 +15,28 @@ public class FastAccessInventoryUI : MonoBehaviour
     
     [SerializeField]
     private GameObject itemHolderPrefab;
+
+    private SoundController soundController;
    
     public int totalCapacity { get; private set; }
     
     void Start()
     {
-        player = FindObjectOfType<PlayerComponent>();
-        Debug.Log($"Player in Inventory: {player}");
+        player = GameObject.FindGameObjectWithTag("Player");
+        playerComponent = player.GetComponent<PlayerComponent>();
+        
+        Debug.Log($"Player in Inventory: {playerComponent}");
         LoadInventory();
-        player.Inventory.OnCnangeIndex.AddListener(OnCnangeIndex);
-        player.Inventory.OnPickUpItem.AddListener(OnPickUpItem);
-        player.Inventory.OnDropItem.AddListener(OnDropItem);
+        playerComponent.Inventory.OnCnangeIndex.AddListener(OnCnangeIndex);
+        playerComponent.Inventory.OnPickUpItem.AddListener(OnPickUpItem);
+        playerComponent.Inventory.OnDropItem.AddListener(OnDropItem);
+
+        soundController = GameObject.FindGameObjectWithTag("SoundController").GetComponent<SoundController>();
     }
 
     private void LoadInventory()
     {
-        totalCapacity = player.Inventory.Capacity;
+        totalCapacity = playerComponent.Inventory.Capacity;
         ItemHolders = new GameObject[totalCapacity];
         ItemImages = new Image[totalCapacity];
         FastAccessItemHolderImages = new Image[totalCapacity];
@@ -38,28 +44,32 @@ public class FastAccessInventoryUI : MonoBehaviour
         for (var i = 0; i < totalCapacity; i++)
         {
             ItemHolders[i] = Instantiate(itemHolderPrefab, transform);
-            FastAccessItemHolderImages[i] = ItemHolders[i].GetComponentsInChildren<Image>()[1];
-            ItemImages[i] = ItemHolders[i].GetComponent<Image>();
+            var images =  ItemHolders[i].GetComponentsInChildren<Image>();
+            FastAccessItemHolderImages[i] = images[0];
+            ItemImages[i] = images[1];
         }
         
-        FastAccessItemHolderImages[player.Inventory.SelectedIndex].color = Color.red;
+        FastAccessItemHolderImages[playerComponent.Inventory.SelectedIndex].color = Color.red;
     }
     
     private void OnDropItem(int index)
     {
         ItemImages[index].sprite = null;
         ItemImages[index].color = Color.clear;
+        soundController.PlaySound("Throw", 0.5f, transform.position, player);
     }
 
 
     private void OnPickUpItem(int index)
     {
-        Debug.Log(ItemImages[index]);
-        var sprite = player.Inventory.SelectedItem.GetItemAvatarSprite();
+        // Debug.Log(ItemImages[index]);
+        var sprite = playerComponent.Inventory.SelectedItem.GetItemAvatarSprite();
         if (sprite != null)
         {
             ItemImages[index].sprite = sprite;
             ItemImages[index].color = Color.white;
+            soundController.PlaySound("PickUp", 0.5f, transform.position, player);
+            Debug.Log("PICK");
         }
     }
 
@@ -70,6 +80,7 @@ public class FastAccessInventoryUI : MonoBehaviour
         {
             FastAccessItemHolderImages[lastIndex].color = Color.white;
             FastAccessItemHolderImages[index].color = Color.red;
+            soundController.PlaySound("PickUp", 0.5f, transform.position, player);
         }
     }
 }
