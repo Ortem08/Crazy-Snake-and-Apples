@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,7 +11,7 @@ public class MenuScript : MonoBehaviour
     public void Play()
     {
         SceneManager.UnloadSceneAsync("Menu");
-        SceneManager.LoadSceneAsync("SampleScene");
+        SceneManager.LoadSceneAsync("1105Merge");
     }
 
     public void QuitGame()

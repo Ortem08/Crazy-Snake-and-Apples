@@ -5,16 +5,13 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 0
+  - enabled: 1
     path: Assets/Scenes/Menu.unity
     guid: a0ebb04d5fde5ef4ab8b9f2aa098a96b
   - enabled: 0
     path: Assets/Scenes/SampleScene.unity
     guid: 9fc0d4010bbf28b4594072e72b8655ab
   - enabled: 1
-    path: Assets/DemoGame/GameSceneDemo.unity
-    guid: affe222f402d3964dac7893a88ea4aa0
-  - enabled: 1
-    path: Assets/DemoGame/DeadSceneDemo.unity
-    guid: 4bd7432a5c2f69f4ca42ae61a2c0fbca
+    path: Assets/Scenes/1105Merge.unity
+    guid: f32b4ba132e3fab4e89ea91efe29442a
   m_configObjects: {}

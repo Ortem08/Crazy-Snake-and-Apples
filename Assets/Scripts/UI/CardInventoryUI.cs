@@ -14,8 +14,6 @@ public class CardInventoryUI : MonoBehaviour
     [SerializeField] 
     private GameObject DescriptionPlaceHolder;
     
-    
-    // [SerializeField] 
     private WeaponInsideInventory[] WeaponHolders;
     [SerializeField] 
     private GameObject cardHolderPrefab; 
@@ -34,9 +32,10 @@ public class CardInventoryUI : MonoBehaviour
     private TextMeshProUGUI DescriptionText;
     
     private int playerCardCapacity;
-    private bool isOpened;
-
+    
     private const string DefaultDescription = "Select a card to read its description.";
+
+    private SoundController soundController;
 
     private void Start()
     {
@@ -71,17 +70,14 @@ public class CardInventoryUI : MonoBehaviour
             spriteImagesIndexes[playerCardSpriteImages[i].gameObject] = i;
         }
 
-        isOpened = true;
+        soundController = GameObject.FindGameObjectWithTag("SoundController").GetComponent<SoundController>();
         
         gameObject.SetActive(false);
     }
     
     public void OpenInventory()
     {
-        // if (!isOpened)
-        //     FirstOpen();
-        
-        Debug.Log($"Open WeaponHolders 0: {WeaponHolders[0]}");
+        soundController.PlaySound("CloseInventory", 0.5f, player.gameObject.transform.position);
         
         gameObject.SetActive(true);
         Cursor.visible = true;
@@ -103,8 +99,10 @@ public class CardInventoryUI : MonoBehaviour
         }
     }
     
-    public void CloseInventory()  
+    public void CloseInventory()
     {
+        soundController.PlaySound("CloseInventory", 0.5f, transform.position, player.gameObject);
+        
         gameObject.SetActive(false);
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
