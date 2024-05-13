@@ -108,8 +108,10 @@ MonoBehaviour:
   MazeSize_Z: 15
   CentralRoomSize_X: 3
   CentralRoomSize_Z: 3
-  Door: {fileID: 0}
   Environment: {fileID: 0}
+  MazeLayerMask:
+    serializedVersion: 2
+    m_Bits: 8
   OnFinishedBuildingMaze:
     m_PersistentCalls:
       m_Calls:
@@ -138,6 +140,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   MazeBuilder: {fileID: 8845864682091741912}
-  placementItems: []
   IgnoredSeed: 1
   Seed: 42
+  placementObjs: []
+  respawningMobs: []
+  respawnDelay: 40
+  deadBodyCountThresholdToRespawn: 10

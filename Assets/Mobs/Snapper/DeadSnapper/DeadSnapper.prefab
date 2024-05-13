@@ -551,7 +551,7 @@ GameObject:
   - component: {fileID: 1361088163397830972}
   m_Layer: 12
   m_Name: DeadSnapper
-  m_TagString: Untagged
+  m_TagString: DeadBody
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

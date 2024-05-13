@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Assets.Mazes;
 using Unity.AI.Navigation;
+using UnityEditor.Build;
+using UnityEditor.UIElements;
 using UnityEngine;
 using Random = System.Random;
 
@@ -10,9 +13,14 @@ public class PlacementManager : MonoBehaviour
 {
     public MazeBuilder MazeBuilder;
 
-    [SerializeField] public List<GameObject> placementObjs = new ();
     [SerializeField] private bool IgnoredSeed;
     [SerializeField] private int Seed;
+    [SerializeField] public List<GameObject> placementObjs = new ();
+    [SerializeField] private List<GameObject> respawningMobs = new();
+    [SerializeField] private float respawnDelay = 40;
+    [SerializeField] private int deadBodyCountThresholdToRespawn = 10;
+
+    private List<IPlacer> respawningMobPlacers;
 
     private int mazeHeight;
     private int mazeWidth;
@@ -29,16 +37,45 @@ public class PlacementManager : MonoBehaviour
         Vector2Int.up
     };
 
+    private IEnumerator ProcessRespawn()
+    {
+        while (true)
+        {
+            yield return new WaitForSeconds(respawnDelay);
+            var deadBodyObjs = GameObject.FindGameObjectsWithTag("DeadBody").ToList();
+            if (deadBodyObjs.Count < deadBodyCountThresholdToRespawn)
+                continue;
+            foreach (var obj in deadBodyObjs)
+            {
+                Destroy(obj);
+            }
+
+            foreach (var placer in respawningMobPlacers)
+            {
+                placer.Place(this);
+            }
+        }
+    }
+
     public void StartProcess()
     {
         Init();
-        Debug.Log("here");
         foreach (var obj in placementObjs)
         {
             obj.GetComponent<IPlacer>().Place(this);
         }
+
+        respawningMobPlacers = respawningMobs.Select(obj => obj.GetComponent<IPlacer>()).ToList();
+        foreach (var placer in respawningMobPlacers)
+        {
+            placer.Place(this);
+        }
         MazeBuilder.Environment.GetComponent<NavMeshSurface>().BuildNavMesh();
-        Destroy(gameObject);
+        
+        if (respawningMobs.Count > 0)
+            StartCoroutine(ProcessRespawn());
+        else
+            Destroy(gameObject);
     }
 
     private void Init()
@@ -100,6 +137,14 @@ public class PlacementManager : MonoBehaviour
     }
 
     private Vector2Int GetPositionInMaze() => new(Rnd.Next(mazeHeight), Rnd.Next(mazeWidth));
+
+    public void Spawn(List<Vector3> positions, GameObject prefab)
+    {
+        foreach (var position in positions)
+        {
+            Instantiate(prefab, position, Quaternion.identity);
+        }
+    }
 
     private Vector2Int BfsPosition(Vector2Int start, int maxPlacementValue)
     {

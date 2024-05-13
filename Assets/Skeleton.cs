@@ -46,7 +46,9 @@ public class Skeleton : CreatureBase, IMob, IPlacer
     private SoundController soundController;
     private float lastSoundPlay;
     private float soundCooldown = 1.5f;
-    
+
+    private List<Vector3> spawnPositions;
+
     public Skeleton() : base(20, 1)
     {
         ViewAngle = 110;
@@ -231,6 +233,8 @@ public class Skeleton : CreatureBase, IMob, IPlacer
         animator.SetTrigger("Die");
         agent.enabled = false;
 
+        gameObject.tag = "DeadBody";
+
         if (gameObject.TryGetComponent<Collider>(out var collider))
         {
             collider.enabled = false;
@@ -290,11 +294,18 @@ public class Skeleton : CreatureBase, IMob, IPlacer
 
     public void Place(PlacementManager manager)
     {
-        for (int i = 0; i < 3; i++)
+        if (spawnPositions.Count == 0)
         {
-            var position = manager.GetPosition(2);
-            Instantiate(gameObject, manager.GetTransformPosition(position), Quaternion.identity);
-            manager.AddOnPlacementMap(position, 10);   
+            spawnPositions = new List<Vector3>();
+            for (int i = 0; i < 3; i++)
+            {
+                var position = manager.GetPosition(2);
+                var transformPosition = manager.GetTransformPosition(position);
+                manager.AddOnPlacementMap(position, 10);
+                spawnPositions.Add(transformPosition);
+            }
         }
+        
+        manager.Spawn(spawnPositions, gameObject);
     }
 }

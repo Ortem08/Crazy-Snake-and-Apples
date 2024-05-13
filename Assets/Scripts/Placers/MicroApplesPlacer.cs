@@ -1,14 +1,24 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 public class MicroApplesPlacer : MonoBehaviour, IPlacer
 {
+    private List<Vector3> spawnPositions;
+
     public void Place(PlacementManager manager)
     {
-        for (int i = 0; i < 3; i++)
+        if (spawnPositions.Count == 0)
         {
-            var position = manager.GetPosition(2);
-            Instantiate(gameObject, manager.GetTransformPosition(position), Quaternion.identity);
-            manager.AddOnPlacementMap(position, 10);   
+            spawnPositions = new List<Vector3>();
+            for (int i = 0; i < 3; i++)
+            {
+                var position = manager.GetPosition(2);
+                var transformPosition = manager.GetTransformPosition(position);
+                manager.AddOnPlacementMap(position, 10);
+                spawnPositions.Add(transformPosition);
+            }
         }
+        
+        manager.Spawn(spawnPositions, gameObject);
     }
 }

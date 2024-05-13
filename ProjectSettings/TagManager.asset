@@ -11,6 +11,7 @@ TagManager:
   - CardFactory
   - WeaponFactory
   - Snake
+  - DeadBody
   layers:
   - Default
   - TransparentFX
