@@ -4374,8 +4374,16 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6363670533073671671, guid: 0db8ff4c6a7143748b9ed71e576e05b8, type: 3}
+      propertyPath: respawnDelay
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6363670533073671671, guid: 0db8ff4c6a7143748b9ed71e576e05b8, type: 3}
       propertyPath: placementObjs.Array.size
-      value: 9
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 6363670533073671671, guid: 0db8ff4c6a7143748b9ed71e576e05b8, type: 3}
+      propertyPath: respawningMobs.Array.size
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 6363670533073671671, guid: 0db8ff4c6a7143748b9ed71e576e05b8, type: 3}
       propertyPath: placementObjs.Array.data[0]
@@ -4413,6 +4421,22 @@ PrefabInstance:
       propertyPath: placementObjs.Array.data[8]
       value: 
       objectReference: {fileID: 5441411867270320675, guid: e567e3953fdade040805aab9d6dba253, type: 3}
+    - target: {fileID: 6363670533073671671, guid: 0db8ff4c6a7143748b9ed71e576e05b8, type: 3}
+      propertyPath: respawningMobs.Array.data[0]
+      value: 
+      objectReference: {fileID: 5441411867270320675, guid: e567e3953fdade040805aab9d6dba253, type: 3}
+    - target: {fileID: 6363670533073671671, guid: 0db8ff4c6a7143748b9ed71e576e05b8, type: 3}
+      propertyPath: respawningMobs.Array.data[1]
+      value: 
+      objectReference: {fileID: 5685284244474484144, guid: d295c14c6532b114fbf0bd08feb0fa93, type: 3}
+    - target: {fileID: 6363670533073671671, guid: 0db8ff4c6a7143748b9ed71e576e05b8, type: 3}
+      propertyPath: respawningMobs.Array.data[2]
+      value: 
+      objectReference: {fileID: 6244941262111463416, guid: fc47838a74490a243b8f8087ac4254f4, type: 3}
+    - target: {fileID: 6363670533073671671, guid: 0db8ff4c6a7143748b9ed71e576e05b8, type: 3}
+      propertyPath: deadBodyCountThresholdToRespawn
+      value: 6
+      objectReference: {fileID: 0}
     - target: {fileID: 8845864682091741912, guid: 0db8ff4c6a7143748b9ed71e576e05b8, type: 3}
       propertyPath: Door
       value: 
