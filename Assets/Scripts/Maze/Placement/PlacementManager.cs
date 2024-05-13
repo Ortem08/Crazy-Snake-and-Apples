@@ -51,15 +51,17 @@ public class PlacementManager : MonoBehaviour
     
     public void AddOnPlacementMap(Vector2Int pos, int placementValue)
     {
-        var startRow = Math.Max(0, pos.x - placementValue);
+        var x = pos.x / 2;
+        var y = pos.y / 2;
+        var startRow = Math.Max(0, x - placementValue);
         var endRow = Math.Min(mazeHeight, startRow + 2 * placementValue);
-        var startCol = Math.Max(0, pos.y - placementValue);
+        var startCol = Math.Max(0, y - placementValue);
         var endCol = Math.Min(mazeWidth, startCol + 2 * placementValue);
         for (int i = startRow; i < endRow; i++)
         {
             for (int j = startCol; j < endCol; j++)
             {
-                PlacementValuesMap[i, j] += placementValue - Math.Max(Math.Abs(pos.x - i), Math.Abs(pos.y - j));
+                PlacementValuesMap[i, j] += placementValue - Math.Max(Math.Abs(x - i), Math.Abs(y - j));
             }
         }
     }
