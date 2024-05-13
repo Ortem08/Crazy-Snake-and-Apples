@@ -36,7 +36,7 @@ public class SnakeController : MonoBehaviour, IHurtable
             CanDie = false;
         }*/
 
-    protected void Start()
+    protected virtual void Start()
     {
         Health = initialHealth;
     }

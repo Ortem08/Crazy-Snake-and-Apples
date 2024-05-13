@@ -24,11 +24,11 @@ public class SoundController : MonoBehaviour
             case "Menu":
                 PlayBackground("MenuTheme", 0.5f);
                 break;
-            case "1105Merge": //Level 1
-                PlayBackground("LevelTheme1", 0f);
+            case "FirstLevel": //Level 1
+                PlayBackground("LevelTheme1", 0.3f);
                 break;
-            case "Level 2": //Level 2
-                PlayBackground("LevelTheme2", 0f);
+            case "SecondLevel": //Level 2
+                PlayBackground("LevelTheme2", 0.3f);
                 break;
         }
     }
@@ -64,7 +64,7 @@ public class SoundController : MonoBehaviour
             audioSource.volume = volume;
             audioSource.spatialBlend = 1f;
             audioSource.Play();
-
+            
             length = audioSource.clip.length;
             Destroy(soundObject, audioSource.clip.length);
         }
