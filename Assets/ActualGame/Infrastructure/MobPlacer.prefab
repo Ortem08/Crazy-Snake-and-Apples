@@ -51,3 +51,4 @@ MonoBehaviour:
     Amount: 15
   - prefab: {fileID: 5685284244474484144, guid: d295c14c6532b114fbf0bd08feb0fa93, type: 3}
     Amount: 3
+  deadBodyThresholdToRespawn: 0.8

@@ -109,9 +109,6 @@ MonoBehaviour:
   CentralRoomSize_X: 3
   CentralRoomSize_Z: 3
   Environment: {fileID: 0}
-  MazeLayerMask:
-    serializedVersion: 2
-    m_Bits: 8
   OnFinishedBuildingMaze:
     m_PersistentCalls:
       m_Calls:
@@ -144,5 +141,4 @@ MonoBehaviour:
   Seed: 42
   placementObjs: []
   respawningMobs: []
-  respawnDelay: 40
-  deadBodyCountThresholdToRespawn: 10
+  respawnDelay: 30

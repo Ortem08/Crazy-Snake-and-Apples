@@ -18,7 +18,6 @@ public class PlacementManager : MonoBehaviour
     [SerializeField] public List<GameObject> placementObjs = new ();
     [SerializeField] private List<GameObject> respawningMobs = new();
     [SerializeField] private float respawnDelay = 40;
-    [SerializeField] private int deadBodyCountThresholdToRespawn = 10;
 
     private List<IPlacer> respawningMobPlacers;
 
@@ -42,14 +41,6 @@ public class PlacementManager : MonoBehaviour
         while (true)
         {
             yield return new WaitForSeconds(respawnDelay);
-            var deadBodyObjs = GameObject.FindGameObjectsWithTag("DeadBody").ToList();
-            if (deadBodyObjs.Count < deadBodyCountThresholdToRespawn)
-                continue;
-            foreach (var obj in deadBodyObjs)
-            {
-                Destroy(obj);
-            }
-
             foreach (var placer in respawningMobPlacers)
             {
                 placer.Place(this);
