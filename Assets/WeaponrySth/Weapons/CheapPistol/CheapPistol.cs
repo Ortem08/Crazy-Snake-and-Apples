@@ -195,7 +195,7 @@ public class CheapPistol : MonoBehaviour, ICardBasedItem, IChargeable
 
     private void DoShooting(List<IProjectileTreeNode> projectileForest)
     {
-        soundController.PlaySound("LaserShot", 0.5f, transform.position, gameObject);
+        soundController.PlaySound("LaserShot", 0.5f, 3, transform.position, gameObject);
         
         foreach (var tree in projectileForest)
         {

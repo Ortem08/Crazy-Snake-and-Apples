@@ -126,7 +126,7 @@ public class Skeleton : CreatureBase, IMob, IPlacer
 
         if (Time.time - lastSoundPlay > soundCooldown)
         {
-            soundController.PlaySound("Skeleton", 0.2f, transform.position, gameObject);
+            soundController.PlaySound("Skeleton", 0.2f, 3, transform.position, gameObject);
             lastSoundPlay = Time.time;
         }
     }
@@ -238,7 +238,7 @@ public class Skeleton : CreatureBase, IMob, IPlacer
 
         this.enabled = false;
 
-        soundController.PlaySound("SkeletonDeath", 0.5f, transform.position);
+        soundController.PlaySound("SkeletonDeath", 0.5f, 1, transform.position);
         //animator.enabled = false;
         //DetachChildrenRecursively(gameObject.transform);
     }

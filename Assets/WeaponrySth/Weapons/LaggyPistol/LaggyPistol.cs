@@ -186,7 +186,7 @@ public class LaggyPistol : MonoBehaviour, ICardBasedItem, IChargeable
                 //var delta = (user.CameraTransform.right - user.CameraTransform.up) * 0.02f;
                 Vector3 startPosition = user.CameraTransform.position + shootDirection * 0.1f;
 
-                soundController.PlaySound("PistolShot", 0.5f, gameObject.transform.position, player);
+                soundController.PlaySound("PistolShot", 0.5f, 3, gameObject.transform.position, player);
 
                 if (projectile is GunShot)
                 {
@@ -233,7 +233,7 @@ public class LaggyPistol : MonoBehaviour, ICardBasedItem, IChargeable
         recharging = true;
         animator.SetTrigger("TrReload");
 
-        soundController.PlaySound("PistolReload", 0.5f, gameObject.transform.position, player);
+        soundController.PlaySound("PistolReload", 0.5f, 1, gameObject.transform.position, player);
 
         yield return new WaitForSeconds(rechargeTime);
         recharging = false;

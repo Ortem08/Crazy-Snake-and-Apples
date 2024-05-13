@@ -11,7 +11,7 @@ public class MenuScript : MonoBehaviour
     public void Play()
     {
         SceneManager.UnloadSceneAsync("Menu");
-        SceneManager.LoadSceneAsync("1105Merge");
+        SceneManager.LoadSceneAsync("FirstLevel");
     }
 
     public void QuitGame()

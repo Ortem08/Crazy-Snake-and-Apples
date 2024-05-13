@@ -40,7 +40,7 @@ namespace Environment
 
         private void Open()
         {
-            var length = soundController.PlaySound("Key", 0.5f, transform.position, gameObject);
+            var length = soundController.PlaySound("Key", 0.5f, 1, transform.position, gameObject);
             StartCoroutine(OpenWithDelay(length));
         }
 
@@ -48,7 +48,7 @@ namespace Environment
         {
             yield return new WaitForSeconds(delay);
 
-            soundController.PlaySound("DoorOpen", 0.5f, transform.position, gameObject);
+            soundController.PlaySound("DoorOpen", 0.5f, 1, transform.position, gameObject);
             animator.SetBool("isOpen", true);
         }
 

@@ -24,24 +24,21 @@ public class SoundController : MonoBehaviour
             case "Menu":
                 PlayBackground("MenuTheme", 0.5f);
                 break;
-            case "FirstLevel": //Level 1
+            case "FirstLevel":
                 PlayBackground("LevelTheme1", 0.3f);
-                break;
-            case "SecondLevel": //Level 2
-                PlayBackground("LevelTheme2", 0.3f);
                 break;
         }
     }
-
+    
     // ReSharper disable Unity.PerformanceAnalysis
-    public float PlaySound(string soundType, float volume, Vector3 position, GameObject parent=null)
+    public float PlaySound(string soundType, float volume, int filesCount, Vector3 position, GameObject parent=null)
     {
         var length = 0f;
         try
         {
-            var filesCount = Directory.GetFiles($"Assets/Resources/Sounds/{soundType}").Length / 2;
+            //var filesCount = Directory.GetFiles($"Sounds/{soundType}").Length / 2;
             var random = new Random();
-
+            
             GameObject soundObject;
             if (parent != null)
             {
@@ -55,24 +52,25 @@ public class SoundController : MonoBehaviour
             }
 
             soundObject.name = soundType;
-
+            
             var audioSource = soundObject.AddComponent<AudioSource>();
             var path = $"Sounds/{soundType}/{soundType}_{random.Next(1, filesCount)}";
 
+            Debug.LogException(new InvalidCastException(path));
             audioSource.clip = Resources.Load<AudioClip>(path);
             audioSource.outputAudioMixerGroup = AudioMixer.FindMatchingGroups("Master")[0];
             audioSource.volume = volume;
             audioSource.spatialBlend = 1f;
             audioSource.Play();
-            
+
             length = audioSource.clip.length;
             Destroy(soundObject, audioSource.clip.length);
         }
-        catch (System.Exception exc)
+        catch (Exception e)
         {
-            Debug.LogException(exc);
+            Debug.LogException(e);
         }
-        
+
         return length;
     }
 

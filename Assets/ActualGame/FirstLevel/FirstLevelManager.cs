@@ -15,6 +15,20 @@ public class FirstLevelManager : GameSceneManager
         Debug.Log(SecondLevel);
         gameObject.SetActive(false);
         SecondLevel.SetActive(true);
+        
+        var sources = FindObjectsOfType<AudioSource>();
+        foreach (var source in sources)
+        {
+            if (source.name == "LevelTheme1")
+            {
+                Destroy(source);
+                break;
+            }
+        }
+            
+        GameObject.FindGameObjectWithTag("SoundController")
+            .GetComponent<SoundController>()
+            .PlayBackground("LevelTheme2", 0.3f);
     }
 
     protected override void SnakeDefeatAction()

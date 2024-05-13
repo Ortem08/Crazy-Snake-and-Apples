@@ -29,5 +29,11 @@ public class PlayerParamsUpdater : MonoBehaviour
             controller.xMouseSensitivity = PlayerPrefs.GetFloat("Sensetivity") * MouseSensetivityCoef;
             controller.yMouseSensitivity = controller.xMouseSensitivity;
         }
+        else
+        {
+            controller.xMouseSensitivity = 10 * MouseSensetivityCoef;
+            controller.yMouseSensitivity = controller.xMouseSensitivity;
+        }
+            
     }
 }

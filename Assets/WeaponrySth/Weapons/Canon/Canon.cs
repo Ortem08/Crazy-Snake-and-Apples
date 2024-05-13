@@ -238,13 +238,13 @@ public class Canon : MonoBehaviour, ICardBasedItem, IChargeable
             if (collider.gameObject.TryGetComponent<IPushable>(out var pushable))
             {
                 pushable.Push(user.CameraTransform.forward * pushImpulse);
-                soundController.PlaySound("CannonBackPunch", 0.5f, transform.position, gameObject);
+                soundController.PlaySound("CannonBackPunch", 0.5f, 3, transform.position, gameObject);
             }
             else if (collider.gameObject.TryGetComponent<Rigidbody>(out var rb))
             {
                 Debug.Log("here");
                 rb.AddForce(user.CameraTransform.forward * pushImpulse, ForceMode.Impulse);
-                soundController.PlaySound("CannonBackPunch", 0.5f, transform.position, gameObject);
+                soundController.PlaySound("CannonBackPunch", 0.5f, 3, transform.position, gameObject);
             }
         }
     }
@@ -254,8 +254,8 @@ public class Canon : MonoBehaviour, ICardBasedItem, IChargeable
         indicatorRenderer.material.color = Color.red;
         animator.SetTrigger("TrPrimaryFire");
 
-        soundController.PlaySound("CannonShot", 0.5f, transform.position, gameObject);
-        soundController.PlaySound("CannonReload", 0.5f, transform.position, gameObject);
+        soundController.PlaySound("CannonShot", 0.5f, 1, transform.position, gameObject);
+        soundController.PlaySound("CannonReload", 0.5f, 1, transform.position, gameObject);
         
         yield return new WaitForSeconds(rechargeTime);
         ChargeInfo.CurrentCharge = ChargeInfo.MaxCharge;

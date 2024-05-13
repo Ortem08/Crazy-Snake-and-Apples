@@ -77,7 +77,7 @@ public class CardInventoryUI : MonoBehaviour
     
     public void OpenInventory()
     {
-        soundController.PlaySound("CloseInventory", 0.5f, player.gameObject.transform.position);
+        soundController.PlaySound("CloseInventory", 0.5f, 1, player.gameObject.transform.position);
         
         gameObject.SetActive(true);
         Cursor.visible = true;
@@ -101,7 +101,7 @@ public class CardInventoryUI : MonoBehaviour
     
     public void CloseInventory()
     {
-        soundController.PlaySound("CloseInventory", 0.5f, transform.position, player.gameObject);
+        soundController.PlaySound("CloseInventory", 0.5f, 1, transform.position, player.gameObject);
         
         gameObject.SetActive(false);
         Cursor.visible = false;

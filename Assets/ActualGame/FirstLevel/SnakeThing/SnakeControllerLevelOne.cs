@@ -45,8 +45,8 @@ public class SnakeControllerLevelOne : SnakeController
             aINavigation.enabled = false;
         }
 
-        soundController.PlaySound("Balloon", 0.5f, transform.position, gameObject);
-        soundController.PlaySound("Laugh", 1f, transform.position);
+        soundController.PlaySound("Balloon", 0.5f, 1, transform.position, gameObject);
+        soundController.PlaySound("Laugh", 1f, 1, transform.position);
         
         Balloon.SetActive(true);
         Rope.SetActive(true);

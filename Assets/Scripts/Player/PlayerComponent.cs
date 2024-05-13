@@ -81,7 +81,7 @@ public class PlayerComponent : MonoBehaviour, IHurtable, IUser, IPushable, IPlac
             Die();
         }
 
-        soundController.PlaySound("PlayerHurt", 0.5f, transform.position, gameObject);
+        soundController.PlaySound("PlayerHurt", 0.5f, 1, transform.position, gameObject);
     }
 
     private void Die()
@@ -160,7 +160,7 @@ public class PlayerComponent : MonoBehaviour, IHurtable, IUser, IPushable, IPlac
                 if (CardInventory.TryAddCard(cardAvatar.Card))
                 {
                     Debug.Log(cardAvatar.Card);
-                    soundController.PlaySound("ModificatorPick", 0.5f, transform.position, gameObject);
+                    soundController.PlaySound("ModificatorPick", 0.5f, 1, transform.position, gameObject);
                     cardAvatar.PickUp();
                     return true;
                 }

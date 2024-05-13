@@ -247,7 +247,7 @@ public class MicroApples : CreatureBase, IMob
         }
         hurtable.TakeDamage(attackDamage);
         
-        soundController.PlaySound("AppleAttack", 0.5f, transform.position, gameObject);
+        soundController.PlaySound("AppleAttack", 0.5f, 1, transform.position, gameObject);
         
         if (collider.gameObject.TryGetComponent<IPushable>(out var pushable))
         {
@@ -285,7 +285,7 @@ public class MicroApples : CreatureBase, IMob
         isDead = true;
         var deadBody = Instantiate(deadBodyPrefab);
         
-        soundController.PlaySound("AppleDeath", 0.5f, transform.position, deadBody);
+        soundController.PlaySound("AppleDeath", 0.5f, 1, transform.position, deadBody);
         
         deadBody.transform.position = transform.position;
         var impulseModified = damageInfo.Impulse.normalized * Mathf.Min(10, damageInfo.Impulse.magnitude);

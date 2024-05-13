@@ -385,12 +385,12 @@ public class QuakeCPMPlayerMovement : MonoBehaviour
             if (!isGrounded)
             {
                 isGrounded = true;
-                soundController?.PlaySound("Landing", 1f, transform.position, gameObject);
+                soundController?.PlaySound("Landing", 1f, 1, transform.position, gameObject);
             }
 
             if (GetVelocity().magnitude > 1 && Time.time - lastStepTime > stepCooldown)
             {
-                soundController?.PlaySound("Steps", 0.5f, transform.position, gameObject);
+                soundController?.PlaySound("Steps", 0.3f, 4, transform.position, gameObject);
                 lastStepTime = Time.time;
             }
         }
@@ -402,7 +402,7 @@ public class QuakeCPMPlayerMovement : MonoBehaviour
         
         if(wishJump)
         {
-            soundController?.PlaySound("Jump", 0.5f, transform.position, gameObject);
+            soundController?.PlaySound("Jump", 0.5f, 1, transform.position, gameObject);
             playerVelocity.y = jumpSpeed;
             wishJump = false;
             isGrounded = false;

@@ -29,8 +29,8 @@ public class PauseScript : MonoBehaviour
         statesStack.Push(PauseStates.None);
         
         playerUI = FindObjectOfType<PlayerUI>();
-        playerUI.OnOpenInventory.AddListener(OnOpenInventory);
-        playerUI.OnCloseInventory.AddListener(OnCloseInventory);
+        playerUI?.OnOpenInventory?.AddListener(OnOpenInventory);
+        playerUI?.OnCloseInventory?.AddListener(OnCloseInventory);
     }
 
     private void Update()
@@ -94,7 +94,7 @@ public class PauseScript : MonoBehaviour
     public void LoadMainMenu()
     {
         Time.timeScale = 1f;
-        SceneManager.UnloadSceneAsync("SampleScene");
+        SceneManager.UnloadSceneAsync(SceneManager.GetActiveScene().name);
         SceneManager.LoadSceneAsync("Menu");
     }
 

@@ -56,7 +56,7 @@ public class Explosion : ProjectileBase, IDamaging
 
     private IEnumerator Explode()
     {
-        FindObjectOfType<SoundController>().PlaySound("Boom", 1f, externalSurface.transform.position);
+        FindObjectOfType<SoundController>().PlaySound("Boom", 1f, 1, externalSurface.transform.position);
         AdjustSurfaceSize();
         externalSurface.SetActive(true);
 
