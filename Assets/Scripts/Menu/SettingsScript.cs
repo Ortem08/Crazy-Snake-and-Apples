@@ -36,8 +36,10 @@ public class SettingsScript : MonoBehaviour
     {
         if (PlayerPrefs.HasKey("Sensetivity"))
             SensetivitySlider.value = PlayerPrefs.GetFloat("Sensetivity");
-        
+
         if (PlayerPrefs.HasKey("Volume"))
             VolumeSlider.value = PlayerPrefs.GetFloat("Volume");
+        else
+            VolumeSlider.value = 0.7f;
     }
 }

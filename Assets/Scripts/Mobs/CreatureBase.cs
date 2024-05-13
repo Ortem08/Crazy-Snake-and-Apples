@@ -21,7 +21,12 @@ public abstract class CreatureBase : MonoBehaviour, IHurtable
 
     public virtual void TakeDamage(DamageInfo damageInfo)
     {
-        ConsumeDamage(damageInfo.Amount);
+        Health -= damageInfo.Amount;
+        OnHealthDecrease.Invoke(Health, MaxHealth);
+        if (Health <= 0)
+        {
+            DieCinematically(damageInfo);
+        }
     }
 
     public virtual void ConsumeDamage(float amount)
@@ -35,6 +40,11 @@ public abstract class CreatureBase : MonoBehaviour, IHurtable
     }
 
     public abstract void PerformAttack();
+
+    protected virtual void DieCinematically(DamageInfo damageInfo)
+    {
+        Die();
+    }
 
     public virtual void Die()
     {

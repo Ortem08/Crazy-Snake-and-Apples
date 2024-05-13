@@ -20,6 +20,14 @@ public class SnakeControllerLevelOne : SnakeController
     [SerializeField]
     private GameObject Rope;
 
+    private SoundController soundController;
+
+    protected override void Start()
+    {
+        base.Start();
+        soundController = GameObject.FindGameObjectWithTag("SoundController").GetComponent<SoundController>();
+    }
+
     protected override void AfterDefeatAction()
     {
         StartCoroutine(JumpVeryHigh());
@@ -37,17 +45,20 @@ public class SnakeControllerLevelOne : SnakeController
             aINavigation.enabled = false;
         }
 
+        soundController.PlaySound("Balloon", 0.5f, transform.position, gameObject);
+        soundController.PlaySound("Laugh", 1f, transform.position);
+        
         Balloon.SetActive(true);
         Rope.SetActive(true);
 
         while (JumpAwayTimeLeft > 0)
         {
             JumpAwaySpeed += JumpAwayAcceleration * Time.deltaTime;
-            transform.position += Vector3.up * JumpAwaySpeed * Time.deltaTime;
+            transform.position += Vector3.up * (JumpAwaySpeed * Time.deltaTime);
 
             if (Balloon.transform.localScale.x < maxBalloonRadius)
             {
-                Balloon.transform.localScale += Vector3.one * BalloonIncreaseSpeed * Time.deltaTime;
+                Balloon.transform.localScale += Vector3.one * (BalloonIncreaseSpeed * Time.deltaTime);
             }
             yield return null;
         }

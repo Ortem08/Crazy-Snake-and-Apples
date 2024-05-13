@@ -22,7 +22,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 419849817451887196, guid: 801750deb61711740aa508e651d593bf, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -20.371645
+      value: -34.24601
       objectReference: {fileID: 0}
     - target: {fileID: 419849817451887196, guid: 801750deb61711740aa508e651d593bf, type: 3}
       propertyPath: m_LocalPosition.y
@@ -30,7 +30,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 419849817451887196, guid: 801750deb61711740aa508e651d593bf, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -77.91128
+      value: -75.721855
       objectReference: {fileID: 0}
     - target: {fileID: 419849817451887196, guid: 801750deb61711740aa508e651d593bf, type: 3}
       propertyPath: m_LocalRotation.w
@@ -120,6 +120,10 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 13
       objectReference: {fileID: 0}
+    - target: {fileID: 7492160521849935026, guid: 801750deb61711740aa508e651d593bf, type: 3}
+      propertyPath: m_Center.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7528427647046868251, guid: 801750deb61711740aa508e651d593bf, type: 3}
       propertyPath: m_Layer
       value: 13
@@ -138,6 +142,8 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 8542548925670954779, guid: 801750deb61711740aa508e651d593bf, type: 3}
+    - {fileID: 754046677396488354, guid: 801750deb61711740aa508e651d593bf, type: 3}
+    - {fileID: 416398515795482911, guid: 801750deb61711740aa508e651d593bf, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
@@ -175,6 +181,7 @@ MonoBehaviour:
   rotationSpeed: 1
   rotationAngle: 90
   rotationInterval: 2
+  DeadBowerPrefab: {fileID: 6751603247569167128, guid: ec1c7bf6c80eeb34dba6c8459f8099c7, type: 3}
 --- !u!1 &5685284244474484144 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1051673541797945574, guid: 801750deb61711740aa508e651d593bf, type: 3}

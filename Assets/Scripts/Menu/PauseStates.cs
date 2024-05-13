@@ -3,5 +3,5 @@ public enum PauseStates
     None,
     InventoryPause,
     GeneralPause,
-    SettingsPause // Возможно, понадобится. Пока не используется.
+    SettingsPause // Р’РѕР·РјРѕР¶РЅРѕ, РїРѕРЅР°РґРѕР±РёС‚СЃСЏ. РџРѕРєР° РЅРµ РёСЃРїРѕР»СЊР·СѓРµС‚СЃСЏ.
 }

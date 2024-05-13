@@ -160,6 +160,7 @@ public class PlayerComponent : MonoBehaviour, IHurtable, IUser, IPushable, IPlac
                 if (CardInventory.TryAddCard(cardAvatar.Card))
                 {
                     Debug.Log(cardAvatar.Card);
+                    soundController.PlaySound("ModificatorPick", 0.5f, transform.position, gameObject);
                     cardAvatar.PickUp();
                     return true;
                 }

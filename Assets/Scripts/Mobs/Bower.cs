@@ -42,6 +42,9 @@ public class Bower : CreatureBase, IMob
 
     private Animator animator;
 
+    [SerializeField]
+    private GameObject DeadBowerPrefab;
+
 
     public Bower() : base(20, 1)
     {
@@ -246,20 +249,35 @@ public class Bower : CreatureBase, IMob
         //agent.SetPath(path);
     }
 
-
-    private void UpdateDestination()
+    protected override void DieCinematically(DamageInfo damageInfo)
     {
-        var check = CanSeePlayer();
-        Debug.Log(check);
-        if (check)
+        var deadBody = Instantiate(DeadBowerPrefab, transform.position, transform.rotation);
+        if (deadBody.TryGetComponent<Rigidbody>(out var rb))
         {
-            agent.stoppingDistance = 2;
-            agent.SetDestination(player.transform.position);
+            rb.AddForce(damageInfo.Impulse, ForceMode.Impulse);
         }
-        else
-            agent.stoppingDistance = 0;
 
-        if (!agent.hasPath || (agent.hasPath && !check))
-            TryPickRandomDestination();
+        Die();
     }
+
+    public override void Die()
+    {
+        Destroy(transform.parent.gameObject);
+    }
+
+    /*    private void UpdateDestination()
+        {
+            var check = CanSeePlayer();
+            Debug.Log(check);
+            if (check)
+            {
+                agent.stoppingDistance = 2;
+                agent.SetDestination(player.transform.position);
+            }
+            else
+                agent.stoppingDistance = 0;
+
+            if (!agent.hasPath || (agent.hasPath && !check))
+                TryPickRandomDestination();
+        }*/
 }

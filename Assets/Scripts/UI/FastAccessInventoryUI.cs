@@ -58,8 +58,7 @@ public class FastAccessInventoryUI : MonoBehaviour
         ItemImages[index].color = Color.clear;
         soundController.PlaySound("Throw", 0.5f, transform.position, player);
     }
-
-
+    
     private void OnPickUpItem(int index)
     {
         // Debug.Log(ItemImages[index]);
@@ -69,7 +68,6 @@ public class FastAccessInventoryUI : MonoBehaviour
             ItemImages[index].sprite = sprite;
             ItemImages[index].color = Color.white;
             soundController.PlaySound("PickUp", 0.5f, transform.position, player);
-            Debug.Log("PICK");
         }
     }
 
@@ -80,7 +78,7 @@ public class FastAccessInventoryUI : MonoBehaviour
         {
             FastAccessItemHolderImages[lastIndex].color = Color.white;
             FastAccessItemHolderImages[index].color = Color.red;
-            soundController.PlaySound("PickUp", 0.5f, transform.position, player);
+            soundController.PlaySound("ChangeHand", 0.5f, transform.position, player);
         }
     }
 }
